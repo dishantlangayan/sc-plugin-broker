@@ -20,7 +20,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.0.0 darwin-arm64 node-v24.1.0
+@dishantlangayan/sc-plugin-broker/0.0.0 linux-x64 node-v20.20.1
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
@@ -29,369 +29,72 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`sc hello PERSON`](#sc-hello-person)
-* [`sc hello world`](#sc-hello-world)
-* [`sc help [COMMAND]`](#sc-help-command)
-* [`sc plugins`](#sc-plugins)
-* [`sc plugins add PLUGIN`](#sc-plugins-add-plugin)
-* [`sc plugins:inspect PLUGIN...`](#sc-pluginsinspect-plugin)
-* [`sc plugins install PLUGIN`](#sc-plugins-install-plugin)
-* [`sc plugins link PATH`](#sc-plugins-link-path)
-* [`sc plugins remove [PLUGIN]`](#sc-plugins-remove-plugin)
-* [`sc plugins reset`](#sc-plugins-reset)
-* [`sc plugins uninstall [PLUGIN]`](#sc-plugins-uninstall-plugin)
-* [`sc plugins unlink [PLUGIN]`](#sc-plugins-unlink-plugin)
-* [`sc plugins update`](#sc-plugins-update)
+* [`sc broker login basic`](#sc-broker-login-basic)
+* [`sc broker login cloud [FILE]`](#sc-broker-login-cloud-file)
 
-## `sc hello PERSON`
+## `sc broker login basic`
 
-Say hello
+Login to a Solace Event Broker using Basic authentication.
 
 ```
 USAGE
-  $ sc hello PERSON -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
+  $ sc broker login basic -p <value> -u <value> [--json] [--log-level debug|warn|error|info|trace] [-i <value> | -b
+    <value>] [--no-prompt]
 
 FLAGS
-  -f, --from=<value>  (required) Who is saying hello
-
-DESCRIPTION
-  Say hello
-
-EXAMPLES
-  $ sc hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
-```
-
-_See code: [src/commands/hello/index.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.0.0/src/commands/hello/index.ts)_
-
-## `sc hello world`
-
-Say hello world
-
-```
-USAGE
-  $ sc hello world
-
-DESCRIPTION
-  Say hello world
-
-EXAMPLES
-  $ sc hello world
-  hello world! (./src/commands/hello/world.ts)
-```
-
-_See code: [src/commands/hello/world.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.0.0/src/commands/hello/world.ts)_
-
-## `sc help [COMMAND]`
-
-Display help for sc.
-
-```
-USAGE
-  $ sc help [COMMAND...] [-n]
-
-ARGUMENTS
-  [COMMAND...]  Command to show help for.
-
-FLAGS
-  -n, --nested-commands  Include all nested commands in the output.
-
-DESCRIPTION
-  Display help for sc.
-```
-
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/6.2.38/src/commands/help.ts)_
-
-## `sc plugins`
-
-List installed plugins.
-
-```
-USAGE
-  $ sc plugins [--json] [--core]
-
-FLAGS
-  --core  Show core plugins.
+  -b, --broker-name=<value>  Name/identifier for the broker
+  -i, --broker-id=<value>    Alternative identifier for the broker (alias for broker-name)
+  -p, --semp-port=<value>    (required) SEMP port number (1-65535)
+  -u, --semp-url=<value>     (required) SEMP endpoint URL (must start with http:// or https://)
+      --no-prompt            Read credentials from SC_SEMP_USERNAME and SC_SEMP_PASSWORD environment variables
 
 GLOBAL FLAGS
-  --json  Format output as json.
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
 
 DESCRIPTION
-  List installed plugins.
+  Login to a Solace Event Broker using Basic authentication.
+
+  Stores broker credentials securely using encrypted local storage.
+  Credentials are base64-encoded and encrypted before storage.
+
+  You can provide either --broker-name or --broker-id as the identifier.
+  If a broker with the same name already exists, you'll be prompted to overwrite.
+
+  Required SEMP permissions: Varies by operations you intend to perform
 
 EXAMPLES
-  $ sc plugins
+  $ sc broker login basic --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080
+
+  $ sc broker login basic --broker-id=prod --semp-url=https://broker.example.com --semp-port=943
+
+  $ sc broker login basic --broker-name=ci-broker --semp-url=http://192.168.1.100 --semp-port=8080 --no-prompt
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/5.4.58/src/commands/plugins/index.ts)_
+_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.0.0/src/commands/broker/login/basic.ts)_
 
-## `sc plugins add PLUGIN`
+## `sc broker login cloud [FILE]`
 
-Installs a plugin into sc.
+describe the command here
 
 ```
 USAGE
-  $ sc plugins add PLUGIN... [--json] [-f] [-h] [-s | -v]
+  $ sc broker login cloud [FILE] [-f] [-n <value>]
 
 ARGUMENTS
-  PLUGIN...  Plugin to install.
+  [FILE]  file to read
 
 FLAGS
-  -f, --force    Force npm to fetch remote resources even if a local copy exists on disk.
-  -h, --help     Show CLI help.
-  -s, --silent   Silences npm output.
-  -v, --verbose  Show verbose npm output.
-
-GLOBAL FLAGS
-  --json  Format output as json.
+  -f, --force
+  -n, --name=<value>  name to print
 
 DESCRIPTION
-  Installs a plugin into sc.
-
-  Uses npm to install plugins.
-
-  Installation of a user-installed plugin will override a core plugin.
-
-  Use the SC_NPM_LOG_LEVEL environment variable to set the npm loglevel.
-  Use the SC_NPM_REGISTRY environment variable to set the npm registry.
-
-ALIASES
-  $ sc plugins add
+  describe the command here
 
 EXAMPLES
-  Install a plugin from npm registry.
-
-    $ sc plugins add myplugin
-
-  Install a plugin from a github url.
-
-    $ sc plugins add https://github.com/someuser/someplugin
-
-  Install a plugin from a github slug.
-
-    $ sc plugins add someuser/someplugin
+  $ sc broker login cloud
 ```
 
-## `sc plugins:inspect PLUGIN...`
-
-Displays installation properties of a plugin.
-
-```
-USAGE
-  $ sc plugins inspect PLUGIN...
-
-ARGUMENTS
-  PLUGIN...  [default: .] Plugin to inspect.
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Displays installation properties of a plugin.
-
-EXAMPLES
-  $ sc plugins inspect myplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/5.4.58/src/commands/plugins/inspect.ts)_
-
-## `sc plugins install PLUGIN`
-
-Installs a plugin into sc.
-
-```
-USAGE
-  $ sc plugins install PLUGIN... [--json] [-f] [-h] [-s | -v]
-
-ARGUMENTS
-  PLUGIN...  Plugin to install.
-
-FLAGS
-  -f, --force    Force npm to fetch remote resources even if a local copy exists on disk.
-  -h, --help     Show CLI help.
-  -s, --silent   Silences npm output.
-  -v, --verbose  Show verbose npm output.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Installs a plugin into sc.
-
-  Uses npm to install plugins.
-
-  Installation of a user-installed plugin will override a core plugin.
-
-  Use the SC_NPM_LOG_LEVEL environment variable to set the npm loglevel.
-  Use the SC_NPM_REGISTRY environment variable to set the npm registry.
-
-ALIASES
-  $ sc plugins add
-
-EXAMPLES
-  Install a plugin from npm registry.
-
-    $ sc plugins install myplugin
-
-  Install a plugin from a github url.
-
-    $ sc plugins install https://github.com/someuser/someplugin
-
-  Install a plugin from a github slug.
-
-    $ sc plugins install someuser/someplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/5.4.58/src/commands/plugins/install.ts)_
-
-## `sc plugins link PATH`
-
-Links a plugin into the CLI for development.
-
-```
-USAGE
-  $ sc plugins link PATH [-h] [--install] [-v]
-
-ARGUMENTS
-  PATH  [default: .] path to plugin
-
-FLAGS
-  -h, --help          Show CLI help.
-  -v, --verbose
-      --[no-]install  Install dependencies after linking the plugin.
-
-DESCRIPTION
-  Links a plugin into the CLI for development.
-
-  Installation of a linked plugin will override a user-installed or core plugin.
-
-  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
-  command will override the user-installed or core plugin implementation. This is useful for development work.
-
-
-EXAMPLES
-  $ sc plugins link myplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/5.4.58/src/commands/plugins/link.ts)_
-
-## `sc plugins remove [PLUGIN]`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ sc plugins remove [PLUGIN...] [-h] [-v]
-
-ARGUMENTS
-  [PLUGIN...]  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ sc plugins unlink
-  $ sc plugins remove
-
-EXAMPLES
-  $ sc plugins remove myplugin
-```
-
-## `sc plugins reset`
-
-Remove all user-installed and linked plugins.
-
-```
-USAGE
-  $ sc plugins reset [--hard] [--reinstall]
-
-FLAGS
-  --hard       Delete node_modules and package manager related files in addition to uninstalling plugins.
-  --reinstall  Reinstall all plugins after uninstalling.
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/5.4.58/src/commands/plugins/reset.ts)_
-
-## `sc plugins uninstall [PLUGIN]`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ sc plugins uninstall [PLUGIN...] [-h] [-v]
-
-ARGUMENTS
-  [PLUGIN...]  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ sc plugins unlink
-  $ sc plugins remove
-
-EXAMPLES
-  $ sc plugins uninstall myplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/5.4.58/src/commands/plugins/uninstall.ts)_
-
-## `sc plugins unlink [PLUGIN]`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ sc plugins unlink [PLUGIN...] [-h] [-v]
-
-ARGUMENTS
-  [PLUGIN...]  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ sc plugins unlink
-  $ sc plugins remove
-
-EXAMPLES
-  $ sc plugins unlink myplugin
-```
-
-## `sc plugins update`
-
-Update installed plugins.
-
-```
-USAGE
-  $ sc plugins update [-h] [-v]
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Update installed plugins.
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/5.4.58/src/commands/plugins/update.ts)_
+_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.0.0/src/commands/broker/login/cloud.ts)_
 <!-- commandsstop -->
