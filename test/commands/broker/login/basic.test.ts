@@ -10,6 +10,7 @@ describe('broker:login:basic', () => {
   let mockBrokerAuthManager: {
     addBroker: sinon.SinonStub
     brokerExists: sinon.SinonStub
+    setDefaultBroker: sinon.SinonStub
     updateBroker: sinon.SinonStub
   }
   let mockConfig: Config
@@ -21,6 +22,7 @@ describe('broker:login:basic', () => {
     mockBrokerAuthManager = {
       addBroker: sandbox.stub().resolves(),
       brokerExists: sandbox.stub().resolves(false),
+      setDefaultBroker: sandbox.stub().resolves(),
       updateBroker: sandbox.stub().resolves(),
     }
 
@@ -94,6 +96,39 @@ describe('broker:login:basic', () => {
       // Cleanup
       delete process.env.SC_SEMP_USERNAME
       delete process.env.SC_SEMP_PASSWORD
+    })
+
+    it('should set broker as default when --set-default flag is used', async () => {
+      const command = new BrokerLoginBasic(
+        ['--broker-name=default-broker', '--semp-url=https://localhost', '--semp-port=8080', '--set-default'],
+        mockConfig,
+      )
+
+      sandbox.stub(command as unknown as {getBrokerAuthManager: () => unknown}, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
+      sandbox.stub(command as unknown as {promptForUsername: () => unknown}, 'promptForUsername').resolves('admin')
+      sandbox.stub(command as unknown as {promptForPassword: () => unknown}, 'promptForPassword').resolves('secret')
+
+      const logStub = sandbox.stub(command, 'log')
+
+      await command.run()
+
+      expect(mockBrokerAuthManager.setDefaultBroker.calledOnceWith('default-broker')).to.be.true
+      expect(logStub.calledWith('Set as default broker.')).to.be.true
+    })
+
+    it('should not set default when flag is omitted', async () => {
+      const command = new BrokerLoginBasic(
+        ['--broker-name=test-broker', '--semp-url=https://localhost', '--semp-port=8080'],
+        mockConfig,
+      )
+
+      sandbox.stub(command as unknown as {getBrokerAuthManager: () => unknown}, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
+      sandbox.stub(command as unknown as {promptForUsername: () => unknown}, 'promptForUsername').resolves('admin')
+      sandbox.stub(command as unknown as {promptForPassword: () => unknown}, 'promptForPassword').resolves('secret')
+
+      await command.run()
+
+      expect(mockBrokerAuthManager.setDefaultBroker.called).to.be.false
     })
   })
 

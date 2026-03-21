@@ -25,6 +25,7 @@ Required SEMP permissions: Varies by operations you intend to perform`
     '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080',
     '<%= config.bin %> <%= command.id %> --broker-id=prod --semp-url=https://broker.example.com --semp-port=943',
     '<%= config.bin %> <%= command.id %> --broker-name=ci-broker --semp-url=http://192.168.1.100 --semp-port=8080 --no-prompt',
+    '<%= config.bin %> <%= command.id %> --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default',
   ]
   static override flags = {
     'broker-id': Flags.string({
@@ -50,6 +51,11 @@ Required SEMP permissions: Varies by operations you intend to perform`
       char: 'u',
       description: 'SEMP endpoint URL (must start with http:// or https://)',
       required: true,
+    }),
+    'set-default': Flags.boolean({
+      char: 'd',
+      default: false,
+      description: 'Set this broker as the default',
     }),
   }
 
@@ -77,8 +83,13 @@ Required SEMP permissions: Varies by operations you intend to perform`
       // Store broker configuration
       await (isUpdate ? brokerAuthManager.updateBroker(brokerName, brokerAuth) : brokerAuthManager.addBroker(brokerAuth))
 
+      // Set as default if requested
+      if (flags['set-default']) {
+        await brokerAuthManager.setDefaultBroker(brokerName)
+      }
+
       // Display success message
-      this.displaySuccessMessage(isUpdate, brokerName)
+      this.displaySuccessMessage(isUpdate, brokerName, flags['set-default'])
 
       return brokerAuth
     } catch (error) {
@@ -109,9 +120,13 @@ Required SEMP permissions: Varies by operations you intend to perform`
   /**
    * Displays success message after login
    */
-  private displaySuccessMessage(isUpdate: boolean, brokerName: string): void {
+  private displaySuccessMessage(isUpdate: boolean, brokerName: string, setDefault?: boolean): void {
     const action = isUpdate ? 'updated' : 'logged in to'
     this.log(`Successfully ${action} broker '${brokerName}'`)
+
+    if (setDefault) {
+      this.log('Set as default broker.')
+    }
   }
 
   /**

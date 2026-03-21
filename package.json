@@ -8,7 +8,7 @@
   },
   "bugs": "https://github.com/dishantlangayan/sc-plugin-broker/issues",
   "dependencies": {
-    "@dishantlangayan/sc-cli-core": "^0.6.0",
+    "@dishantlangayan/sc-cli-core": "^0.7.0",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-plugins": "^5"
