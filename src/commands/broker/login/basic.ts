@@ -17,26 +17,19 @@ export default class BrokerLoginBasic extends ScCommand<typeof BrokerLoginBasic>
 Stores broker credentials securely using encrypted local storage.
 Credentials are base64-encoded and encrypted before storage.
 
-You can provide either --broker-name or --broker-id as the identifier.
 If a broker with the same name already exists, you'll be prompted to overwrite.
 
 Required SEMP permissions: Varies by operations you intend to perform`
   static override examples = [
     '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080',
-    '<%= config.bin %> <%= command.id %> --broker-id=prod --semp-url=https://broker.example.com --semp-port=943',
     '<%= config.bin %> <%= command.id %> --broker-name=ci-broker --semp-url=http://192.168.1.100 --semp-port=8080 --no-prompt',
     '<%= config.bin %> <%= command.id %> --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default',
   ]
   static override flags = {
-    'broker-id': Flags.string({
-      char: 'i',
-      description: 'Alternative identifier for the broker (alias for broker-name)',
-      exclusive: ['broker-name'],
-    }),
     'broker-name': Flags.string({
       char: 'b',
       description: 'Name/identifier for the broker',
-      exclusive: ['broker-id'],
+      required: true,
     }),
     'no-prompt': Flags.boolean({
       default: false,
@@ -68,7 +61,7 @@ Required SEMP permissions: Varies by operations you intend to perform`
 
       // Validate inputs and get broker name
       this.validateInputs(flags)
-      const brokerName = flags['broker-name'] ?? flags['broker-id']!
+      const brokerName = flags['broker-name']
 
       // Handle existing broker
       const isUpdate = await this.handleExistingBroker(brokerAuthManager, brokerName, flags['no-prompt'])
@@ -363,16 +356,10 @@ Required SEMP permissions: Varies by operations you intend to perform`
    * Validates command inputs
    */
   private validateInputs(flags: {
-    'broker-id'?: string
-    'broker-name'?: string
+    'broker-name': string
     'semp-port': number
     'semp-url': string
   }): void {
-    // Ensure at least one of broker-name or broker-id is provided
-    if (!flags['broker-name'] && !flags['broker-id']) {
-      this.error('Either --broker-name or --broker-id must be provided.')
-    }
-
     // Validate SEMP URL format
     const sempUrl = flags['semp-url']
     if (!sempUrl.startsWith('http://') && !sempUrl.startsWith('https://')) {
