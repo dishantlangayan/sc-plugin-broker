@@ -22,10 +22,10 @@ import type {
 
 export default class BrokerLoginCloud extends ScCommand<typeof BrokerLoginCloud> {
   static override args = {}
-  static override description = `Login to a Solace Cloud Event Broker using Cloud API credentials.
+  static override description = `Authorize the SC CLI to make SEMP API calls to a Solace Cloud Event Broker using Cloud API credentials.
 
 Retrieves SEMP credentials automatically from Solace Cloud REST API.
-Requires prior authentication to Solace Cloud (org:login).
+Requires prior authentication to Solace Cloud (sc:account:login).
 
 The command will:
 1. Look up the broker by name in your Solace Cloud organization
