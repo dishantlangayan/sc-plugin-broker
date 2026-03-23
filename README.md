@@ -30,7 +30,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`sc broker login basic`](#sc-broker-login-basic)
-* [`sc broker login cloud [FILE]`](#sc-broker-login-cloud-file)
+* [`sc broker login cloud`](#sc-broker-login-cloud)
 * [`sc broker login list`](#sc-broker-login-list)
 * [`sc broker logout`](#sc-broker-logout)
 * [`sc broker queue create`](#sc-broker-queue-create)
@@ -76,26 +76,46 @@ EXAMPLES
 
 _See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.0.0/src/commands/broker/login/basic.ts)_
 
-## `sc broker login cloud [FILE]`
+## `sc broker login cloud`
 
-describe the command here
+Login to a Solace Cloud Event Broker using Cloud API credentials.
 
 ```
 USAGE
-  $ sc broker login cloud [FILE] [-f] [-n <value>]
-
-ARGUMENTS
-  [FILE]  file to read
+  $ sc broker login cloud -b <value> [--json] [--log-level debug|warn|error|info|trace] [--no-prompt] [-o <value>] [-d]
 
 FLAGS
-  -f, --force
-  -n, --name=<value>  name to print
+  -b, --broker-name=<value>  (required) Name of the broker in Solace Cloud
+  -d, --set-default          Set this broker as the default
+  -o, --org-name=<value>     Solace Cloud organization name (uses default org if not specified)
+      --no-prompt            Skip confirmation prompts for overwriting existing broker
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
 
 DESCRIPTION
-  describe the command here
+  Login to a Solace Cloud Event Broker using Cloud API credentials.
+
+  Retrieves SEMP credentials automatically from Solace Cloud REST API.
+  Requires prior authentication to Solace Cloud (org:login).
+
+  The command will:
+  1. Look up the broker by name in your Solace Cloud organization
+  2. Retrieve SEMP endpoint details and credentials from Cloud API
+  3. Store encrypted broker credentials locally for future use
+
+  Required Cloud API permissions: Read access to Event Broker Services
 
 EXAMPLES
-  $ sc broker login cloud
+  $ sc broker login cloud --broker-name=production-broker
+
+  $ sc broker login cloud --broker-name=dev-broker --set-default
+
+  $ sc broker login cloud --broker-name=staging-broker --org-name=my-org
+
+  $ sc broker login cloud --broker-name=prod --no-prompt
 ```
 
 _See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.0.0/src/commands/broker/login/cloud.ts)_
