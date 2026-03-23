@@ -11,6 +11,10 @@ Commands to interact with Solace Event Broker.
 
 <!-- toc -->
 * [Usage](#usage)
+* [Resources](#resources)
+* [Contributing](#contributing)
+* [Authors](#authors)
+* [License](#license)
 * [Commands](#commands)
 <!-- tocstop -->
 # Usage
@@ -27,6 +31,30 @@ USAGE
 ...
 ```
 <!-- usagestop -->
+# Resources
+<!-- resources -->
+This is not an officially supported Solace product.
+
+For more information try these resources:
+- Ask the [Solace Community](https://solace.community)
+- The Solace Developer Portal website at: https://solace.dev
+
+<!-- resourcesstop -->
+# Contributing
+<!-- contributing -->
+Contributions are encouraged! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+<!-- contributingstop -->
+# Authors
+<!-- authors -->
+See the list of [contributors](https://github.com/dishantlangayan/sc-plugin-broker/graphs/contributors) who participated in this project.
+
+<!-- authorsstop -->
+# License
+<!-- license -->
+See the [LICENSE](LICENSE.txt) file for details.
+
+<!-- licensestop -->
 # Commands
 <!-- commands -->
 * [`sc broker login basic`](#sc-broker-login-basic)
