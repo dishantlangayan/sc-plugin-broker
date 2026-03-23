@@ -24,7 +24,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.1.0 linux-x64 node-v20.20.1
+@dishantlangayan/sc-plugin-broker/0.1.1 darwin-arm64 node-v24.1.0
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
@@ -102,11 +102,11 @@ EXAMPLES
   $ sc broker login basic --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default
 ```
 
-_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.0/src/commands/broker/login/basic.ts)_
+_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.1/src/commands/broker/login/basic.ts)_
 
 ## `sc broker login cloud`
 
-Login to a Solace Cloud Event Broker using Cloud API credentials.
+Authorize the SC CLI to make SEMP API calls to a Solace Cloud Event Broker using Cloud API credentials.
 
 ```
 USAGE
@@ -124,10 +124,10 @@ GLOBAL FLAGS
                         <options: debug|warn|error|info|trace>
 
 DESCRIPTION
-  Login to a Solace Cloud Event Broker using Cloud API credentials.
+  Authorize the SC CLI to make SEMP API calls to a Solace Cloud Event Broker using Cloud API credentials.
 
   Retrieves SEMP credentials automatically from Solace Cloud REST API.
-  Requires prior authentication to Solace Cloud (org:login).
+  Requires prior authentication to Solace Cloud (sc:account:login).
 
   The command will:
   1. Look up the broker by name in your Solace Cloud organization
@@ -146,7 +146,7 @@ EXAMPLES
   $ sc broker login cloud --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.0/src/commands/broker/login/cloud.ts)_
+_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.1/src/commands/broker/login/cloud.ts)_
 
 ## `sc broker login list`
 
@@ -171,7 +171,7 @@ EXAMPLES
   $ sc broker login list
 ```
 
-_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.0/src/commands/broker/login/list.ts)_
+_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.1/src/commands/broker/login/list.ts)_
 
 ## `sc broker logout`
 
@@ -207,7 +207,7 @@ EXAMPLES
   $ sc broker logout --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.0/src/commands/broker/logout.ts)_
+_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.1/src/commands/broker/logout.ts)_
 
 ## `sc broker queue create`
 
@@ -264,5 +264,5 @@ EXAMPLES
   $ sc broker queue create --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --dead-msg-queue=#DEAD_MSG_QUEUE --max-redelivery-count=3
 ```
 
-_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.0/src/commands/broker/queue/create.ts)_
+_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.1/src/commands/broker/queue/create.ts)_
 <!-- commandsstop -->
