@@ -3,6 +3,13 @@ name: publish
 on:
   release:
     types: [published]
+  # support manual release in case something goes wrong and needs to be repeated or tested
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: tag that needs to publish
+        type: string
+        required: true
 
 permissions:
   id-token: write # Required for OIDC
@@ -19,5 +26,5 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run prepack
-      - run: npm publish
+      - run: npm publish --access public
       - run: npm run postpack
