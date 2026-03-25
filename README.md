@@ -24,7 +24,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.1.2 linux-x64 node-v20.20.1
+@dishantlangayan/sc-plugin-broker/0.2.0 darwin-arm64 node-v24.1.0
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
@@ -100,7 +100,7 @@ EXAMPLES
   $ sc broker login basic --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default
 ```
 
-_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.2/src/commands/broker/login/basic.ts)_
+_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/login/basic.ts)_
 
 ## `sc broker login cloud`
 
@@ -144,7 +144,7 @@ EXAMPLES
   $ sc broker login cloud --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.2/src/commands/broker/login/cloud.ts)_
+_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/login/cloud.ts)_
 
 ## `sc broker login list`
 
@@ -169,7 +169,7 @@ EXAMPLES
   $ sc broker login list
 ```
 
-_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.2/src/commands/broker/login/list.ts)_
+_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/login/list.ts)_
 
 ## `sc broker logout`
 
@@ -205,7 +205,7 @@ EXAMPLES
   $ sc broker logout --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.2/src/commands/broker/logout.ts)_
+_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/logout.ts)_
 
 ## `sc broker queue create`
 
@@ -260,5 +260,5 @@ EXAMPLES
   $ sc broker queue create --broker-name=solace-cloud-broker --queue-name=myQueue
 ```
 
-_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.2/src/commands/broker/queue/create.ts)_
+_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/queue/create.ts)_
 <!-- commandsstop -->

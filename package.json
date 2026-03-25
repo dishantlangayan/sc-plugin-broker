@@ -1,7 +1,7 @@
 {
   "name": "@dishantlangayan/sc-plugin-broker",
   "description": "Commands to interact with Solace Event Broker.",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "author": "Dishant Langayan",
   "bin": {
     "sc": "./bin/run.js"
