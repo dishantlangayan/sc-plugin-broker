@@ -12,14 +12,12 @@ import * as readline from 'node:readline'
 
 export default class BrokerLoginBasic extends ScCommand<typeof BrokerLoginBasic> {
   static override args = {}
-  static override description = `Login to a Solace Event Broker using Basic authentication.
+  static override description = `Authorize the SC CLI to make SEMP API calls to a Solace Event Broker using Basic authentication.
 
 Stores broker credentials securely using encrypted local storage.
 Credentials are base64-encoded and encrypted before storage.
 
-If a broker with the same name already exists, you'll be prompted to overwrite.
-
-Required SEMP permissions: Varies by operations you intend to perform`
+If a broker with the same name already exists, you'll be prompted to overwrite.`
   static override examples = [
     '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080',
     '<%= config.bin %> <%= command.id %> --broker-name=ci-broker --semp-url=http://192.168.1.100 --semp-port=8080 --no-prompt',
