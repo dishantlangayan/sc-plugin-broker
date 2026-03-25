@@ -10,6 +10,7 @@ describe('broker:queue:create', () => {
     brokerExists: SinonStub
     createConnection: SinonStub
     getBroker: SinonStub
+    getDefaultBroker: SinonStub
   }
   let mockConnection: {
     post: SinonStub
@@ -44,6 +45,7 @@ describe('broker:queue:create', () => {
       brokerExists: stub().resolves(true),
       createConnection: stub().resolves(mockConnection as unknown as ScConnection),
       getBroker: stub().resolves(mockBroker),
+      getDefaultBroker: stub().resolves(null),
     }
   })
 
@@ -208,6 +210,126 @@ describe('broker:queue:create', () => {
       ])
 
       expect(result).to.deep.equal(mockResponse)
+    })
+  })
+
+  describe('Solace Cloud broker - auto msg-vpn-name resolution', () => {
+    beforeEach(() => {
+      // Setup Solace Cloud broker with msgVpnName
+      const cloudBroker: BrokerAuth = {
+        accessToken: 'dGVzdDp0ZXN0',
+        authType: AuthType.BASIC,
+        isSolaceCloud: true,
+        msgVpnName: 'cloud-vpn',
+        name: 'cloud-broker',
+        sempEndpoint: 'https://cloud.solace.com',
+        sempPort: 943,
+      }
+
+      mockBrokerAuthManager.getBroker.resolves(cloudBroker)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      stub(BrokerQueueCreate.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
+      stub(BrokerQueueCreate.prototype, 'log')
+    })
+
+    afterEach(() => {
+      restore()
+    })
+
+    it('should use msgVpnName from BrokerAuth when msg-vpn-name flag not provided', async () => {
+      await BrokerQueueCreate.run(['--broker-name=cloud-broker', '--queue-name=testQueue'])
+
+      expect(mockConnection.post.calledWith('/SEMP/v2/config/msgVpns/cloud-vpn/queues')).to.be.true
+    })
+
+    it('should allow flag override for cloud brokers', async () => {
+      await BrokerQueueCreate.run([
+        '--broker-name=cloud-broker',
+        '--queue-name=testQueue',
+        '--msg-vpn-name=override-vpn',
+      ])
+
+      expect(mockConnection.post.calledWith('/SEMP/v2/config/msgVpns/override-vpn/queues')).to.be.true
+    })
+  })
+
+  describe('Default broker support', () => {
+    beforeEach(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      stub(BrokerQueueCreate.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
+      stub(BrokerQueueCreate.prototype, 'log')
+    })
+
+    afterEach(() => {
+      restore()
+    })
+
+    it('should use default broker when broker-name and broker-id not provided', async () => {
+      const defaultBroker: BrokerAuth = {
+        accessToken: 'ZGVmYXVsdDpkZWZhdWx0',
+        authType: AuthType.BASIC,
+        isDefault: true,
+        name: 'default-broker',
+        sempEndpoint: 'https://default',
+        sempPort: 8080,
+      }
+      mockBrokerAuthManager.getDefaultBroker.resolves(defaultBroker)
+      mockBrokerAuthManager.getBroker.resolves(defaultBroker)
+
+      await BrokerQueueCreate.run(['--queue-name=testQueue', '--msg-vpn-name=default'])
+
+      expect(mockBrokerAuthManager.getDefaultBroker.called).to.be.true
+      expect(mockBrokerAuthManager.createConnection.calledWith('default-broker')).to.be.true
+    })
+
+    it('should use default cloud broker and auto-resolve msg-vpn-name', async () => {
+      const defaultCloudBroker: BrokerAuth = {
+        accessToken: 'ZGVmYXVsdDpkZWZhdWx0',
+        authType: AuthType.BASIC,
+        isDefault: true,
+        isSolaceCloud: true,
+        msgVpnName: 'default-cloud-vpn',
+        name: 'default-cloud-broker',
+        sempEndpoint: 'https://default.solace.com',
+        sempPort: 943,
+      }
+      mockBrokerAuthManager.getDefaultBroker.resolves(defaultCloudBroker)
+      mockBrokerAuthManager.getBroker.resolves(defaultCloudBroker)
+
+      await BrokerQueueCreate.run(['--queue-name=testQueue'])
+
+      expect(mockBrokerAuthManager.getDefaultBroker.called).to.be.true
+      expect(mockConnection.post.calledWith('/SEMP/v2/config/msgVpns/default-cloud-vpn/queues')).to.be.true
+    })
+  })
+
+  describe('Error cases for msg-vpn-name requirement', () => {
+    beforeEach(() => {
+      // Setup non-cloud broker
+      const basicBroker: BrokerAuth = {
+        accessToken: 'dGVzdDp0ZXN0',
+        authType: AuthType.BASIC,
+        name: 'basic-broker',
+        sempEndpoint: 'https://localhost',
+        sempPort: 8080,
+      }
+
+      mockBrokerAuthManager.getBroker.resolves(basicBroker)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      stub(BrokerQueueCreate.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
+    })
+
+    afterEach(() => {
+      restore()
+    })
+
+    it('should error when msg-vpn-name not provided for non-cloud broker', async () => {
+      try {
+        await BrokerQueueCreate.run(['--broker-name=basic-broker', '--queue-name=testQueue'])
+        expect.fail('Should have thrown an error')
+      } catch (error: unknown) {
+        expect((error as Error).message).to.match(/msg-vpn-name.*required.*not using.*solace cloud/i)
+      }
     })
   })
 })
