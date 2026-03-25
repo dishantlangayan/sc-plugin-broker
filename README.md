@@ -65,7 +65,7 @@ See the [LICENSE](LICENSE.txt) file for details.
 
 ## `sc broker login basic`
 
-Login to a Solace Event Broker using Basic authentication.
+Authorize the SC CLI to make SEMP API calls to a Solace Event Broker using Basic authentication.
 
 ```
 USAGE
@@ -85,14 +85,12 @@ GLOBAL FLAGS
                         <options: debug|warn|error|info|trace>
 
 DESCRIPTION
-  Login to a Solace Event Broker using Basic authentication.
+  Authorize the SC CLI to make SEMP API calls to a Solace Event Broker using Basic authentication.
 
   Stores broker credentials securely using encrypted local storage.
   Credentials are base64-encoded and encrypted before storage.
 
   If a broker with the same name already exists, you'll be prompted to overwrite.
-
-  Required SEMP permissions: Varies by operations you intend to perform
 
 EXAMPLES
   $ sc broker login basic --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080
@@ -106,7 +104,7 @@ _See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangay
 
 ## `sc broker login cloud`
 
-Authorize the SC CLI to make SEMP API calls to a Solace Cloud Event Broker using Cloud API credentials.
+Authorize the SC CLI to make SEMP API calls to a Solace Cloud Event Broker using Basic Authentication.
 
 ```
 USAGE
@@ -124,9 +122,9 @@ GLOBAL FLAGS
                         <options: debug|warn|error|info|trace>
 
 DESCRIPTION
-  Authorize the SC CLI to make SEMP API calls to a Solace Cloud Event Broker using Cloud API credentials.
+  Authorize the SC CLI to make SEMP API calls to a Solace Cloud Event Broker using Basic Authentication.
 
-  Retrieves SEMP credentials automatically from Solace Cloud REST API.
+  Retrieves SEMP credentials automatically from Event Broker Service using Solace Cloud REST API.
   Requires prior authentication to Solace Cloud (sc:account:login).
 
   The command will:
@@ -215,23 +213,23 @@ Create a Queue on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker queue create -v <value> -q <value> [--json] [--log-level debug|warn|error|info|trace] [-a
-    exclusive|non-exclusive] [-b <value>] [-n <value>] [--dead-msg-queue <value>] [--egress-enabled] [--ingress-enabled]
-    [-s <value>] [--max-redelivery-count <value>] [--max-ttl <value>] [-o <value>] [-p
+  $ sc broker queue create -q <value> [--json] [--log-level debug|warn|error|info|trace] [-a exclusive|non-exclusive] [-b
+    <value>] [-n <value>] [--dead-msg-queue <value>] [--egress-enabled] [--ingress-enabled] [-s <value>]
+    [--max-redelivery-count <value>] [--max-ttl <value>] [-v <value>] [-o <value>] [-p
     consume|delete|modify-topic|no-access|read-only] [--respect-ttl-enabled]
 
 FLAGS
   -a, --access-type=<option>          The access type for the queue.
                                       <options: exclusive|non-exclusive>
-  -b, --broker-id=<value>             Stored broker identifier.
-  -n, --broker-name=<value>           Stored broker name.
+  -b, --broker-id=<value>             Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>           Stored broker name. If not provided, uses the default broker.
   -o, --owner=<value>                 The client username that owns the queue and has permission equivalent to delete.
   -p, --permission=<option>           [default: consume] The permission level for all consumers of the queue, excluding
                                       the owner.
                                       <options: consume|delete|modify-topic|no-access|read-only>
   -q, --queue-name=<value>            (required) The name of the queue to create.
   -s, --max-msg-spool-usage=<value>   The maximum message spool usage allowed by the queue, in megabytes (MB).
-  -v, --msg-vpn-name=<value>          (required) The name of the Message VPN.
+  -v, --msg-vpn-name=<value>          The name of the Message VPN.
       --dead-msg-queue=<value>        The name of the Dead Message Queue.
       --[no-]egress-enabled           Enable or disable egress (message consumption) from the queue.
       --[no-]ingress-enabled          Enable or disable ingress (message reception) to the queue.
@@ -257,11 +255,9 @@ EXAMPLES
 
   $ sc broker queue create --broker-id=dev-broker --queue-name=myQueue --msg-vpn-name=default --access-type=non-exclusive
 
-  $ sc broker queue create --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --owner=user1 --permission=consume
-
   $ sc broker queue create --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --max-msg-spool-usage=1024 --egress-enabled --ingress-enabled
 
-  $ sc broker queue create --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --dead-msg-queue=#DEAD_MSG_QUEUE --max-redelivery-count=3
+  $ sc broker queue create --broker-name=solace-cloud-broker --queue-name=myQueue
 ```
 
 _See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.1.2/src/commands/broker/queue/create.ts)_
