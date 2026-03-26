@@ -45,3 +45,77 @@ export interface SempMeta {
   request?: {method?: string; uri?: string}
   responseCode?: number
 }
+
+/**
+ * Response from SEMP Monitor API queue retrieval
+ */
+export interface MsgVpnQueueMonitorResponse {
+  data: MsgVpnQueueMonitor
+  links?: {[key: string]: unknown; uri?: string}
+  meta: SempMeta
+}
+
+/**
+ * Queue object returned by SEMP Monitor API
+ * Contains operational state and statistics
+ */
+export interface MsgVpnQueueMonitor {
+  [key: string]: unknown // Allow additional SEMP fields
+  accessType?: 'exclusive' | 'non-exclusive'
+  alreadyBoundBindFailureCount?: number
+  averageBindRequestRate?: number
+  averageRxByteRate?: number
+  averageRxMsgRate?: number
+  averageTxByteRate?: number
+  averageTxMsgRate?: number
+  bindRequestCount?: number
+  bindRequestRate?: number
+  bindSuccessCount?: number
+  consumerAckPropagationEnabled?: boolean
+  deadMsgQueue?: string
+  durable?: boolean
+  egressEnabled?: boolean
+  highestAckedMsgId?: number
+  highestMsgId?: number
+  ingressEnabled?: boolean
+  maxBindCount?: number
+  maxDeliveredUnackedMsgsPerFlow?: number
+  maxMsgSize?: number
+  maxMsgSpoolUsage?: number
+  maxRedeliveryCount?: number
+  maxTtl?: number
+  msgSpoolPeakUsage?: number
+  msgSpoolUsage?: number
+  msgVpnName: string
+  owner?: string
+  permission?: 'consume' | 'delete' | 'modify-topic' | 'no-access' | 'read-only'
+  queueName: string
+  redeliveryEnabled?: boolean
+  respectMsgPriorityEnabled?: boolean
+  respectTtlEnabled?: boolean
+  rxByteRate?: number
+  rxMsgRate?: number
+  spooledByteCount?: number
+  spooledMsgCount?: number
+  txByteRate?: number
+  txMsgRate?: number
+  txUnackedMsgCount?: number
+}
+
+/**
+ * Response from SEMP Monitor API queue subscriptions retrieval
+ */
+export interface MsgVpnQueueSubscriptionsResponse {
+  data: MsgVpnQueueSubscription[]
+  links?: {[key: string]: unknown}
+  meta: SempMeta
+}
+
+/**
+ * Queue subscription object from SEMP Monitor API
+ */
+export interface MsgVpnQueueSubscription {
+  msgVpnName: string
+  queueName: string
+  subscriptionTopic: string
+}
