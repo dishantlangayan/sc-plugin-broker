@@ -1,10 +1,10 @@
-import {printObjectAsKeyValueTable, ScCommand, ScConnection} from '@dishantlangayan/sc-cli-core'
+import {printObjectAsKeyValueTable} from '@dishantlangayan/sc-cli-core'
 import {Flags} from '@oclif/core'
 
-import {resolveBrokerConnection, resolveMsgVpnName} from '../../../lib/broker-utils.js'
+import {ScBrokerCommand} from '../../../lib/sc-broker-command.js'
 import {MsgVpnQueueCreateRequest, MsgVpnQueueCreateResponse} from '../../../types/msgvpn-queue.js'
 
-export default class BrokerQueueCreate extends ScCommand<typeof BrokerQueueCreate> {
+export default class BrokerQueueCreate extends ScBrokerCommand<typeof BrokerQueueCreate> {
   static override args = {}
   static override description = `Create a Queue on a Solace Event Broker.
 
@@ -16,20 +16,11 @@ static override examples = [
     '<%= config.bin %> <%= command.id %> --queue-name=myQueue',
   ]
 static override flags = {
+    ...ScBrokerCommand.baseFlags,
     'access-type': Flags.string({
       char: 'a',
       description: 'The access type for the queue.',
       options: ['exclusive', 'non-exclusive'],
-    }),
-    'broker-id': Flags.string({
-      char: 'b',
-      description: 'Stored broker identifier. If not provided, uses the default broker.',
-      exclusive: ['broker-name'],
-    }),
-    'broker-name': Flags.string({
-      char: 'n',
-      description: 'Stored broker name. If not provided, uses the default broker.',
-      exclusive: ['broker-id'],
     }),
     'dead-msg-queue': Flags.string({
       description: 'The name of the Dead Message Queue.',
@@ -55,10 +46,6 @@ static override flags = {
       description: 'The maximum time in seconds a message can stay in the queue when respect-ttl-enabled is true.',
       min: 0,
     }),
-    'msg-vpn-name': Flags.string({
-      char: 'v',
-      description: 'The name of the Message VPN.',
-    }),
     owner: Flags.string({
       char: 'o',
       description: 'The client username that owns the queue and has permission equivalent to delete.',
@@ -83,21 +70,12 @@ static override flags = {
   public async run(): Promise<MsgVpnQueueCreateResponse> {
     const {flags} = await this.parse(BrokerQueueCreate)
 
-    // Resolve broker identifier (broker-id OR broker-name, or empty for default)
-    const brokerIdentifier = flags['broker-id'] ?? flags['broker-name'] ?? ''
-
-    // Create SEMP connection using stored credentials (will use default if brokerIdentifier is empty)
-    const sempConn: ScConnection = await resolveBrokerConnection(this, brokerIdentifier)
-
-    // Resolve msg-vpn-name: use flag if provided, otherwise get from BrokerAuth for Cloud brokers
-    const msgVpnName = await resolveMsgVpnName(this, brokerIdentifier, flags['msg-vpn-name'])
-
     // Build queue creation request body
     const queueBody: MsgVpnQueueCreateRequest = this.buildQueueRequest(flags)
 
     // Make SEMP Config API call to create the queue
-    const endpoint = `/SEMP/v2/config/msgVpns/${msgVpnName}/queues`
-    const sempResp = await sempConn.post<MsgVpnQueueCreateResponse>(endpoint, queueBody)
+    const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/queues`
+    const sempResp = await this.sempConn.post<MsgVpnQueueCreateResponse>(endpoint, queueBody)
 
     // Display results
     this.log(printObjectAsKeyValueTable(sempResp.data as unknown as Record<string, unknown>))

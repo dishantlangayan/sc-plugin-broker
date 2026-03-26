@@ -1,10 +1,10 @@
-import {printObjectAsKeyValueTable, renderTable, ScCommand, ScConnection} from '@dishantlangayan/sc-cli-core'
+import {printObjectAsKeyValueTable, renderTable} from '@dishantlangayan/sc-cli-core'
 import {Flags} from '@oclif/core'
 
-import {resolveBrokerConnection, resolveMsgVpnName} from '../../../lib/broker-utils.js'
+import {ScBrokerCommand} from '../../../lib/sc-broker-command.js'
 import {MsgVpnQueueMonitorResponse, MsgVpnQueueSubscriptionsResponse} from '../../../types/msgvpn-queue.js'
 
-export default class BrokerQueueDisplay extends ScCommand<typeof BrokerQueueDisplay> {
+export default class BrokerQueueDisplay extends ScBrokerCommand<typeof BrokerQueueDisplay> {
   static override args = {}
   static override description = `Display queue information from a Solace Event Broker.
 
@@ -16,20 +16,7 @@ Retrieves and displays detailed information about a queue using the SEMP Monitor
     '<%= config.bin %> <%= command.id %> --queue-name=myQueue',
   ]
   static override flags = {
-    'broker-id': Flags.string({
-      char: 'b',
-      description: 'Stored broker identifier. If not provided, uses the default broker.',
-      exclusive: ['broker-name'],
-    }),
-    'broker-name': Flags.string({
-      char: 'n',
-      description: 'Stored broker name. If not provided, uses the default broker.',
-      exclusive: ['broker-id'],
-    }),
-    'msg-vpn-name': Flags.string({
-      char: 'v',
-      description: 'The name of the Message VPN.',
-    }),
+    ...ScBrokerCommand.baseFlags,
     'queue-name': Flags.string({
       char: 'q',
       description: 'The name of the queue to display.',
@@ -45,18 +32,9 @@ Retrieves and displays detailed information about a queue using the SEMP Monitor
   public async run(): Promise<{queue: MsgVpnQueueMonitorResponse; subscriptions?: MsgVpnQueueSubscriptionsResponse}> {
     const {flags} = await this.parse(BrokerQueueDisplay)
 
-    // Resolve broker identifier (broker-id OR broker-name, or empty for default)
-    const brokerIdentifier = flags['broker-id'] ?? flags['broker-name'] ?? ''
-
-    // Create SEMP connection using stored credentials (will use default if brokerIdentifier is empty)
-    const sempConn: ScConnection = await resolveBrokerConnection(this, brokerIdentifier)
-
-    // Resolve msg-vpn-name: use flag if provided, otherwise get from BrokerAuth for Cloud brokers
-    const msgVpnName = await resolveMsgVpnName(this, brokerIdentifier, flags['msg-vpn-name'])
-
     // Fetch queue details from Monitor API
-    const queueEndpoint = `/SEMP/v2/monitor/msgVpns/${msgVpnName}/queues/${flags['queue-name']}`
-    const queueResp = await sempConn.get<MsgVpnQueueMonitorResponse>(queueEndpoint)
+    const queueEndpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queues/${flags['queue-name']}`
+    const queueResp = await this.sempConn.get<MsgVpnQueueMonitorResponse>(queueEndpoint)
 
     // Display queue information
     this.log('\n=== Queue Details ===\n')
@@ -69,8 +47,8 @@ Retrieves and displays detailed information about a queue using the SEMP Monitor
 
     // Optionally fetch and display subscriptions
     if (flags['show-subscriptions']) {
-      const subsEndpoint = `/SEMP/v2/monitor/msgVpns/${msgVpnName}/queues/${flags['queue-name']}/subscriptions`
-      const subsResp = await sempConn.get<MsgVpnQueueSubscriptionsResponse>(subsEndpoint)
+      const subsEndpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queues/${flags['queue-name']}/subscriptions`
+      const subsResp = await this.sempConn.get<MsgVpnQueueSubscriptionsResponse>(subsEndpoint)
 
       result.subscriptions = subsResp
 
