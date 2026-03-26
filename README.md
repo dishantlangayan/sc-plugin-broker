@@ -62,6 +62,7 @@ See the [LICENSE](LICENSE.txt) file for details.
 * [`sc broker login list`](#sc-broker-login-list)
 * [`sc broker logout`](#sc-broker-logout)
 * [`sc broker queue create`](#sc-broker-queue-create)
+* [`sc broker queue display`](#sc-broker-queue-display)
 
 ## `sc broker login basic`
 
@@ -213,9 +214,9 @@ Create a Queue on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker queue create -q <value> [--json] [--log-level debug|warn|error|info|trace] [-a exclusive|non-exclusive] [-b
-    <value>] [-n <value>] [--dead-msg-queue <value>] [--egress-enabled] [--ingress-enabled] [-s <value>]
-    [--max-redelivery-count <value>] [--max-ttl <value>] [-v <value>] [-o <value>] [-p
+  $ sc broker queue create -q <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v
+    <value>] [-a exclusive|non-exclusive] [--dead-msg-queue <value>] [--egress-enabled] [--ingress-enabled] [-s <value>]
+    [--max-redelivery-count <value>] [--max-ttl <value>] [-o <value>] [-p
     consume|delete|modify-topic|no-access|read-only] [--respect-ttl-enabled]
 
 FLAGS
@@ -257,8 +258,47 @@ EXAMPLES
 
   $ sc broker queue create --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --max-msg-spool-usage=1024 --egress-enabled --ingress-enabled
 
-  $ sc broker queue create --broker-name=solace-cloud-broker --queue-name=myQueue
+  $ sc broker queue create --queue-name=myQueue
 ```
 
 _See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/queue/create.ts)_
+
+## `sc broker queue display`
+
+Display queue information from a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker queue display -q <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v
+    <value>] [-s]
+
+FLAGS
+  -b, --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -q, --queue-name=<value>    (required) The name of the queue to display.
+  -s, --show-subscriptions    Display queue subscriptions in addition to queue details.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Display queue information from a Solace Event Broker.
+
+  Retrieves and displays detailed information about a queue using the SEMP Monitor API, including operational state,
+  statistics, and configuration.
+
+EXAMPLES
+  $ sc broker queue display --queue-name=myQueue --msg-vpn-name=default
+
+  $ sc broker queue display --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default
+
+  $ sc broker queue display --queue-name=myQueue --show-subscriptions
+
+  $ sc broker queue display --queue-name=myQueue
+```
+
+_See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/queue/display.ts)_
 <!-- commandsstop -->
