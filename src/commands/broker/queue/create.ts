@@ -13,7 +13,7 @@ static override examples = [
     '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default',
     '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --queue-name=myQueue --msg-vpn-name=default --access-type=non-exclusive',
     '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --max-msg-spool-usage=1024 --egress-enabled --ingress-enabled',
-    '<%= config.bin %> <%= command.id %> --broker-name=solace-cloud-broker --queue-name=myQueue',
+    '<%= config.bin %> <%= command.id %> --queue-name=myQueue',
   ]
 static override flags = {
     'access-type': Flags.string({
@@ -24,10 +24,12 @@ static override flags = {
     'broker-id': Flags.string({
       char: 'b',
       description: 'Stored broker identifier. If not provided, uses the default broker.',
+      exclusive: ['broker-name'],
     }),
     'broker-name': Flags.string({
       char: 'n',
       description: 'Stored broker name. If not provided, uses the default broker.',
+      exclusive: ['broker-id'],
     }),
     'dead-msg-queue': Flags.string({
       description: 'The name of the Dead Message Queue.',
