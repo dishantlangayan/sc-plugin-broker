@@ -63,6 +63,7 @@ See the [LICENSE](LICENSE.txt) file for details.
 * [`sc broker logout`](#sc-broker-logout)
 * [`sc broker queue create`](#sc-broker-queue-create)
 * [`sc broker queue display`](#sc-broker-queue-display)
+* [`sc broker queue list`](#sc-broker-queue-list)
 
 ## `sc broker login basic`
 
@@ -301,4 +302,49 @@ EXAMPLES
 ```
 
 _See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/queue/display.ts)_
+
+## `sc broker queue list`
+
+List queues from a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker queue list [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v <value>] [-a]
+    [-c <value>] [-q <value>] [-s <value>]
+
+FLAGS
+  -a, --all                   Display all queues (auto-pagination).
+  -b, --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -c, --count=<value>         [default: 10] Number of queues to display per page.
+  -n, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -q, --queue-name=<value>    Filter queues by name. Supports * wildcard.
+  -s, --select=<value>        Comma-separated list of attributes to display (max 10).
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  List queues from a Solace Event Broker.
+
+  Retrieves and displays queues from the specified Message VPN using the SEMP Monitor API.
+  Supports filtering by name (with wildcards), custom attribute selection, and pagination.
+
+EXAMPLES
+  $ sc broker queue list
+
+  $ sc broker queue list --count=20
+
+  $ sc broker queue list --queue-name="order*"
+
+  $ sc broker queue list --select=queueName,owner,maxMsgSpoolUsage
+
+  $ sc broker queue list --all
+
+  $ sc broker queue list --queue-name="*test*" --count=5 --all
+```
+
+_See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/queue/list.ts)_
 <!-- commandsstop -->
