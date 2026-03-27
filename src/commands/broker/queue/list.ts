@@ -1,4 +1,4 @@
-import {camelCaseToTitleCase, renderTable} from '@dishantlangayan/sc-cli-core'
+import {camelCaseToTitleCase, createStreamTable} from '@dishantlangayan/sc-cli-core'
 import {confirm} from '@inquirer/prompts'
 import {Flags} from '@oclif/core'
 
@@ -60,48 +60,41 @@ static override flags = {
     // Parse and validate select attributes
     const selectedAttrs = this.parseSelectAttributes(flags.select)
 
-    // Fetch queues with pagination
+    // Create stream table
+    const columnCount = selectedAttrs.length
+    const streamTable = createStreamTable(columnCount, {
+      1: {width: 12, wrapWord: true},
+      2: {width: 12, wrapWord: true},
+      4: {width: 12, wrapWord: true},
+      5: {width: 12, wrapWord: true},
+    })
+
+    // Write header row
+    const headers = selectedAttrs.map(attr => camelCaseToTitleCase(attr))
+    streamTable.write(headers)
+
+    // Fetch queues with pagination and stream to table
     // Filtering handled by SEMP API via where clause
     // Attribute selection handled by SEMP API via select parameter
-    const queues = await this.fetchAllQueues(flags, selectedAttrs)
+    const queues = await this.fetchAndDisplayQueues(flags, selectedAttrs, streamTable)
 
     // Display results
     if (queues.length === 0) {
       this.log('No queues found.')
     } else {
-      this.displayQueuesTable(queues, selectedAttrs)
+      this.log(`\nTotal: ${queues.length} queue(s)`)
     }
 
     return {data: queues}
   }
 
   /**
-   * Display queues as a formatted table
+   * Fetch queues with pagination and stream to table
    */
-  private displayQueuesTable(queues: MsgVpnQueueMonitor[], attributes: string[]): void {
-    // Format attribute names for header (camelCase -> Title Case)
-    const headers = attributes.map(attr => camelCaseToTitleCase(attr))
-
-    // Build table rows
-    const rows = queues.map(queue => attributes.map(attr => this.formatAttributeValue(queue, attr)))
-
-    // Render table
-    const table = [headers, ...rows]
-    this.log(renderTable(table, {
-      1: {width: 12, wrapWord: true},
-      2: {width: 12, wrapWord: true},
-      4: {width: 12, wrapWord: true},
-      5: {width: 12, wrapWord: true},
-    }))
-    this.log(`\nTotal: ${queues.length} queue(s)`)
-  }
-
-  /**
-   * Fetch all queues with pagination, filtering, and attribute selection
-   */
-  private async fetchAllQueues(
+  private async fetchAndDisplayQueues(
     flags: {all: boolean; count: number; 'queue-name'?: string},
     selectedAttrs: string[],
+    streamTable: import('table').WritableStream,
   ): Promise<MsgVpnQueueMonitor[]> {
     const allQueues: MsgVpnQueueMonitor[] = []
     let cursor: string | undefined
@@ -131,6 +124,12 @@ static override flags = {
       // eslint-disable-next-line no-await-in-loop
       const response = await this.sempConn.get<MsgVpnQueuesMonitorResponse>(endpoint)
 
+      // Write rows to stream table
+      for (const queue of response.data) {
+        const row = selectedAttrs.map(attr => this.formatAttributeValue(queue, attr))
+        streamTable.write(row)
+      }
+
       allQueues.push(...response.data)
 
       // Check if more pages exist
@@ -140,10 +139,15 @@ static override flags = {
       // Handle pagination
       if (hasMore && !flags.all) {
         // eslint-disable-next-line no-await-in-loop
-        const shouldContinue = await confirm({
-          default: false,
-          message: `Showing ${allQueues.length} queues. More results available. Continue?`,
-        })
+        const shouldContinue = await confirm(
+          {
+            default: true,
+            message: `\nShowing ${allQueues.length} queues. More results available. Continue?`,
+          },
+          {
+            clearPromptOnDone: true,
+          },
+        )
 
         if (!shouldContinue) {
           break
