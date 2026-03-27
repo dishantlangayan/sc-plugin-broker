@@ -119,3 +119,23 @@ export interface MsgVpnQueueSubscription {
   queueName: string
   subscriptionTopic: string
 }
+
+/**
+ * Response from SEMP Monitor API queues list retrieval
+ */
+export interface MsgVpnQueuesMonitorResponse {
+  data: MsgVpnQueueMonitor[]
+  links?: {[key: string]: unknown}
+  meta: SempMetaWithPaging
+}
+
+/**
+ * SEMP response metadata with pagination support
+ */
+export interface SempMetaWithPaging extends SempMeta {
+  count?: number // Total count of objects requested
+  paging?: {
+    cursorQuery: string // Cursor for next page
+    nextPageUri: string // Full URI for next page
+  }
+}
