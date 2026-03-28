@@ -65,6 +65,8 @@ See the [LICENSE](LICENSE.txt) file for details.
 * [`sc broker queue delete`](#sc-broker-queue-delete)
 * [`sc broker queue display`](#sc-broker-queue-display)
 * [`sc broker queue list`](#sc-broker-queue-list)
+* [`sc broker queue subscriptions create`](#sc-broker-queue-subscriptions-create)
+* [`sc broker queue subscriptions delete`](#sc-broker-queue-subscriptions-delete)
 * [`sc broker queue update`](#sc-broker-queue-update)
 
 ## `sc broker login basic`
@@ -392,6 +394,96 @@ EXAMPLES
 ```
 
 _See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/list.ts)_
+
+## `sc broker queue subscriptions create`
+
+Create a subscription on a Queue in a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker queue subscriptions create -q <value> -t <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n
+    <value>] [-v <value>]
+
+FLAGS
+  -b, --broker-id=<value>           Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>         Stored broker name. If not provided, uses the default broker.
+  -q, --queue-name=<value>          (required) The name of the queue to add the subscription to.
+  -t, --subscription-topic=<value>  (required) The subscription topic to add to the queue.
+  -v, --msg-vpn-name=<value>        The name of the Message VPN.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Create a subscription on a Queue in a Solace Event Broker.
+
+  Adds a topic subscription to the specified queue. Guaranteed messages published to topics matching the subscription
+  will be delivered to the queue.
+
+  The creation of subscriptions is synchronized to HA mates and replication sites via config-sync.
+
+  Subscriptions use topic pattern matching which can include wildcards:
+  - '*' matches exactly one level in the topic hierarchy
+  - '>' matches one or more levels at the end of the topic
+
+  Multiple subscriptions can be added to a single queue.
+
+EXAMPLES
+  $ sc broker queue subscriptions create --queue-name=myQueue --subscription-topic=orders/> --msg-vpn-name=default
+
+  $ sc broker queue subscriptions create --broker-name=dev-broker --queue-name=myQueue --subscription-topic=events/user/*
+
+  $ sc broker queue subscriptions create --broker-id=prod --queue-name=notifications --subscription-topic=alerts/critical --msg-vpn-name=production
+
+  $ sc broker queue subscriptions create --queue-name=myQueue --subscription-topic=data/sensor/temperature
+```
+
+_See code: [src/commands/broker/queue/subscriptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/subscriptions/create.ts)_
+
+## `sc broker queue subscriptions delete`
+
+Delete a subscription from a Queue in a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker queue subscriptions delete -q <value> -t <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n
+    <value>] [-v <value>] [--no-prompt]
+
+FLAGS
+  -b, --broker-id=<value>           Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>         Stored broker name. If not provided, uses the default broker.
+  -q, --queue-name=<value>          (required) The name of the queue to remove the subscription from.
+  -t, --subscription-topic=<value>  (required) The subscription topic to remove from the queue.
+  -v, --msg-vpn-name=<value>        The name of the Message VPN.
+      --no-prompt                   Skip confirmation prompt and proceed with deletion.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Delete a subscription from a Queue in a Solace Event Broker.
+
+  Removes a topic subscription from the specified queue. This is a destructive operation that removes the subscription.
+
+  The deletion is synchronized to HA mates and replication sites via config-sync.
+
+  By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
+
+EXAMPLES
+  $ sc broker queue subscriptions delete --queue-name=myQueue --subscription-topic=orders/> --msg-vpn-name=default
+
+  $ sc broker queue subscriptions delete --broker-name=dev-broker --queue-name=myQueue --subscription-topic=events/user/*
+
+  $ sc broker queue subscriptions delete --queue-name=myQueue --subscription-topic=orders/> --no-prompt
+
+  $ sc broker queue subscriptions delete --broker-id=prod --queue-name=notifications --subscription-topic=alerts/critical --msg-vpn-name=production --no-prompt
+```
+
+_See code: [src/commands/broker/queue/subscriptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/subscriptions/delete.ts)_
 
 ## `sc broker queue update`
 
