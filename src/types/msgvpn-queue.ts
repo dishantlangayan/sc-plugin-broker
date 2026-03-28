@@ -57,6 +57,14 @@ export interface MsgVpnQueueUpdateResponse {
 }
 
 /**
+ * Response from SEMP Config API queue deletion
+ * DELETE operations return only metadata (no data or links)
+ */
+export interface MsgVpnQueueDeleteResponse {
+  meta: SempMeta
+}
+
+/**
  * MsgVpnQueue object returned by SEMP
  */
 export interface MsgVpnQueue {
