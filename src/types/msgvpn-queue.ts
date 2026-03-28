@@ -157,6 +157,22 @@ export interface MsgVpnQueueSubscription {
 }
 
 /**
+ * Request body for creating a queue subscription via SEMP Config API
+ */
+export interface MsgVpnQueueSubscriptionCreateRequest {
+  subscriptionTopic: string
+}
+
+/**
+ * Response from SEMP Config API queue subscription creation
+ */
+export interface MsgVpnQueueSubscriptionCreateResponse {
+  data: MsgVpnQueueSubscription
+  links?: {[key: string]: unknown; uri?: string}
+  meta: SempMeta
+}
+
+/**
  * Response from SEMP Monitor API queues list retrieval
  */
 export interface MsgVpnQueuesMonitorResponse {
