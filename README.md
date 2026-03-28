@@ -24,7 +24,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.2.0 linux-x64 node-v20.20.1
+@dishantlangayan/sc-plugin-broker/0.3.0 darwin-arm64 node-v24.1.0
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
@@ -62,8 +62,10 @@ See the [LICENSE](LICENSE.txt) file for details.
 * [`sc broker login list`](#sc-broker-login-list)
 * [`sc broker logout`](#sc-broker-logout)
 * [`sc broker queue create`](#sc-broker-queue-create)
+* [`sc broker queue delete`](#sc-broker-queue-delete)
 * [`sc broker queue display`](#sc-broker-queue-display)
 * [`sc broker queue list`](#sc-broker-queue-list)
+* [`sc broker queue update`](#sc-broker-queue-update)
 
 ## `sc broker login basic`
 
@@ -102,7 +104,7 @@ EXAMPLES
   $ sc broker login basic --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default
 ```
 
-_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/login/basic.ts)_
+_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/login/basic.ts)_
 
 ## `sc broker login cloud`
 
@@ -146,7 +148,7 @@ EXAMPLES
   $ sc broker login cloud --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/login/cloud.ts)_
+_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/login/cloud.ts)_
 
 ## `sc broker login list`
 
@@ -171,7 +173,7 @@ EXAMPLES
   $ sc broker login list
 ```
 
-_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/login/list.ts)_
+_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/login/list.ts)_
 
 ## `sc broker logout`
 
@@ -207,7 +209,7 @@ EXAMPLES
   $ sc broker logout --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/logout.ts)_
+_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/logout.ts)_
 
 ## `sc broker queue create`
 
@@ -262,7 +264,50 @@ EXAMPLES
   $ sc broker queue create --queue-name=myQueue
 ```
 
-_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/queue/create.ts)_
+_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/create.ts)_
+
+## `sc broker queue delete`
+
+Delete a Queue from a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker queue delete -q <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v
+    <value>] [--no-prompt]
+
+FLAGS
+  -b, --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -q, --queue-name=<value>    (required) The name of the queue to delete.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --no-prompt             Skip confirmation prompt and proceed with deletion.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Delete a Queue from a Solace Event Broker.
+
+  Deletes the specified queue from the Message VPN. This is a destructive operation that removes the queue and all its
+  messages. Any messages persisted on the queue will also be deleted.
+
+  The deletion is synchronized to HA mates and replication sites via config-sync.
+
+  By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
+
+EXAMPLES
+  $ sc broker queue delete --queue-name=myQueue --msg-vpn-name=default
+
+  $ sc broker queue delete --broker-name=dev-broker --queue-name=myQueue
+
+  $ sc broker queue delete --queue-name=myQueue --no-prompt
+
+  $ sc broker queue delete --broker-id=prod --queue-name=tempQueue --msg-vpn-name=production --no-prompt
+```
+
+_See code: [src/commands/broker/queue/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/delete.ts)_
 
 ## `sc broker queue display`
 
@@ -277,7 +322,7 @@ FLAGS
   -b, --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
   -n, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
   -q, --queue-name=<value>    (required) The name of the queue to display.
-  -s, --show-subscriptions    Display queue subscriptions in addition to queue details.
+  -s, --show-subscriptions    Display only queue subscriptions without queue details.
   -v, --msg-vpn-name=<value>  The name of the Message VPN.
 
 GLOBAL FLAGS
@@ -301,7 +346,7 @@ EXAMPLES
   $ sc broker queue display --queue-name=myQueue
 ```
 
-_See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/queue/display.ts)_
+_See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/display.ts)_
 
 ## `sc broker queue list`
 
@@ -346,5 +391,61 @@ EXAMPLES
   $ sc broker queue list --queue-name="*test*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.2.0/src/commands/broker/queue/list.ts)_
+_See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/list.ts)_
+
+## `sc broker queue update`
+
+Update a Queue on a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker queue update -q <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v
+    <value>] [-a exclusive|non-exclusive] [--dead-msg-queue <value>] [--egress-enabled] [--ingress-enabled] [-s <value>]
+    [--max-redelivery-count <value>] [--max-ttl <value>] [-o <value>] [-p
+    consume|delete|modify-topic|no-access|read-only] [--respect-ttl-enabled]
+
+FLAGS
+  -a, --access-type=<option>          The access type for the queue.
+                                      <options: exclusive|non-exclusive>
+  -b, --broker-id=<value>             Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>           Stored broker name. If not provided, uses the default broker.
+  -o, --owner=<value>                 The client username that owns the queue and has permission equivalent to delete.
+  -p, --permission=<option>           The permission level for all consumers of the queue, excluding the owner.
+                                      <options: consume|delete|modify-topic|no-access|read-only>
+  -q, --queue-name=<value>            (required) The name of the queue to update.
+  -s, --max-msg-spool-usage=<value>   The maximum message spool usage allowed by the queue, in megabytes (MB).
+  -v, --msg-vpn-name=<value>          The name of the Message VPN.
+      --dead-msg-queue=<value>        The name of the Dead Message Queue.
+      --[no-]egress-enabled           Enable or disable egress (message consumption) from the queue.
+      --[no-]ingress-enabled          Enable or disable ingress (message reception) to the queue.
+      --max-redelivery-count=<value>  The maximum number of times a message will be redelivered before it is discarded
+                                      or moved to the DMQ.
+      --max-ttl=<value>               The maximum time in seconds a message can stay in the queue when
+                                      respect-ttl-enabled is true.
+      --[no-]respect-ttl-enabled      Enable or disable the respecting of the time-to-live (TTL) for messages.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Update a Queue on a Solace Event Broker.
+
+  Any attribute missing from the request will be left unchanged. The update of instances of this object are synchronized
+  to HA mates and replication sites via config-sync.
+
+EXAMPLES
+  $ sc broker queue update --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --egress-enabled
+
+  $ sc broker queue update --broker-id=dev-broker --queue-name=myQueue --msg-vpn-name=default --max-msg-spool-usage=2048
+
+  $ sc broker queue update --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --max-msg-spool-usage=1024 --max-ttl=3600
+
+  $ sc broker queue update --queue-name=myQueue --owner=newowner
+
+  $ sc broker queue update --queue-name=myQueue --permission=read-only --no-egress-enabled
+```
+
+_See code: [src/commands/broker/queue/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/update.ts)_
 <!-- commandsstop -->
