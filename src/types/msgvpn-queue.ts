@@ -20,11 +20,39 @@ export interface MsgVpnQueueCreateRequest {
 }
 
 /**
+ * Request body for updating a queue via SEMP Config API (PATCH)
+ * All fields are optional since PATCH only updates provided values
+ * Note: queueName is NOT included - it's in the URL path for updates
+ */
+export interface MsgVpnQueueUpdateRequest {
+  accessType?: 'exclusive' | 'non-exclusive'
+  deadMsgQueue?: string
+  egressEnabled?: boolean
+  ingressEnabled?: boolean
+  maxMsgSpoolUsage?: number
+  maxRedeliveryCount?: number
+  maxTtl?: number
+  owner?: string
+  permission?: 'consume' | 'delete' | 'modify-topic' | 'no-access' | 'read-only'
+  respectTtlEnabled?: boolean
+}
+
+/**
  * Response from SEMP Config API queue creation
  */
 export interface MsgVpnQueueCreateResponse {
   data: MsgVpnQueue
   links?: {[key: string]: unknown; uri?: string;}
+  meta: SempMeta
+}
+
+/**
+ * Response from SEMP Config API queue update
+ * Same structure as create response
+ */
+export interface MsgVpnQueueUpdateResponse {
+  data: MsgVpnQueue
+  links?: {[key: string]: unknown; uri?: string}
   meta: SempMeta
 }
 
