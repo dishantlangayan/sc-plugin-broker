@@ -24,7 +24,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.3.0 linux-x64 node-v20.20.1
+@dishantlangayan/sc-plugin-broker/0.4.0 darwin-arm64 node-v24.1.0
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
@@ -106,7 +106,7 @@ EXAMPLES
   $ sc broker login basic --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default
 ```
 
-_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/login/basic.ts)_
+_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/login/basic.ts)_
 
 ## `sc broker login cloud`
 
@@ -150,7 +150,7 @@ EXAMPLES
   $ sc broker login cloud --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/login/cloud.ts)_
+_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/login/cloud.ts)_
 
 ## `sc broker login list`
 
@@ -175,7 +175,7 @@ EXAMPLES
   $ sc broker login list
 ```
 
-_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/login/list.ts)_
+_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/login/list.ts)_
 
 ## `sc broker logout`
 
@@ -211,7 +211,7 @@ EXAMPLES
   $ sc broker logout --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/logout.ts)_
+_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/logout.ts)_
 
 ## `sc broker queue create`
 
@@ -266,7 +266,7 @@ EXAMPLES
   $ sc broker queue create --queue-name=myQueue
 ```
 
-_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/create.ts)_
+_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/queue/create.ts)_
 
 ## `sc broker queue delete`
 
@@ -309,7 +309,7 @@ EXAMPLES
   $ sc broker queue delete --broker-id=prod --queue-name=tempQueue --msg-vpn-name=production --no-prompt
 ```
 
-_See code: [src/commands/broker/queue/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/delete.ts)_
+_See code: [src/commands/broker/queue/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/queue/delete.ts)_
 
 ## `sc broker queue display`
 
@@ -348,7 +348,7 @@ EXAMPLES
   $ sc broker queue display --queue-name=myQueue
 ```
 
-_See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/display.ts)_
+_See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/queue/display.ts)_
 
 ## `sc broker queue list`
 
@@ -393,7 +393,97 @@ EXAMPLES
   $ sc broker queue list --queue-name="*test*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/list.ts)_
+_See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/queue/list.ts)_
+
+## `sc broker queue subscriptions create`
+
+Create a subscription on a Queue in a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker queue subscriptions create -q <value> -t <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n
+    <value>] [-v <value>]
+
+FLAGS
+  -b, --broker-id=<value>           Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>         Stored broker name. If not provided, uses the default broker.
+  -q, --queue-name=<value>          (required) The name of the queue to add the subscription to.
+  -t, --subscription-topic=<value>  (required) The subscription topic to add to the queue.
+  -v, --msg-vpn-name=<value>        The name of the Message VPN.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Create a subscription on a Queue in a Solace Event Broker.
+
+  Adds a topic subscription to the specified queue. Guaranteed messages published to topics matching the subscription
+  will be delivered to the queue.
+
+  The creation of subscriptions is synchronized to HA mates and replication sites via config-sync.
+
+  Subscriptions use topic pattern matching which can include wildcards:
+  - '*' matches exactly one level in the topic hierarchy
+  - '>' matches one or more levels at the end of the topic
+
+  Multiple subscriptions can be added to a single queue.
+
+EXAMPLES
+  $ sc broker queue subscriptions create --queue-name=myQueue --subscription-topic=orders/> --msg-vpn-name=default
+
+  $ sc broker queue subscriptions create --broker-name=dev-broker --queue-name=myQueue --subscription-topic=events/user/*
+
+  $ sc broker queue subscriptions create --broker-id=prod --queue-name=notifications --subscription-topic=alerts/critical --msg-vpn-name=production
+
+  $ sc broker queue subscriptions create --queue-name=myQueue --subscription-topic=data/sensor/temperature
+```
+
+_See code: [src/commands/broker/queue/subscriptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/queue/subscriptions/create.ts)_
+
+## `sc broker queue subscriptions delete`
+
+Delete a subscription from a Queue in a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker queue subscriptions delete -q <value> -t <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n
+    <value>] [-v <value>] [--no-prompt]
+
+FLAGS
+  -b, --broker-id=<value>           Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>         Stored broker name. If not provided, uses the default broker.
+  -q, --queue-name=<value>          (required) The name of the queue to remove the subscription from.
+  -t, --subscription-topic=<value>  (required) The subscription topic to remove from the queue.
+  -v, --msg-vpn-name=<value>        The name of the Message VPN.
+      --no-prompt                   Skip confirmation prompt and proceed with deletion.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Delete a subscription from a Queue in a Solace Event Broker.
+
+  Removes a topic subscription from the specified queue. This is a destructive operation that removes the subscription.
+
+  The deletion is synchronized to HA mates and replication sites via config-sync.
+
+  By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
+
+EXAMPLES
+  $ sc broker queue subscriptions delete --queue-name=myQueue --subscription-topic=orders/> --msg-vpn-name=default
+
+  $ sc broker queue subscriptions delete --broker-name=dev-broker --queue-name=myQueue --subscription-topic=events/user/*
+
+  $ sc broker queue subscriptions delete --queue-name=myQueue --subscription-topic=orders/> --no-prompt
+
+  $ sc broker queue subscriptions delete --broker-id=prod --queue-name=notifications --subscription-topic=alerts/critical --msg-vpn-name=production --no-prompt
+```
+
+_See code: [src/commands/broker/queue/subscriptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/queue/subscriptions/delete.ts)_
 
 ## `sc broker queue subscriptions create`
 
@@ -539,5 +629,5 @@ EXAMPLES
   $ sc broker queue update --queue-name=myQueue --permission=read-only --no-egress-enabled
 ```
 
-_See code: [src/commands/broker/queue/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.3.0/src/commands/broker/queue/update.ts)_
+_See code: [src/commands/broker/queue/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.4.0/src/commands/broker/queue/update.ts)_
 <!-- commandsstop -->
