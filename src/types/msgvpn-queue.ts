@@ -173,6 +173,14 @@ export interface MsgVpnQueueSubscriptionCreateResponse {
 }
 
 /**
+ * Response from SEMP Config API queue subscription deletion
+ * DELETE operations return only metadata (no data or links)
+ */
+export interface MsgVpnQueueSubscriptionDeleteResponse {
+  meta: SempMeta
+}
+
+/**
  * Response from SEMP Monitor API queues list retrieval
  */
 export interface MsgVpnQueuesMonitorResponse {
