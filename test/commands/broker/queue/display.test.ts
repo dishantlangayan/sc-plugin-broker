@@ -91,6 +91,10 @@ describe('broker:queue:display', () => {
       expect(result.queue).to.deep.equal(mockResponse)
       const logStub = BrokerQueueDisplay.prototype.log as SinonStub
       expect(logStub.called).to.be.true
+
+      // Verify queue details are shown when flag is not set
+      const logCalls = logStub.getCalls().map(call => call.args[0])
+      expect(logCalls.some((call: string) => call.includes('Queue Details'))).to.be.true
     })
   })
 
@@ -185,6 +189,11 @@ describe('broker:queue:display', () => {
       expect(result.subscriptions).to.deep.equal(mockSubsResponse)
       const logStub = BrokerQueueDisplay.prototype.log as SinonStub
       expect(logStub.called).to.be.true
+
+      // Verify queue details are NOT shown and subscriptions ARE shown
+      const logCalls = logStub.getCalls().map(call => call.args[0])
+      expect(logCalls.some((call: string) => call.includes('Queue Details'))).to.be.false
+      expect(logCalls.some((call: string) => call.includes('Queue Subscriptions'))).to.be.true
     })
 
     it('should handle empty subscriptions list', async () => {
@@ -207,6 +216,35 @@ describe('broker:queue:display', () => {
       const logStub = BrokerQueueDisplay.prototype.log as SinonStub
       const logCalls = logStub.getCalls().map(call => call.args[0])
       expect(logCalls.some((call: string) => call.includes('No subscriptions found'))).to.be.true
+    })
+
+    it('should NOT display queue details when --show-subscriptions flag is set', async () => {
+      const mockSubsResponse: MsgVpnQueueSubscriptionsResponse = {
+        data: [
+          {msgVpnName: 'default', queueName: 'testQueue', subscriptionTopic: 'topic/a'},
+        ],
+        meta: {
+          responseCode: 200,
+        },
+      }
+
+      mockConnection.get.onSecondCall().resolves(mockSubsResponse)
+
+      await BrokerQueueDisplay.run([
+        '--broker-name=test-broker',
+        '--queue-name=testQueue',
+        '--msg-vpn-name=default',
+        '--show-subscriptions',
+      ])
+
+      const logStub = BrokerQueueDisplay.prototype.log as SinonStub
+      const logCalls = logStub.getCalls().map(call => call.args[0])
+
+      // Verify queue details are NOT shown
+      expect(logCalls.some((call: string) => call.includes('Queue Details'))).to.be.false
+
+      // Verify subscriptions ARE shown
+      expect(logCalls.some((call: string) => call.includes('Queue Subscriptions'))).to.be.true
     })
   })
 })

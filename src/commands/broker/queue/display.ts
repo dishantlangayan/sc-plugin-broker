@@ -25,7 +25,7 @@ Retrieves and displays detailed information about a queue using the SEMP Monitor
     'show-subscriptions': Flags.boolean({
       char: 's',
       default: false,
-      description: 'Display queue subscriptions in addition to queue details.',
+      description: 'Display only queue subscriptions without queue details.',
     }),
   }
 
@@ -36,17 +36,14 @@ Retrieves and displays detailed information about a queue using the SEMP Monitor
     const queueEndpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queues/${flags['queue-name']}`
     const queueResp = await this.sempConn.get<MsgVpnQueueMonitorResponse>(queueEndpoint)
 
-    // Display queue information
-    this.log('\n=== Queue Details ===\n')
-    this.log(printObjectAsKeyValueTable(queueResp.data as unknown as Record<string, unknown>))
-
     // Prepare return value
     const result: {queue: MsgVpnQueueMonitorResponse; subscriptions?: MsgVpnQueueSubscriptionsResponse} = {
       queue: queueResp,
     }
 
-    // Optionally fetch and display subscriptions
+    // Display based on flag
     if (flags['show-subscriptions']) {
+      // Fetch and display only subscriptions
       const subsEndpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queues/${flags['queue-name']}/subscriptions`
       const subsResp = await this.sempConn.get<MsgVpnQueueSubscriptionsResponse>(subsEndpoint)
 
@@ -63,6 +60,10 @@ Retrieves and displays detailed information about a queue using the SEMP Monitor
         ]
         this.log(renderTable(subsTable))
       }
+    } else {
+      // Display only queue details (default behavior)
+      this.log('\n=== Queue Details ===\n')
+      this.log(printObjectAsKeyValueTable(queueResp.data as unknown as Record<string, unknown>))
     }
 
     return result
