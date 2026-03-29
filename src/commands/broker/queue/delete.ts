@@ -45,7 +45,6 @@ static override flags = {
         })
 
         if (!shouldProceed) {
-          this.log('Queue deletion cancelled.')
           this.exit(0)
         }
       } catch {
