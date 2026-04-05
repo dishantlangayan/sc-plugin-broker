@@ -12,6 +12,8 @@ Commands to interact with Solace Event Broker.
 * [Usage](#usage)
 * [Resources](#resources)
 * [Testing](#testing)
+* [Run all tests](#run-all-tests)
+* [Run specific test file](#run-specific-test-file)
 * [Contributing](#contributing)
 * [Authors](#authors)
 * [License](#license)
@@ -19,15 +21,12 @@ Commands to interact with Solace Event Broker.
 <!-- tocstop -->
 # Usage
 <!-- usage -->
-> [!NOTE]
-> This plugin is packaged with the [Solace Cloud CLI](https://github.com/SolaceLabs/solace-cloud-cli) but can be use independently when working with self-managed Software Event Brokers.
-
 ```sh-session
 $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.4.0 linux-x64 node-v20.20.1
+@dishantlangayan/sc-plugin-broker/0.4.0 linux-x64 node-v20.20.2
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
