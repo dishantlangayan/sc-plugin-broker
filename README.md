@@ -14,8 +14,6 @@ Commands to interact with Solace Event Broker.
 * [Testing](#testing)
 * [Run all tests](#run-all-tests)
 * [Run specific test file](#run-specific-test-file)
-* [Run all tests](#run-all-tests)
-* [Run specific test file](#run-specific-test-file)
 * [Contributing](#contributing)
 * [Authors](#authors)
 * [License](#license)
@@ -28,7 +26,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.4.1 darwin-arm64 node-v24.1.0
+@dishantlangayan/sc-plugin-broker/0.4.1 linux-x64 node-v20.20.2
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
