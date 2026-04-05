@@ -1,60 +1,34 @@
-import {AuthType, BrokerAuth, ScConnection} from '@dishantlangayan/sc-cli-core'
-import {expect} from 'chai'
-import {restore, type SinonStub, stub} from 'sinon'
-
 import BrokerQueueList from '../../../../src/commands/broker/queue/list.js'
 import {MsgVpnQueueMonitor, MsgVpnQueuesMonitorResponse} from '../../../../src/types/msgvpn-queue.js'
+import {
+  buildSimpleResponse,
+  expect,
+  setupTestContext,
+  type SinonStub,
+  stubCommandMethod,
+  type TestContext,
+} from '../../../helpers/index.js'
 
 describe('broker:queue:list', () => {
-  let mockBrokerAuthManager: {
-    brokerExists: SinonStub
-    createConnection: SinonStub
-    getBroker: SinonStub
-    getDefaultBroker: SinonStub
-  }
-  let mockConnection: {
-    get: SinonStub
-  }
-  let mockBroker: BrokerAuth
+  let context: TestContext
 
   beforeEach(() => {
-    // Setup mock broker
-    mockBroker = {
-      accessToken: 'dGVzdDp0ZXN0', // base64 encoded "test:test"
-      authType: AuthType.BASIC,
-      name: 'test-broker',
-      sempEndpoint: 'https://localhost',
-      sempPort: 8080,
-    }
-
-    // Setup mock connection
-    mockConnection = {
-      get: stub().resolves({
+    context = setupTestContext({}, ['get'])
+    context.mockConnection.get!.resolves(
+      buildSimpleResponse({
         data: [],
-        meta: {
-          responseCode: 200,
-        },
       }),
-    }
+    )
+  })
 
-    // Setup mock BrokerAuthManager
-    mockBrokerAuthManager = {
-      brokerExists: stub().resolves(true),
-      createConnection: stub().resolves(mockConnection as unknown as ScConnection),
-      getBroker: stub().resolves(mockBroker),
-      getDefaultBroker: stub().resolves(null),
-    }
+  afterEach(() => {
+    context.cleanup()
   })
 
   describe('Basic Functionality', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueList.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueList.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueList, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueList.prototype, 'log')
     })
 
     it('should successfully list queues with default flags', async () => {
@@ -88,7 +62,7 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       const result = await BrokerQueueList.run(['--broker-name=test-broker', '--msg-vpn-name=default'])
 
@@ -105,7 +79,7 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       const result = await BrokerQueueList.run(['--broker-name=test-broker', '--msg-vpn-name=default'])
 
@@ -118,13 +92,8 @@ describe('broker:queue:list', () => {
 
   describe('Count Flag', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueList.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueList.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueList, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueList.prototype, 'log')
     })
 
     it('should use count parameter from flag', async () => {
@@ -135,11 +104,11 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       await BrokerQueueList.run(['--broker-name=test-broker', '--msg-vpn-name=default', '--count=20'])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const url = getCall.args[0] as string
       expect(url).to.include('count=20')
     })
@@ -152,11 +121,11 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       await BrokerQueueList.run(['--broker-name=test-broker', '--msg-vpn-name=default'])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const url = getCall.args[0] as string
       expect(url).to.include('count=10')
     })
@@ -164,13 +133,8 @@ describe('broker:queue:list', () => {
 
   describe('Queue Name Filtering', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueList.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueList.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueList, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueList.prototype, 'log')
     })
 
     it('should add where parameter when queue-name flag is provided', async () => {
@@ -181,7 +145,7 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       await BrokerQueueList.run([
         '--broker-name=test-broker',
@@ -189,7 +153,7 @@ describe('broker:queue:list', () => {
         '--queue-name=order*',
       ])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const url = getCall.args[0] as string
       // URLSearchParams encodes special characters
       expect(url).to.include('where=queueName')
@@ -204,7 +168,7 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       await BrokerQueueList.run([
         '--broker-name=test-broker',
@@ -212,7 +176,7 @@ describe('broker:queue:list', () => {
         '--queue-name=exactQueue',
       ])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const url = getCall.args[0] as string
       expect(url).to.include('where=queueName')
       expect(url).to.include('exactQueue')
@@ -226,11 +190,11 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       await BrokerQueueList.run(['--broker-name=test-broker', '--msg-vpn-name=default'])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const url = getCall.args[0] as string
       expect(url).to.not.include('where=')
     })
@@ -238,13 +202,8 @@ describe('broker:queue:list', () => {
 
   describe('Select Flag', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueList.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueList.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueList, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueList.prototype, 'log')
     })
 
     it('should use custom attributes when select flag is provided', async () => {
@@ -261,7 +220,7 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       await BrokerQueueList.run([
         '--broker-name=test-broker',
@@ -269,7 +228,7 @@ describe('broker:queue:list', () => {
         '--select=queueName,owner',
       ])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const url = getCall.args[0] as string
       expect(url).to.include('select=')
       expect(url).to.include('queueName')
@@ -285,11 +244,11 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       await BrokerQueueList.run(['--broker-name=test-broker', '--msg-vpn-name=default'])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const url = getCall.args[0] as string
       expect(url).to.include('select=')
       // Should include all default attributes
@@ -319,13 +278,8 @@ describe('broker:queue:list', () => {
 
   describe('All Flag', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueList.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueList.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueList, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueList.prototype, 'log')
     })
 
     it('should fetch all pages without prompting when --all flag is set', async () => {
@@ -367,13 +321,13 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.onFirstCall().resolves(firstPageResponse)
-      mockConnection.get.onSecondCall().resolves(secondPageResponse)
-      mockConnection.get.onThirdCall().resolves(thirdPageResponse)
+      context.mockConnection.get!.onFirstCall().resolves(firstPageResponse)
+      context.mockConnection.get!.onSecondCall().resolves(secondPageResponse)
+      context.mockConnection.get!.onThirdCall().resolves(thirdPageResponse)
 
       const result = await BrokerQueueList.run(['--broker-name=test-broker', '--msg-vpn-name=default', '--all'])
 
-      expect(mockConnection.get.callCount).to.equal(3)
+      expect(context.mockConnection.get!.callCount).to.equal(3)
       expect(result.data).to.have.lengthOf(5)
       expect(result.data[0].queueName).to.equal('queue1')
       expect(result.data[1].queueName).to.equal('queue2')
@@ -404,12 +358,12 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.onFirstCall().resolves(firstPageResponse)
-      mockConnection.get.onSecondCall().resolves(secondPageResponse)
+      context.mockConnection.get!.onFirstCall().resolves(firstPageResponse)
+      context.mockConnection.get!.onSecondCall().resolves(secondPageResponse)
 
       await BrokerQueueList.run(['--broker-name=test-broker', '--msg-vpn-name=default', '--all'])
 
-      const secondCall = mockConnection.get.getCall(1)
+      const secondCall = context.mockConnection.get!.getCall(1)
       const url = secondCall.args[0] as string
       expect(url).to.include('cursor=cursor123')
     })
@@ -417,13 +371,8 @@ describe('broker:queue:list', () => {
 
   describe('Data Formatting', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueList.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueList.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueList, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueList.prototype, 'log')
     })
 
     it('should convert spooledByteCount to MB in display', async () => {
@@ -443,7 +392,7 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       const result = await BrokerQueueList.run([
         '--broker-name=test-broker',
@@ -474,7 +423,7 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       const result = await BrokerQueueList.run([
         '--broker-name=test-broker',
@@ -505,7 +454,7 @@ describe('broker:queue:list', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       const result = await BrokerQueueList.run([
         '--broker-name=test-broker',

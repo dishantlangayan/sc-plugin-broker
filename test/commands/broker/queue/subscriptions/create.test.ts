@@ -1,67 +1,44 @@
-import {AuthType, type BrokerAuth, type ScConnection} from '@dishantlangayan/sc-cli-core'
-import {expect} from 'chai'
-import {restore, type SinonStub, stub} from 'sinon'
-
-import type {MsgVpnQueueSubscriptionCreateResponse} from '../../../../../src/types/msgvpn-queue.js'
-
 import BrokerQueueSubscriptionsCreate from '../../../../../src/commands/broker/queue/subscriptions/create.js'
+import {MsgVpnQueueSubscriptionCreateResponse} from '../../../../../src/types/msgvpn-queue.js'
+import {
+  buildSimpleResponse,
+  expect,
+  setupTestContext,
+  type SinonStub,
+  stubCommandMethod,
+  type TestContext,
+} from '../../../../helpers/index.js'
 
 describe('broker:queue:subscriptions:create', () => {
-  let mockBroker: BrokerAuth
-  let mockBrokerAuthManager: {
-    brokerExists: SinonStub
-    createConnection: SinonStub
-    getBroker: SinonStub
-    getDefaultBroker: SinonStub
-  }
-  let mockConnection: {
-    post: SinonStub
-  }
-  let logStub: SinonStub
+  let context: TestContext
 
   beforeEach(() => {
-    // Setup mock broker with required credentials
-    mockBroker = {
-      accessToken: 'dGVzdDp0ZXN0', // base64 encoded "test:test"
-      authType: AuthType.BASIC,
-      name: 'test-broker',
-      sempEndpoint: 'https://localhost',
-      sempPort: 8080,
-    }
-
-    // Setup mock connection with stubbed POST method
-    mockConnection = {
-      post: stub().resolves({
+    context = setupTestContext({}, ['post'])
+    context.mockConnection.post!.resolves(
+      buildSimpleResponse({
         data: {
           msgVpnName: 'default',
           queueName: 'testQueue',
           subscriptionTopic: 'orders/>',
         },
-        meta: {
-          responseCode: 200,
-        },
-      } as MsgVpnQueueSubscriptionCreateResponse),
-    }
-
-    // Setup mock BrokerAuthManager
-    mockBrokerAuthManager = {
-      brokerExists: stub().resolves(true),
-      createConnection: stub().resolves(mockConnection as unknown as ScConnection),
-      getBroker: stub().resolves(mockBroker),
-      getDefaultBroker: stub().resolves(null),
-    }
-
-    // Stub the getBrokerAuthManager method on the command
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    stub(BrokerQueueSubscriptionsCreate.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-    logStub = stub(BrokerQueueSubscriptionsCreate.prototype, 'log')
+      }),
+    )
   })
 
   afterEach(() => {
-    restore()
+    context.cleanup()
   })
 
   describe('SEMP API Calls', () => {
+    beforeEach(() => {
+      stubCommandMethod(
+        context.sandbox,
+        BrokerQueueSubscriptionsCreate,
+        'getBrokerAuthManager',
+        context.mockBrokerAuthManager,
+      )
+    })
+
     it('should call correct SEMP endpoint', async () => {
       await BrokerQueueSubscriptionsCreate.run([
         '--broker-name=test-broker',
@@ -71,7 +48,7 @@ describe('broker:queue:subscriptions:create', () => {
       ])
 
       expect(
-        mockConnection.post.calledWith('/SEMP/v2/config/msgVpns/default/queues/testQueue/subscriptions'),
+        context.mockConnection.post!.calledWith('/SEMP/v2/config/msgVpns/default/queues/testQueue/subscriptions'),
       ).to.be.true
     })
 
@@ -83,7 +60,7 @@ describe('broker:queue:subscriptions:create', () => {
         '--msg-vpn-name=default',
       ])
 
-      const postCall = mockConnection.post.getCall(0)
+      const postCall = context.mockConnection.post!.getCall(0)
       const requestBody = postCall.args[1]
 
       expect(requestBody).to.deep.equal({
@@ -99,7 +76,7 @@ describe('broker:queue:subscriptions:create', () => {
         '--msg-vpn-name=default',
       ])
 
-      const postCall = mockConnection.post.getCall(0)
+      const postCall = context.mockConnection.post!.getCall(0)
       const requestBody = postCall.args[1]
 
       expect(requestBody.subscriptionTopic).to.equal('data/sensor/+/temperature')
@@ -107,6 +84,16 @@ describe('broker:queue:subscriptions:create', () => {
   })
 
   describe('Response Display', () => {
+    beforeEach(() => {
+      stubCommandMethod(
+        context.sandbox,
+        BrokerQueueSubscriptionsCreate,
+        'getBrokerAuthManager',
+        context.mockBrokerAuthManager,
+      )
+      context.sandbox.stub(BrokerQueueSubscriptionsCreate.prototype, 'log')
+    })
+
     it('should display subscription details on success', async () => {
       await BrokerQueueSubscriptionsCreate.run([
         '--broker-name=test-broker',
@@ -115,10 +102,24 @@ describe('broker:queue:subscriptions:create', () => {
         '--msg-vpn-name=default',
       ])
 
+      const logStub = BrokerQueueSubscriptionsCreate.prototype.log as SinonStub
       expect(logStub.called).to.be.true
     })
 
     it('should return SEMP response', async () => {
+      const mockResponse: MsgVpnQueueSubscriptionCreateResponse = {
+        data: {
+          msgVpnName: 'default',
+          queueName: 'testQueue',
+          subscriptionTopic: 'orders/>',
+        },
+        meta: {
+          responseCode: 200,
+        },
+      }
+
+      context.mockConnection.post!.resolves(mockResponse)
+
       const result = await BrokerQueueSubscriptionsCreate.run([
         '--broker-name=test-broker',
         '--queue-name=testQueue',

@@ -3,7 +3,6 @@
 
 Commands to interact with Solace Event Broker.
 
-
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@dishantlangayan/sc-plugin-broker.svg)](https://npmjs.org/package/@dishantlangayan/sc-plugin-broker)
 [![Downloads/week](https://img.shields.io/npm/dw/@dishantlangayan/sc-plugin-broker.svg)](https://npmjs.org/package/@dishantlangayan/sc-plugin-broker)
@@ -12,6 +11,7 @@ Commands to interact with Solace Event Broker.
 <!-- toc -->
 * [Usage](#usage)
 * [Resources](#resources)
+* [Testing](#testing)
 * [Contributing](#contributing)
 * [Authors](#authors)
 * [License](#license)
@@ -19,6 +19,9 @@ Commands to interact with Solace Event Broker.
 <!-- tocstop -->
 # Usage
 <!-- usage -->
+> [!NOTE]
+> This plugin is packaged with the [Solace Cloud CLI](https://github.com/SolaceLabs/solace-cloud-cli) but can be use independently when working with self-managed Software Event Brokers.
+
 ```sh-session
 $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
@@ -36,10 +39,25 @@ USAGE
 This is not an officially supported Solace product.
 
 For more information try these resources:
+- [Solace Cloud CLI Docs](https://dishantlangayan.github.io/sc-cli/)
 - Ask the [Solace Community](https://solace.community)
 - The Solace Developer Portal website at: https://solace.dev
 
 <!-- resourcesstop -->
+# Testing
+<!-- testing -->
+```bash
+# Run all tests
+npm test
+
+# Run specific test file
+npm test -- test/commands/broker/queue/create.test.ts
+```
+
+## Writing Tests
+
+We use test helpers to eliminate duplication and standardize testing patterns. See the [Test Helpers Guide](test/helpers/README.md) for detailed documentation.
+<!-- testingstop -->
 # Contributing
 <!-- contributing -->
 Contributions are encouraged! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.

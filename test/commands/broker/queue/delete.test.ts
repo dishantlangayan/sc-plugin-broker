@@ -1,59 +1,31 @@
-import {AuthType, BrokerAuth, ScConnection} from '@dishantlangayan/sc-cli-core'
 import {runCommand} from '@oclif/test'
-import {expect} from 'chai'
-import {restore, type SinonStub, stub} from 'sinon'
 
 import BrokerQueueDelete from '../../../../src/commands/broker/queue/delete.js'
 import {MsgVpnQueueDeleteResponse} from '../../../../src/types/msgvpn-queue.js'
+import {
+  buildDeleteResponse,
+  expect,
+  setupTestContext,
+  type SinonStub,
+  stubCommandMethod,
+  type TestContext,
+} from '../../../helpers/index.js'
 
 describe('broker:queue:delete', () => {
-  let mockBrokerAuthManager: {
-    brokerExists: SinonStub
-    createConnection: SinonStub
-    getBroker: SinonStub
-    getDefaultBroker: SinonStub
-  }
-  let mockConnection: {
-    delete: SinonStub
-  }
-  let mockBroker: BrokerAuth
+  let context: TestContext
 
   beforeEach(() => {
-    // Setup mock broker
-    mockBroker = {
-      accessToken: 'dGVzdDp0ZXN0', // base64 encoded "test:test"
-      authType: AuthType.BASIC,
-      name: 'test-broker',
-      sempEndpoint: 'https://localhost',
-      sempPort: 8080,
-    }
+    context = setupTestContext({}, ['delete'])
+    context.mockConnection.delete!.resolves(buildDeleteResponse())
+  })
 
-    // Setup mock connection
-    mockConnection = {
-      delete: stub().resolves({
-        meta: {
-          responseCode: 200,
-        },
-      }),
-    }
-
-    // Setup mock BrokerAuthManager
-    mockBrokerAuthManager = {
-      brokerExists: stub().resolves(true),
-      createConnection: stub().resolves(mockConnection as unknown as ScConnection),
-      getBroker: stub().resolves(mockBroker),
-      getDefaultBroker: stub().resolves(null),
-    }
+  afterEach(() => {
+    context.cleanup()
   })
 
   describe('SEMP API Calls', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueDelete.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueDelete, 'getBrokerAuthManager', context.mockBrokerAuthManager)
     })
 
     it('should call correct SEMP endpoint with --no-prompt', async () => {
@@ -64,7 +36,7 @@ describe('broker:queue:delete', () => {
         '--no-prompt',
       ])
 
-      expect(mockConnection.delete.calledWith('/SEMP/v2/config/msgVpns/default/queues/testQueue')).to.be.true
+      expect(context.mockConnection.delete!.calledWith('/SEMP/v2/config/msgVpns/default/queues/testQueue')).to.be.true
     })
 
     it('should delete queue with special characters in name', async () => {
@@ -75,19 +47,15 @@ describe('broker:queue:delete', () => {
         '--no-prompt',
       ])
 
-      expect(mockConnection.delete.calledWith('/SEMP/v2/config/msgVpns/default/queues/test-queue-123')).to.be.true
+      expect(context.mockConnection.delete!.calledWith('/SEMP/v2/config/msgVpns/default/queues/test-queue-123')).to.be
+        .true
     })
   })
 
   describe('Response Display', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueDelete.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueDelete.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueDelete, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueDelete.prototype, 'log')
     })
 
     it('should display success message when responseCode is 200', async () => {
@@ -98,7 +66,7 @@ describe('broker:queue:delete', () => {
         },
       }
 
-      mockConnection.delete.resolves(mockResponse)
+      context.mockConnection.delete!.resolves(mockResponse)
 
       await BrokerQueueDelete.run([
         '--broker-name=test-broker',
@@ -123,8 +91,8 @@ describe('broker:queue:delete', () => {
         },
       }
 
-      mockConnection.delete.resolves(mockResponse)
-      const errorStub = stub(BrokerQueueDelete.prototype, 'error')
+      context.mockConnection.delete!.resolves(mockResponse)
+      const errorStub = context.sandbox.stub(BrokerQueueDelete.prototype, 'error')
 
       try {
         await BrokerQueueDelete.run([
@@ -148,7 +116,7 @@ describe('broker:queue:delete', () => {
         },
       }
 
-      mockConnection.delete.resolves(mockResponse)
+      context.mockConnection.delete!.resolves(mockResponse)
 
       const result = await BrokerQueueDelete.run([
         '--broker-name=test-broker',
@@ -163,13 +131,8 @@ describe('broker:queue:delete', () => {
 
   describe('--no-prompt flag', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueDelete.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueDelete.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueDelete, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueDelete.prototype, 'log')
     })
 
     it('should skip confirmation when --no-prompt is set', async () => {
@@ -180,7 +143,7 @@ describe('broker:queue:delete', () => {
         '--no-prompt',
       ])
 
-      expect(mockConnection.delete.called).to.be.true
+      expect(context.mockConnection.delete!.called).to.be.true
     })
 
     it('should delete queue without confirmation', async () => {
@@ -190,7 +153,7 @@ describe('broker:queue:delete', () => {
         },
       }
 
-      mockConnection.delete.resolves(mockResponse)
+      context.mockConnection.delete!.resolves(mockResponse)
 
       await BrokerQueueDelete.run([
         '--broker-name=test-broker',
@@ -201,7 +164,7 @@ describe('broker:queue:delete', () => {
 
       const logStub = BrokerQueueDelete.prototype.log as SinonStub
       expect(logStub.called).to.be.true
-      expect(mockConnection.delete.calledOnce).to.be.true
+      expect(context.mockConnection.delete!.calledOnce).to.be.true
     })
   })
 

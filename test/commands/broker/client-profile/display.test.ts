@@ -1,35 +1,21 @@
-import {AuthType, BrokerAuth, ScConnection} from '@dishantlangayan/sc-cli-core'
-import {expect} from 'chai'
-import {restore, type SinonStub, stub} from 'sinon'
-
 import BrokerClientProfileDisplay from '../../../../src/commands/broker/client-profile/display.js'
 import {MsgVpnClientProfileMonitorResponse} from '../../../../src/types/msgvpn-client-profile.js'
+import {
+  buildSimpleResponse,
+  expect,
+  setupTestContext,
+  type SinonStub,
+  stubCommandMethod,
+  type TestContext,
+} from '../../../helpers/index.js'
 
 describe('broker:client-profile:display', () => {
-  let mockBrokerAuthManager: {
-    brokerExists: SinonStub
-    createConnection: SinonStub
-    getBroker: SinonStub
-    getDefaultBroker: SinonStub
-  }
-  let mockConnection: {
-    get: SinonStub
-  }
-  let mockBroker: BrokerAuth
+  let context: TestContext
 
   beforeEach(() => {
-    // Setup mock broker
-    mockBroker = {
-      accessToken: 'dGVzdDp0ZXN0',
-      authType: AuthType.BASIC,
-      name: 'test-broker',
-      sempEndpoint: 'https://localhost',
-      sempPort: 8080,
-    }
-
-    // Setup mock connection
-    mockConnection = {
-      get: stub().resolves({
+    context = setupTestContext({}, ['get'])
+    context.mockConnection.get!.resolves(
+      buildSimpleResponse({
         data: {
           allowGuaranteedMsgReceiveEnabled: true,
           allowGuaranteedMsgSendEnabled: true,
@@ -37,30 +23,18 @@ describe('broker:client-profile:display', () => {
           compressionEnabled: false,
           msgVpnName: 'default',
         },
-        meta: {
-          responseCode: 200,
-        },
       }),
-    }
+    )
+  })
 
-    // Setup mock BrokerAuthManager
-    mockBrokerAuthManager = {
-      brokerExists: stub().resolves(true),
-      createConnection: stub().resolves(mockConnection as unknown as ScConnection),
-      getBroker: stub().resolves(mockBroker),
-      getDefaultBroker: stub().resolves(null),
-    }
+  afterEach(() => {
+    context.cleanup()
   })
 
   describe('SEMP API Calls', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerClientProfileDisplay.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerClientProfileDisplay.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerClientProfileDisplay, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerClientProfileDisplay.prototype, 'log')
     })
 
     it('should call correct SEMP Monitor API endpoint with profile name in path', async () => {
@@ -70,7 +44,7 @@ describe('broker:client-profile:display', () => {
         '--msg-vpn-name=default',
       ])
 
-      expect(mockConnection.get.calledWith('/SEMP/v2/monitor/msgVpns/default/clientProfiles/testProfile')).to.be.true
+      expect(context.mockConnection.get!.calledWith('/SEMP/v2/monitor/msgVpns/default/clientProfiles/testProfile')).to.be.true
     })
 
     it('should display response using printObjectAsKeyValueTable', async () => {
@@ -95,7 +69,7 @@ describe('broker:client-profile:display', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       const result = await BrokerClientProfileDisplay.run([
         '--broker-name=test-broker',

@@ -1,80 +1,40 @@
-import {AuthType, BrokerAuth, ScConnection} from '@dishantlangayan/sc-cli-core'
-import {expect} from 'chai'
-import {restore, type SinonStub, stub} from 'sinon'
-
 import BrokerClientProfileList from '../../../../src/commands/broker/client-profile/list.js'
 import {MsgVpnClientProfilesMonitorResponse} from '../../../../src/types/msgvpn-client-profile.js'
+import {
+  buildSimpleResponse,
+  expect,
+  setupTestContext,
+  
+  stubCommandMethod,
+  type TestContext,
+} from '../../../helpers/index.js'
 
 describe('broker:client-profile:list', () => {
-  let mockBrokerAuthManager: {
-    brokerExists: SinonStub
-    createConnection: SinonStub
-    getBroker: SinonStub
-    getDefaultBroker: SinonStub
-  }
-  let mockConnection: {
-    get: SinonStub
-  }
-  let mockBroker: BrokerAuth
+  let context: TestContext
 
   beforeEach(() => {
-    // Setup mock broker
-    mockBroker = {
-      accessToken: 'dGVzdDp0ZXN0',
-      authType: AuthType.BASIC,
-      name: 'test-broker',
-      sempEndpoint: 'https://localhost',
-      sempPort: 8080,
-    }
-
-    // Setup mock connection with sample response
-    mockConnection = {
-      get: stub().resolves({
-        data: [
-          {
-            allowGuaranteedMsgReceiveEnabled: true,
-            allowGuaranteedMsgSendEnabled: true,
-            clientProfileName: 'profile1',
-            msgVpnName: 'default',
-          },
-          {
-            allowGuaranteedMsgReceiveEnabled: false,
-            allowGuaranteedMsgSendEnabled: true,
-            clientProfileName: 'profile2',
-            msgVpnName: 'default',
-          },
-        ],
-        meta: {
-          count: 2,
-          responseCode: 200,
-        },
+    context = setupTestContext({}, ['get'])
+    context.mockConnection.get!.resolves(
+      buildSimpleResponse({
+        data: [],
       }),
-    }
+    )
+  })
 
-    // Setup mock BrokerAuthManager
-    mockBrokerAuthManager = {
-      brokerExists: stub().resolves(true),
-      createConnection: stub().resolves(mockConnection as unknown as ScConnection),
-      getBroker: stub().resolves(mockBroker),
-      getDefaultBroker: stub().resolves(null),
-    }
+  afterEach(() => {
+    context.cleanup()
   })
 
   describe('SEMP API Calls', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerClientProfileList.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerClientProfileList.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerClientProfileList, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerClientProfileList.prototype, 'log')
     })
 
     it('should call correct SEMP Monitor API endpoint for list', async () => {
       await BrokerClientProfileList.run(['--broker-name=test-broker', '--msg-vpn-name=default'])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const endpoint = getCall.args[0]
 
       expect(endpoint).to.include('/SEMP/v2/monitor/msgVpns/default/clientProfiles')
@@ -83,7 +43,7 @@ describe('broker:client-profile:list', () => {
     it('should use default attributes when --select not provided', async () => {
       await BrokerClientProfileList.run(['--broker-name=test-broker', '--msg-vpn-name=default'])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const endpoint = getCall.args[0]
 
       expect(endpoint).to.include('select=')
@@ -99,7 +59,7 @@ describe('broker:client-profile:list', () => {
         '--select=clientProfileName,compressionEnabled',
       ])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const endpoint = getCall.args[0]
 
       expect(endpoint).to.include('compressionEnabled')
@@ -112,7 +72,7 @@ describe('broker:client-profile:list', () => {
         '--select=clientProfileName',
       ])
 
-      const getCall = mockConnection.get.getCall(0)
+      const getCall = context.mockConnection.get!.getCall(0)
       const endpoint = getCall.args[0]
 
       expect(endpoint).to.match(/&select=/)
@@ -151,29 +111,47 @@ describe('broker:client-profile:list', () => {
         },
       }
 
-      mockConnection.get.onFirstCall().resolves(mockResponseWithCursor)
-      mockConnection.get.onSecondCall().resolves(mockResponseNoCursor)
+      context.mockConnection.get!.onFirstCall().resolves(mockResponseWithCursor)
+      context.mockConnection.get!.onSecondCall().resolves(mockResponseNoCursor)
 
       await BrokerClientProfileList.run(['--broker-name=test-broker', '--msg-vpn-name=default', '--all'])
 
-      expect(mockConnection.get.callCount).to.equal(2)
-      const secondCall = mockConnection.get.getCall(1)
+      expect(context.mockConnection.get!.callCount).to.equal(2)
+      const secondCall = context.mockConnection.get!.getCall(1)
       expect(secondCall.args[0]).to.include('cursor=nextCursor123')
     })
   })
 
   describe('Attribute Formatting', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerClientProfileList.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerClientProfileList.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerClientProfileList, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerClientProfileList.prototype, 'log')
     })
 
     it('should format boolean values as Yes/No', async () => {
+      const mockResponse: MsgVpnClientProfilesMonitorResponse = {
+        data: [
+          {
+            allowGuaranteedMsgReceiveEnabled: true,
+            allowGuaranteedMsgSendEnabled: true,
+            clientProfileName: 'profile1',
+            msgVpnName: 'default',
+          },
+          {
+            allowGuaranteedMsgReceiveEnabled: false,
+            allowGuaranteedMsgSendEnabled: true,
+            clientProfileName: 'profile2',
+            msgVpnName: 'default',
+          },
+        ],
+        meta: {
+          count: 2,
+          responseCode: 200,
+        },
+      }
+
+      context.mockConnection.get!.resolves(mockResponse)
+
       const result = await BrokerClientProfileList.run(['--broker-name=test-broker', '--msg-vpn-name=default'])
 
       expect(result.data).to.have.lengthOf(2)

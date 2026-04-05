@@ -1,64 +1,38 @@
-import {AuthType, BrokerAuth, ScConnection} from '@dishantlangayan/sc-cli-core'
-import {expect} from 'chai'
-import {restore, type SinonStub, stub} from 'sinon'
-
 import BrokerQueueDisplay from '../../../../src/commands/broker/queue/display.js'
 import {MsgVpnQueueMonitorResponse, MsgVpnQueueSubscriptionsResponse} from '../../../../src/types/msgvpn-queue.js'
+import {
+  buildSimpleResponse,
+  expect,
+  setupTestContext,
+  type SinonStub,
+  stubCommandMethod,
+  type TestContext,
+} from '../../../helpers/index.js'
 
 describe('broker:queue:display', () => {
-  let mockBrokerAuthManager: {
-    brokerExists: SinonStub
-    createConnection: SinonStub
-    getBroker: SinonStub
-    getDefaultBroker: SinonStub
-  }
-  let mockConnection: {
-    get: SinonStub
-  }
-  let mockBroker: BrokerAuth
+  let context: TestContext
 
   beforeEach(() => {
-    // Setup mock broker
-    mockBroker = {
-      accessToken: 'dGVzdDp0ZXN0', // base64 encoded "test:test"
-      authType: AuthType.BASIC,
-      name: 'test-broker',
-      sempEndpoint: 'https://localhost',
-      sempPort: 8080,
-    }
-
-    // Setup mock connection
-    mockConnection = {
-      get: stub().resolves({
+    context = setupTestContext({}, ['get'])
+    context.mockConnection.get!.resolves(
+      buildSimpleResponse({
         data: {
           accessType: 'exclusive',
           msgVpnName: 'default',
           queueName: 'testQueue',
         },
-        meta: {
-          responseCode: 200,
-        },
       }),
-    }
+    )
+  })
 
-    // Setup mock BrokerAuthManager
-    mockBrokerAuthManager = {
-      brokerExists: stub().resolves(true),
-      createConnection: stub().resolves(mockConnection as unknown as ScConnection),
-      getBroker: stub().resolves(mockBroker),
-      getDefaultBroker: stub().resolves(null),
-    }
+  afterEach(() => {
+    context.cleanup()
   })
 
   describe('Basic Queue Display', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueDisplay.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueDisplay.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueDisplay, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueDisplay.prototype, 'log')
     })
 
     it('should successfully retrieve and display queue details', async () => {
@@ -80,7 +54,7 @@ describe('broker:queue:display', () => {
         },
       }
 
-      mockConnection.get.resolves(mockResponse)
+      context.mockConnection.get!.resolves(mockResponse)
 
       const result = await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
@@ -100,13 +74,8 @@ describe('broker:queue:display', () => {
 
   describe('SEMP Monitor API Calls', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueDisplay.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueDisplay.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueDisplay, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueDisplay.prototype, 'log')
     })
 
     it('should call correct Monitor API endpoint for queue details', async () => {
@@ -116,7 +85,7 @@ describe('broker:queue:display', () => {
         '--msg-vpn-name=default',
       ])
 
-      expect(mockConnection.get.calledWith('/SEMP/v2/monitor/msgVpns/default/queues/testQueue')).to.be.true
+      expect(context.mockConnection.get!.calledWith('/SEMP/v2/monitor/msgVpns/default/queues/testQueue')).to.be.true
     })
 
     it('should call subscriptions endpoint when --show-subscriptions flag is set', async () => {
@@ -130,7 +99,7 @@ describe('broker:queue:display', () => {
         },
       }
 
-      mockConnection.get.onSecondCall().resolves(mockSubsResponse)
+      context.mockConnection.get!.onSecondCall().resolves(mockSubsResponse)
 
       await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
@@ -139,8 +108,8 @@ describe('broker:queue:display', () => {
         '--show-subscriptions',
       ])
 
-      expect(mockConnection.get.callCount).to.equal(2)
-      expect(mockConnection.get.secondCall.calledWith('/SEMP/v2/monitor/msgVpns/default/queues/testQueue/subscriptions'))
+      expect(context.mockConnection.get!.callCount).to.equal(2)
+      expect(context.mockConnection.get!.secondCall.calledWith('/SEMP/v2/monitor/msgVpns/default/queues/testQueue/subscriptions'))
         .to.be.true
     })
 
@@ -151,19 +120,14 @@ describe('broker:queue:display', () => {
         '--msg-vpn-name=default',
       ])
 
-      expect(mockConnection.get.callCount).to.equal(1)
+      expect(context.mockConnection.get!.callCount).to.equal(1)
     })
   })
 
   describe('Subscriptions Display', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueDisplay.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueDisplay.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueDisplay, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueDisplay.prototype, 'log')
     })
 
     it('should display subscriptions when --show-subscriptions flag is set', async () => {
@@ -177,7 +141,7 @@ describe('broker:queue:display', () => {
         },
       }
 
-      mockConnection.get.onSecondCall().resolves(mockSubsResponse)
+      context.mockConnection.get!.onSecondCall().resolves(mockSubsResponse)
 
       const result = await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
@@ -204,7 +168,7 @@ describe('broker:queue:display', () => {
         },
       }
 
-      mockConnection.get.onSecondCall().resolves(mockSubsResponse)
+      context.mockConnection.get!.onSecondCall().resolves(mockSubsResponse)
 
       await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
@@ -228,7 +192,7 @@ describe('broker:queue:display', () => {
         },
       }
 
-      mockConnection.get.onSecondCall().resolves(mockSubsResponse)
+      context.mockConnection.get!.onSecondCall().resolves(mockSubsResponse)
 
       await BrokerQueueDisplay.run([
         '--broker-name=test-broker',

@@ -1,22 +1,28 @@
-import {AuthType, BrokerAuth} from '@dishantlangayan/sc-cli-core'
-import {Config} from '@oclif/core'
-import {expect} from 'chai'
-import * as sinon from 'sinon'
+import type {Config} from '@oclif/core'
+
+import {AuthType, type BrokerAuth} from '@dishantlangayan/sc-cli-core'
 
 import BrokerLoginBasic from '../../../../src/commands/broker/login/basic.js'
+import {
+  createMockConfig,
+  createSandbox,
+  expect,
+  type SinonSandbox,
+  type SinonStub,
+} from '../../../helpers/index.js'
 
 describe('broker:login:basic', () => {
-  let sandbox: sinon.SinonSandbox
+  let sandbox: SinonSandbox
   let mockBrokerAuthManager: {
-    addBroker: sinon.SinonStub
-    brokerExists: sinon.SinonStub
-    setDefaultBroker: sinon.SinonStub
-    updateBroker: sinon.SinonStub
+    addBroker: SinonStub
+    brokerExists: SinonStub
+    setDefaultBroker: SinonStub
+    updateBroker: SinonStub
   }
   let mockConfig: Config
 
   beforeEach(() => {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
 
     // Mock BrokerAuthManager
     mockBrokerAuthManager = {
@@ -26,14 +32,7 @@ describe('broker:login:basic', () => {
       updateBroker: sandbox.stub().resolves(),
     }
 
-    // Mock oclif config
-    mockConfig = {
-      bin: 'sc',
-      commands: [],
-      plugins: new Map(),
-      runHook: sandbox.stub().resolves({failures: [], successes: []}),
-      version: '0.0.0',
-    } as unknown as Config
+    mockConfig = createMockConfig(sandbox)
   })
 
   afterEach(() => {

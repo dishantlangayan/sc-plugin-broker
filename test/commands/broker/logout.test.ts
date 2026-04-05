@@ -1,25 +1,33 @@
-import {AuthType, BrokerAuth, BrokerAuthManager} from '@dishantlangayan/sc-cli-core'
+import {AuthType, BrokerAuth} from '@dishantlangayan/sc-cli-core'
 import {runCommand} from '@oclif/test'
-import {expect} from 'chai'
-import * as sinon from 'sinon'
 
 import BrokerLogout from '../../../src/commands/broker/logout.js'
+import {createSandbox, expect, type SinonSandbox, type SinonStub} from '../../helpers/index.js'
 
 describe('broker:logout', () => {
-  let brokerAuthManagerStub: sinon.SinonStubbedInstance<BrokerAuthManager>
-  let getBrokerAuthManagerStub: sinon.SinonStub
+  let sandbox: SinonSandbox
+  let mockBrokerAuthManager: {
+    getAllBrokers: SinonStub
+    removeBroker: SinonStub
+  }
 
   beforeEach(() => {
-    // Stub BrokerAuthManager
-    brokerAuthManagerStub = sinon.createStubInstance(BrokerAuthManager)
-    getBrokerAuthManagerStub = sinon.stub(
+    sandbox = createSandbox()
+
+    // Mock BrokerAuthManager
+    mockBrokerAuthManager = {
+      getAllBrokers: sandbox.stub(),
+      removeBroker: sandbox.stub().resolves(),
+    }
+
+    sandbox.stub(
       BrokerLogout.prototype as unknown as Record<string, unknown>,
       'getBrokerAuthManager',
-    ).resolves(brokerAuthManagerStub)
+    ).resolves(mockBrokerAuthManager)
   })
 
   afterEach(() => {
-    getBrokerAuthManagerStub.restore()
+    sandbox.restore()
   })
 
   it('logs out from specific broker with --broker-name and --no-prompt', async () => {
@@ -42,15 +50,14 @@ describe('broker:logout', () => {
         sempPort: 8080,
       },
     ]
-    brokerAuthManagerStub.getAllBrokers.resolves(brokers)
-    brokerAuthManagerStub.removeBroker.resolves()
+    mockBrokerAuthManager.getAllBrokers.resolves(brokers)
 
     // Act
     const {stdout} = await runCommand('broker:logout --broker-name=test-broker --no-prompt')
 
     // Assert
-    expect(brokerAuthManagerStub.getAllBrokers.calledOnce).to.be.true
-    expect(brokerAuthManagerStub.removeBroker.calledOnceWith('test-broker')).to.be.true
+    expect(mockBrokerAuthManager.getAllBrokers.calledOnce).to.be.true
+    expect(mockBrokerAuthManager.removeBroker.calledOnceWith('test-broker')).to.be.true
     expect(stdout).to.contain('Successfully logged out from: test-broker')
   })
 
@@ -82,17 +89,16 @@ describe('broker:logout', () => {
         sempPort: 8080,
       },
     ]
-    brokerAuthManagerStub.getAllBrokers.resolves(brokers)
-    brokerAuthManagerStub.removeBroker.resolves()
+    mockBrokerAuthManager.getAllBrokers.resolves(brokers)
 
     // Act
     const {stdout} = await runCommand('broker:logout --all --no-prompt')
 
     // Assert
-    expect(brokerAuthManagerStub.removeBroker.callCount).to.equal(3)
-    expect(brokerAuthManagerStub.removeBroker.calledWith('broker-1')).to.be.true
-    expect(brokerAuthManagerStub.removeBroker.calledWith('broker-2')).to.be.true
-    expect(brokerAuthManagerStub.removeBroker.calledWith('broker-3')).to.be.true
+    expect(mockBrokerAuthManager.removeBroker.callCount).to.equal(3)
+    expect(mockBrokerAuthManager.removeBroker.calledWith('broker-1')).to.be.true
+    expect(mockBrokerAuthManager.removeBroker.calledWith('broker-2')).to.be.true
+    expect(mockBrokerAuthManager.removeBroker.calledWith('broker-3')).to.be.true
     expect(stdout).to.contain('Successfully logged out from: broker-1')
     expect(stdout).to.contain('Successfully logged out from: broker-2')
     expect(stdout).to.contain('Successfully logged out from: broker-3')
@@ -100,16 +106,16 @@ describe('broker:logout', () => {
 
   it('displays message when no brokers exist', async () => {
     // Arrange
-    brokerAuthManagerStub.getAllBrokers.resolves([])
+    mockBrokerAuthManager.getAllBrokers.resolves([])
 
     // Act
     const {stdout} = await runCommand('broker:logout --no-prompt')
 
     // Assert
-    expect(brokerAuthManagerStub.getAllBrokers.calledOnce).to.be.true
+    expect(mockBrokerAuthManager.getAllBrokers.calledOnce).to.be.true
     expect(stdout).to.contain('No brokers found')
     expect(stdout).to.contain("Run 'sc broker:login:basic' to authenticate")
-    expect(brokerAuthManagerStub.removeBroker.called).to.be.false
+    expect(mockBrokerAuthManager.removeBroker.called).to.be.false
   })
 
   it('throws error when --broker-name specifies non-existent broker', async () => {
@@ -124,7 +130,7 @@ describe('broker:logout', () => {
         sempPort: 8080,
       },
     ]
-    brokerAuthManagerStub.getAllBrokers.resolves(brokers)
+    mockBrokerAuthManager.getAllBrokers.resolves(brokers)
 
     // Act
     const result = await runCommand('broker:logout --broker-name=nonexistent --no-prompt')
@@ -136,7 +142,7 @@ describe('broker:logout', () => {
       expect(result.error.message).to.contain("Run 'sc broker:login:list' to see available brokers")
     }
 
-    expect(brokerAuthManagerStub.removeBroker.called).to.be.false
+    expect(mockBrokerAuthManager.removeBroker.called).to.be.false
   })
 
   it('returns correct JSON structure with --json flag', async () => {
@@ -159,8 +165,7 @@ describe('broker:logout', () => {
         sempPort: 8080,
       },
     ]
-    brokerAuthManagerStub.getAllBrokers.resolves(brokers)
-    brokerAuthManagerStub.removeBroker.resolves()
+    mockBrokerAuthManager.getAllBrokers.resolves(brokers)
 
     // Act
     const result = await runCommand<{count: number; loggedOut: string[]}>(

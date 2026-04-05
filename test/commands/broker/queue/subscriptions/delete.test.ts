@@ -1,62 +1,36 @@
-import {AuthType, type BrokerAuth, type ScConnection} from '@dishantlangayan/sc-cli-core'
-import {expect} from 'chai'
-import {restore, type SinonStub, stub} from 'sinon'
-
-import type {MsgVpnQueueSubscriptionDeleteResponse} from '../../../../../src/types/msgvpn-queue.js'
-
 import BrokerQueueSubscriptionsDelete from '../../../../../src/commands/broker/queue/subscriptions/delete.js'
+import {MsgVpnQueueSubscriptionDeleteResponse} from '../../../../../src/types/msgvpn-queue.js'
+import {
+  buildDeleteResponse,
+  expect,
+  setupTestContext,
+  type SinonStub,
+  stubCommandMethod,
+  type TestContext,
+} from '../../../../helpers/index.js'
 
 describe('broker:queue:subscriptions:delete', () => {
-  let mockBroker: BrokerAuth
-  let mockBrokerAuthManager: {
-    brokerExists: SinonStub
-    createConnection: SinonStub
-    getBroker: SinonStub
-    getDefaultBroker: SinonStub
-  }
-  let mockConnection: {
-    delete: SinonStub
-  }
-  let logStub: SinonStub
+  let context: TestContext
 
   beforeEach(() => {
-    // Setup mock broker with required credentials
-    mockBroker = {
-      accessToken: 'dGVzdDp0ZXN0', // base64 encoded "test:test"
-      authType: AuthType.BASIC,
-      name: 'test-broker',
-      sempEndpoint: 'https://localhost',
-      sempPort: 8080,
-    }
-
-    // Setup mock connection with stubbed DELETE method
-    mockConnection = {
-      delete: stub().resolves({
-        meta: {
-          responseCode: 200,
-        },
-      } as MsgVpnQueueSubscriptionDeleteResponse),
-    }
-
-    // Setup mock BrokerAuthManager
-    mockBrokerAuthManager = {
-      brokerExists: stub().resolves(true),
-      createConnection: stub().resolves(mockConnection as unknown as ScConnection),
-      getBroker: stub().resolves(mockBroker),
-      getDefaultBroker: stub().resolves(null),
-    }
-
-    // Stub the getBrokerAuthManager method on the command
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    stub(BrokerQueueSubscriptionsDelete.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-    logStub = stub(BrokerQueueSubscriptionsDelete.prototype, 'log')
+    context = setupTestContext({}, ['delete'])
+    context.mockConnection.delete!.resolves(buildDeleteResponse())
   })
 
   afterEach(() => {
-    restore()
+    context.cleanup()
   })
 
   describe('SEMP API Calls', () => {
+    beforeEach(() => {
+      stubCommandMethod(
+        context.sandbox,
+        BrokerQueueSubscriptionsDelete,
+        'getBrokerAuthManager',
+        context.mockBrokerAuthManager,
+      )
+    })
+
     it('should call correct SEMP endpoint with --no-prompt', async () => {
       await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
@@ -67,7 +41,7 @@ describe('broker:queue:subscriptions:delete', () => {
       ])
 
       expect(
-        mockConnection.delete.calledWith('/SEMP/v2/config/msgVpns/default/queues/testQueue/subscriptions/orders%2F%3E'),
+        context.mockConnection.delete!.calledWith('/SEMP/v2/config/msgVpns/default/queues/testQueue/subscriptions/orders%2F%3E'),
       ).to.be.true
     })
 
@@ -81,7 +55,7 @@ describe('broker:queue:subscriptions:delete', () => {
       ])
 
       expect(
-        mockConnection.delete.calledWith(
+        context.mockConnection.delete!.calledWith(
           '/SEMP/v2/config/msgVpns/default/queues/testQueue/subscriptions/events%2Fuser%2F*',
         ),
       ).to.be.true
@@ -96,13 +70,23 @@ describe('broker:queue:subscriptions:delete', () => {
         '--no-prompt',
       ])
 
-      expect(mockConnection.delete.called).to.be.true
-      const endpoint = mockConnection.delete.getCall(0).args[0]
+      expect(context.mockConnection.delete!.called).to.be.true
+      const endpoint = context.mockConnection.delete!.getCall(0).args[0]
       expect(endpoint).to.include('data%2F%2B%2Fsensor')
     })
   })
 
   describe('Response Display', () => {
+    beforeEach(() => {
+      stubCommandMethod(
+        context.sandbox,
+        BrokerQueueSubscriptionsDelete,
+        'getBrokerAuthManager',
+        context.mockBrokerAuthManager,
+      )
+      context.sandbox.stub(BrokerQueueSubscriptionsDelete.prototype, 'log')
+    })
+
     it('should display success message on 200 response', async () => {
       await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
@@ -112,12 +96,21 @@ describe('broker:queue:subscriptions:delete', () => {
         '--no-prompt',
       ])
 
+      const logStub = BrokerQueueSubscriptionsDelete.prototype.log as SinonStub
       expect(logStub.calledWith(
         "\nSuccessfully deleted subscription 'orders/>' from queue 'testQueue' in Message VPN 'default'",
       )).to.be.true
     })
 
     it('should return SEMP response', async () => {
+      const mockResponse: MsgVpnQueueSubscriptionDeleteResponse = {
+        meta: {
+          responseCode: 200,
+        },
+      }
+
+      context.mockConnection.delete!.resolves(mockResponse)
+
       const result = await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
         '--queue-name=testQueue',
@@ -132,6 +125,15 @@ describe('broker:queue:subscriptions:delete', () => {
   })
 
   describe('--no-prompt Flag', () => {
+    beforeEach(() => {
+      stubCommandMethod(
+        context.sandbox,
+        BrokerQueueSubscriptionsDelete,
+        'getBrokerAuthManager',
+        context.mockBrokerAuthManager,
+      )
+    })
+
     it('should skip confirmation when --no-prompt is set', async () => {
       await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
@@ -141,7 +143,7 @@ describe('broker:queue:subscriptions:delete', () => {
         '--no-prompt',
       ])
 
-      expect(mockConnection.delete.called).to.be.true
+      expect(context.mockConnection.delete!.called).to.be.true
     })
   })
 

@@ -1,7 +1,6 @@
+import type {Config} from '@oclif/core'
+
 import {AuthType, type BrokerAuth, OrgError, OrgErrorCode} from '@dishantlangayan/sc-cli-core'
-import {Config} from '@oclif/core'
-import {expect} from 'chai'
-import * as sinon from 'sinon'
 
 import type {
   EventBrokerService,
@@ -10,21 +9,28 @@ import type {
 } from '../../../../src/types/cloud-api.js'
 
 import BrokerLoginCloud from '../../../../src/commands/broker/login/cloud.js'
+import {
+  createMockConfig,
+  createSandbox,
+  expect,
+  type SinonSandbox,
+  type SinonStub,
+} from '../../../helpers/index.js'
 
 describe('broker:login:cloud', () => {
-  let sandbox: sinon.SinonSandbox
+  let sandbox: SinonSandbox
   let mockBrokerAuthManager: {
-    addBroker: sinon.SinonStub
-    brokerExists: sinon.SinonStub
-    setDefaultBroker: sinon.SinonStub
-    updateBroker: sinon.SinonStub
+    addBroker: SinonStub
+    brokerExists: SinonStub
+    setDefaultBroker: SinonStub
+    updateBroker: SinonStub
   }
   let mockOrgManager: {
-    createConnection: sinon.SinonStub
-    getDefaultOrg: sinon.SinonStub
+    createConnection: SinonStub
+    getDefaultOrg: SinonStub
   }
   let mockCloudConnection: {
-    get: sinon.SinonStub
+    get: SinonStub
   }
   let mockConfig: Config
 
@@ -72,7 +78,7 @@ describe('broker:login:cloud', () => {
   }
 
   beforeEach(() => {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
 
     // Mock BrokerAuthManager
     mockBrokerAuthManager = {
@@ -102,14 +108,7 @@ describe('broker:login:cloud', () => {
       .withArgs('/missionControl/eventBrokerServices/service-123?expand=broker,serviceConnectionEndpoints')
       .resolves(mockServiceDetailsResponse)
 
-    // Mock oclif config
-    mockConfig = {
-      bin: 'sc',
-      commands: [],
-      plugins: new Map(),
-      runHook: sandbox.stub().resolves({failures: [], successes: []}),
-      version: '0.0.0',
-    } as unknown as Config
+    mockConfig = createMockConfig(sandbox)
   })
 
   afterEach(() => {

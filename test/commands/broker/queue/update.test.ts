@@ -1,62 +1,36 @@
-import {AuthType, BrokerAuth, ScConnection} from '@dishantlangayan/sc-cli-core'
-import {expect} from 'chai'
-import {restore, type SinonStub, stub} from 'sinon'
-
 import BrokerQueueUpdate from '../../../../src/commands/broker/queue/update.js'
 import {MsgVpnQueueUpdateResponse} from '../../../../src/types/msgvpn-queue.js'
+import {
+  buildSimpleResponse,
+  expect,
+  setupTestContext,
+  type SinonStub,
+  stubCommandMethod,
+  type TestContext,
+} from '../../../helpers/index.js'
 
 describe('broker:queue:update', () => {
-  let mockBrokerAuthManager: {
-    brokerExists: SinonStub
-    createConnection: SinonStub
-    getBroker: SinonStub
-    getDefaultBroker: SinonStub
-  }
-  let mockConnection: {
-    patch: SinonStub
-  }
-  let mockBroker: BrokerAuth
+  let context: TestContext
 
   beforeEach(() => {
-    // Setup mock broker
-    mockBroker = {
-      accessToken: 'dGVzdDp0ZXN0', // base64 encoded "test:test"
-      authType: AuthType.BASIC,
-      name: 'test-broker',
-      sempEndpoint: 'https://localhost',
-      sempPort: 8080,
-    }
-
-    // Setup mock connection
-    mockConnection = {
-      patch: stub().resolves({
+    context = setupTestContext({}, ['patch'])
+    context.mockConnection.patch!.resolves(
+      buildSimpleResponse({
         data: {
           msgVpnName: 'default',
           queueName: 'testQueue',
         },
-        meta: {
-          responseCode: 200,
-        },
       }),
-    }
+    )
+  })
 
-    // Setup mock BrokerAuthManager
-    mockBrokerAuthManager = {
-      brokerExists: stub().resolves(true),
-      createConnection: stub().resolves(mockConnection as unknown as ScConnection),
-      getBroker: stub().resolves(mockBroker),
-      getDefaultBroker: stub().resolves(null),
-    }
+  afterEach(() => {
+    context.cleanup()
   })
 
   describe('SEMP API Calls', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueUpdate.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueUpdate, 'getBrokerAuthManager', context.mockBrokerAuthManager)
     })
 
     it('should call correct SEMP endpoint with queue name', async () => {
@@ -66,7 +40,8 @@ describe('broker:queue:update', () => {
         '--msg-vpn-name=default',
       ])
 
-      expect(mockConnection.patch.calledWith('/SEMP/v2/config/msgVpns/default/queues/testQueue')).to.be.true
+      expect(context.mockConnection.patch!.calledWith('/SEMP/v2/config/msgVpns/default/queues/testQueue')).to.be
+        .true
     })
 
     it('should use PATCH method not POST', async () => {
@@ -77,19 +52,14 @@ describe('broker:queue:update', () => {
         '--egress-enabled',
       ])
 
-      expect(mockConnection.patch.called).to.be.true
-      expect(mockConnection.patch.callCount).to.equal(1)
+      expect(context.mockConnection.patch!.called).to.be.true
+      expect(context.mockConnection.patch!.callCount).to.equal(1)
     })
   })
 
   describe('Flag Mapping', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueUpdate.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueUpdate, 'getBrokerAuthManager', context.mockBrokerAuthManager)
     })
 
     it('should map all flags correctly to SEMP request body', async () => {
@@ -109,7 +79,7 @@ describe('broker:queue:update', () => {
         '--respect-ttl-enabled',
       ])
 
-      const patchCall = mockConnection.patch.getCall(0)
+      const patchCall = context.mockConnection.patch!.getCall(0)
       const requestBody = patchCall.args[1]
 
       expect(requestBody).to.deep.equal({
@@ -134,7 +104,7 @@ describe('broker:queue:update', () => {
         '--egress-enabled',
       ])
 
-      const patchCall = mockConnection.patch.getCall(0)
+      const patchCall = context.mockConnection.patch!.getCall(0)
       const requestBody = patchCall.args[1]
 
       expect(requestBody).to.not.have.property('queueName')
@@ -149,7 +119,7 @@ describe('broker:queue:update', () => {
         '--no-ingress-enabled',
       ])
 
-      const patchCall = mockConnection.patch.getCall(0)
+      const patchCall = context.mockConnection.patch!.getCall(0)
       const requestBody = patchCall.args[1]
 
       expect(requestBody).to.deep.equal({
@@ -161,12 +131,7 @@ describe('broker:queue:update', () => {
 
   describe('Partial Updates', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueUpdate.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueUpdate, 'getBrokerAuthManager', context.mockBrokerAuthManager)
     })
 
     it('should send minimal request with only one flag', async () => {
@@ -177,7 +142,7 @@ describe('broker:queue:update', () => {
         '--egress-enabled',
       ])
 
-      const patchCall = mockConnection.patch.getCall(0)
+      const patchCall = context.mockConnection.patch!.getCall(0)
       const requestBody = patchCall.args[1]
 
       expect(requestBody).to.deep.equal({
@@ -193,7 +158,7 @@ describe('broker:queue:update', () => {
         '--permission=read-only',
       ])
 
-      const patchCall = mockConnection.patch.getCall(0)
+      const patchCall = context.mockConnection.patch!.getCall(0)
       const requestBody = patchCall.args[1]
 
       expect(requestBody).to.deep.equal({
@@ -204,13 +169,8 @@ describe('broker:queue:update', () => {
 
   describe('Response Display', () => {
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stub(BrokerQueueUpdate.prototype as any, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
-      stub(BrokerQueueUpdate.prototype, 'log')
-    })
-
-    afterEach(() => {
-      restore()
+      stubCommandMethod(context.sandbox, BrokerQueueUpdate, 'getBrokerAuthManager', context.mockBrokerAuthManager)
+      context.sandbox.stub(BrokerQueueUpdate.prototype, 'log')
     })
 
     it('should display success message with queue details', async () => {
@@ -225,7 +185,7 @@ describe('broker:queue:update', () => {
         },
       }
 
-      mockConnection.patch.resolves(mockResponse)
+      context.mockConnection.patch!.resolves(mockResponse)
 
       await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
@@ -249,7 +209,7 @@ describe('broker:queue:update', () => {
         },
       }
 
-      mockConnection.patch.resolves(mockResponse)
+      context.mockConnection.patch!.resolves(mockResponse)
 
       const result = await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
