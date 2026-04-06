@@ -145,6 +145,54 @@ export interface MsgVpnAclProfileSubscribeTopicExceptionsListResponse {
 }
 
 // ============================================================================
+// SUBSCRIBE SHARE NAME EXCEPTIONS
+// ============================================================================
+
+/**
+ * Request body for creating a Subscribe Share Name Exception
+ */
+export interface MsgVpnAclProfileSubscribeShareNameExceptionCreateRequest {
+  subscribeShareNameException: string // Share name with optional wildcards
+  subscribeShareNameExceptionSyntax: 'mqtt' | 'smf'
+}
+
+/**
+ * Subscribe Share Name Exception object from SEMP API
+ */
+export interface MsgVpnAclProfileSubscribeShareNameException {
+  [key: string]: unknown
+  aclProfileName?: string
+  msgVpnName?: string
+  subscribeShareNameException?: string
+  subscribeShareNameExceptionSyntax?: 'mqtt' | 'smf'
+}
+
+/**
+ * Response from SEMP Config API Subscribe Share Name Exception creation
+ */
+export interface MsgVpnAclProfileSubscribeShareNameExceptionCreateResponse {
+  data: MsgVpnAclProfileSubscribeShareNameException
+  links?: {[key: string]: unknown; uri?: string}
+  meta: SempMeta
+}
+
+/**
+ * Response from SEMP Config API Subscribe Share Name Exception deletion
+ */
+export interface MsgVpnAclProfileSubscribeShareNameExceptionDeleteResponse {
+  meta: SempMeta
+}
+
+/**
+ * Response from SEMP Monitor API Subscribe Share Name Exception list
+ */
+export interface MsgVpnAclProfileSubscribeShareNameExceptionsListResponse {
+  data: MsgVpnAclProfileSubscribeShareNameException[]
+  links?: {[key: string]: unknown}
+  meta: SempMeta
+}
+
+// ============================================================================
 // SHARED SEMP META
 // ============================================================================
 
