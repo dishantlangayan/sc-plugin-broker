@@ -7,13 +7,13 @@ Commands to interact with Solace Event Broker.
 [![Version](https://img.shields.io/npm/v/@dishantlangayan/sc-plugin-broker.svg)](https://npmjs.org/package/@dishantlangayan/sc-plugin-broker)
 [![Downloads/week](https://img.shields.io/npm/dw/@dishantlangayan/sc-plugin-broker.svg)](https://npmjs.org/package/@dishantlangayan/sc-plugin-broker)
 
+> [!NOTE]
+> This plugin is packaged with the [Solace Cloud CLI](https://github.com/SolaceLabs/solace-cloud-cli) but can be use independently when working with self-managed Software Event Brokers.
 
 <!-- toc -->
 * [Usage](#usage)
 * [Resources](#resources)
 * [Testing](#testing)
-* [Run all tests](#run-all-tests)
-* [Run specific test file](#run-specific-test-file)
 * [Contributing](#contributing)
 * [Authors](#authors)
 * [License](#license)
@@ -46,10 +46,10 @@ For more information try these resources:
 # Testing
 <!-- testing -->
 ```bash
-# Run all tests
+## Run all tests
 npm test
 
-# Run specific test file
+## Run specific test file
 npm test -- test/commands/broker/queue/create.test.ts
 ```
 
