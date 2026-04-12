@@ -16,4 +16,4 @@ When creating new commands:
 
 - For create, update, and delete command use the Config SEMP API, see [semp-v2-swagger-config.json](semp-v2-swagger-config.json)
 - For display and list commands, see [semp-v2-swagger-monitor.json](semp-v2-swagger-monitor.json)
-- For test helper methods, see [README.md](test/helpers/README.md)
+- For test helper methods, see [README.md](../../../test/helpers/README.md)
