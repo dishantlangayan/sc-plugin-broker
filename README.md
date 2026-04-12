@@ -96,6 +96,11 @@ See the [LICENSE](LICENSE.txt) file for details.
 * [`sc broker client-profile display`](#sc-broker-client-profile-display)
 * [`sc broker client-profile list`](#sc-broker-client-profile-list)
 * [`sc broker client-profile update`](#sc-broker-client-profile-update)
+* [`sc broker client-username create`](#sc-broker-client-username-create)
+* [`sc broker client-username delete`](#sc-broker-client-username-delete)
+* [`sc broker client-username display`](#sc-broker-client-username-display)
+* [`sc broker client-username list`](#sc-broker-client-username-list)
+* [`sc broker client-username update`](#sc-broker-client-username-update)
 * [`sc broker login basic`](#sc-broker-login-basic)
 * [`sc broker login cloud`](#sc-broker-login-cloud)
 * [`sc broker login list`](#sc-broker-login-list)
@@ -1050,6 +1055,229 @@ EXAMPLES
 ```
 
 _See code: [src/commands/broker/client-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.5.0/src/commands/broker/client-profile/update.ts)_
+
+## `sc broker client-username create`
+
+Create a Client Username on a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker client-username create -u <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v
+    <value>] [--acl-profile-name <value>] [--client-profile-name <value>] [--enabled]
+    [--guaranteed-endpoint-permission-override-enabled] [--password <value>] [--subscription-manager-enabled]
+
+FLAGS
+  -b, --broker-id=<value>                                Stored broker identifier. If not provided, uses the default
+                                                         broker.
+  -n, --broker-name=<value>                              Stored broker name. If not provided, uses the default broker.
+  -u, --client-username=<value>                          (required) The name of the Client Username to create.
+  -v, --msg-vpn-name=<value>                             The name of the Message VPN.
+      --acl-profile-name=<value>                         The ACL Profile name for authorization.
+      --client-profile-name=<value>                      The Client Profile name for connection settings.
+      --enabled                                          Enable the Client Username. When disabled, clients cannot
+                                                         connect.
+      --guaranteed-endpoint-permission-override-enabled  Enable permission override for guaranteed endpoints.
+      --password=<value>                                 Password for Client Username authentication.
+      --subscription-manager-enabled                     Enable subscription management capability.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Create a Client Username on a Solace Event Broker.
+
+  Any attribute missing from the request will be set to its default value. The creation of instances of this object are
+  synchronized to HA mates and replication sites via config-sync.
+
+  A Client Username represents a client that can connect to the broker with specific authentication and authorization
+  settings.
+
+EXAMPLES
+  $ sc broker client-username create --client-username=user1 --msg-vpn-name=default
+
+  $ sc broker client-username create --broker-name=dev-broker --client-username=user1 --enabled
+
+  $ sc broker client-username create --client-username=user1 --password=secret123 --acl-profile-name=custom-acl --client-profile-name=custom-profile
+
+  $ sc broker client-username create --client-username=admin --enabled --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
+```
+
+_See code: [src/commands/broker/client-username/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.5.0/src/commands/broker/client-username/create.ts)_
+
+## `sc broker client-username delete`
+
+Delete a Client Username from a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker client-username delete -u <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v
+    <value>] [--no-prompt]
+
+FLAGS
+  -b, --broker-id=<value>        Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>      Stored broker name. If not provided, uses the default broker.
+  -u, --client-username=<value>  (required) The name of the Client Username to delete.
+  -v, --msg-vpn-name=<value>     The name of the Message VPN.
+      --no-prompt                Skip confirmation prompt and proceed with deletion.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Delete a Client Username from a Solace Event Broker.
+
+  Deletes the specified Client Username from the Message VPN. This is a destructive operation that removes the Client
+  Username. Any clients currently connected with this username will be disconnected.
+
+  The deletion is synchronized to HA mates and replication sites via config-sync.
+
+  By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
+
+EXAMPLES
+  $ sc broker client-username delete --client-username=user1 --msg-vpn-name=default
+
+  $ sc broker client-username delete --broker-name=dev-broker --client-username=user1
+
+  $ sc broker client-username delete --client-username=user1 --no-prompt
+
+  $ sc broker client-username delete --broker-id=prod --client-username=tempUser --msg-vpn-name=production --no-prompt
+```
+
+_See code: [src/commands/broker/client-username/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.5.0/src/commands/broker/client-username/delete.ts)_
+
+## `sc broker client-username display`
+
+Display Client Username information from a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker client-username display -u <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v
+    <value>]
+
+FLAGS
+  -b, --broker-id=<value>        Stored broker identifier. If not provided, uses the default broker.
+  -n, --broker-name=<value>      Stored broker name. If not provided, uses the default broker.
+  -u, --client-username=<value>  (required) The name of the Client Username to display.
+  -v, --msg-vpn-name=<value>     The name of the Message VPN.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Display Client Username information from a Solace Event Broker.
+
+  Retrieves and displays detailed information about a Client Username using the SEMP Monitor API, including
+  configuration settings and associated profiles.
+
+EXAMPLES
+  $ sc broker client-username display --client-username=user1 --msg-vpn-name=default
+
+  $ sc broker client-username display --broker-name=dev-broker --client-username=user1
+
+  $ sc broker client-username display --client-username=admin
+```
+
+_See code: [src/commands/broker/client-username/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.5.0/src/commands/broker/client-username/display.ts)_
+
+## `sc broker client-username list`
+
+List Client Usernames from a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker client-username list [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v <value>] [-a]
+    [--client-username <value>] [-c <value>] [-s <value>]
+
+FLAGS
+  -a, --all                      Display all Client Usernames (auto-pagination).
+  -b, --broker-id=<value>        Stored broker identifier. If not provided, uses the default broker.
+  -c, --count=<value>            [default: 10] Number of Client Usernames to display per page.
+  -n, --broker-name=<value>      Stored broker name. If not provided, uses the default broker.
+  -s, --select=<value>           Comma-separated list of attributes to display (max 10).
+  -v, --msg-vpn-name=<value>     The name of the Message VPN.
+      --client-username=<value>  Filter Client Usernames by name. Supports * wildcard.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  List Client Usernames from a Solace Event Broker.
+
+  Retrieves and displays Client Usernames from the specified Message VPN using the SEMP Monitor API.
+  Supports filtering by name (with wildcards), custom attribute selection, and pagination.
+
+EXAMPLES
+  $ sc broker client-username list
+
+  $ sc broker client-username list --count=20
+
+  $ sc broker client-username list --client-username="user*"
+
+  $ sc broker client-username list --select=clientUsername,enabled,aclProfileName
+
+  $ sc broker client-username list --all
+
+  $ sc broker client-username list --client-username="admin*" --count=5 --all
+```
+
+_See code: [src/commands/broker/client-username/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.5.0/src/commands/broker/client-username/list.ts)_
+
+## `sc broker client-username update`
+
+Update a Client Username on a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker client-username update -u <value> [--json] [--log-level debug|warn|error|info|trace] [-b <value> | -n <value>] [-v
+    <value>] [--acl-profile-name <value>] [--client-profile-name <value>] [--enabled]
+    [--guaranteed-endpoint-permission-override-enabled] [--password <value>] [--subscription-manager-enabled]
+
+FLAGS
+  -b, --broker-id=<value>                                Stored broker identifier. If not provided, uses the default
+                                                         broker.
+  -n, --broker-name=<value>                              Stored broker name. If not provided, uses the default broker.
+  -u, --client-username=<value>                          (required) The name of the Client Username to update.
+  -v, --msg-vpn-name=<value>                             The name of the Message VPN.
+      --acl-profile-name=<value>                         The ACL Profile name for authorization.
+      --client-profile-name=<value>                      The Client Profile name for connection settings.
+      --enabled                                          Enable or disable the Client Username.
+      --guaranteed-endpoint-permission-override-enabled  Enable or disable permission override for guaranteed endpoints.
+      --password=<value>                                 Update the password for authentication.
+      --subscription-manager-enabled                     Enable or disable subscription management capability.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Update a Client Username on a Solace Event Broker.
+
+  Any attribute missing from the request will be left unchanged. The update of instances of this object are synchronized
+  to HA mates and replication sites via config-sync.
+
+  Note: Modifying aclProfileName or clientProfileName while enabled may be service impacting as the Client Username will
+  be temporarily disabled to apply the change.
+
+EXAMPLES
+  $ sc broker client-username update --client-username=user1 --enabled
+
+  $ sc broker client-username update --broker-name=dev-broker --client-username=user1 --acl-profile-name=new-acl
+
+  $ sc broker client-username update --client-username=user1 --password=newPassword123
+
+  $ sc broker client-username update --client-username=admin --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
+```
+
+_See code: [src/commands/broker/client-username/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.5.0/src/commands/broker/client-username/update.ts)_
 
 ## `sc broker login basic`
 
