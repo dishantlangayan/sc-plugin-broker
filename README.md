@@ -26,7 +26,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.6.0 darwin-arm64 node-v24.1.0
+@dishantlangayan/sc-plugin-broker/0.6.0 linux-x64 node-v20.20.2
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
