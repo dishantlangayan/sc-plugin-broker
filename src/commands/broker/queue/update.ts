@@ -8,13 +8,11 @@ export default class BrokerQueueUpdate extends ScBrokerCommand<typeof BrokerQueu
   static override args = {}
   static override description = `Update a Queue on a Solace Event Broker.
 
-Any attribute missing from the request will be left unchanged. The update of instances of this object are synchronized to HA mates and replication sites via config-sync.`
+Any attribute missing from the request will be left unchanged.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --egress-enabled',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --queue-name=myQueue --msg-vpn-name=default --max-msg-spool-usage=2048',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --max-msg-spool-usage=1024 --max-ttl=3600',
-    '<%= config.bin %> <%= command.id %> --queue-name=myQueue --owner=newowner',
-    '<%= config.bin %> <%= command.id %> --queue-name=myQueue --permission=read-only --no-egress-enabled',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --egress-enabled',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --max-msg-spool-usage=1024 --max-ttl=3600',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --no-egress-enabled',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -47,6 +45,11 @@ Any attribute missing from the request will be left unchanged. The update of ins
       description: 'The maximum time in seconds a message can stay in the queue when respect-ttl-enabled is true.',
       min: 0,
     }),
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the queue to update.',
+      required: true,
+    }),
     owner: Flags.string({
       char: 'o',
       description: 'The client username that owns the queue and has permission equivalent to delete.',
@@ -55,11 +58,6 @@ Any attribute missing from the request will be left unchanged. The update of ins
       char: 'p',
       description: 'The permission level for all consumers of the queue, excluding the owner.',
       options: ['consume', 'delete', 'modify-topic', 'no-access', 'read-only'],
-    }),
-    'queue-name': Flags.string({
-      char: 'q',
-      description: 'The name of the queue to update.',
-      required: true,
     }),
     'respect-ttl-enabled': Flags.boolean({
       allowNo: true,
@@ -74,8 +72,7 @@ Any attribute missing from the request will be left unchanged. The update of ins
     const updateBody: MsgVpnQueueUpdateRequest = this.buildQueueUpdateRequest(flags)
 
     // Make SEMP Config API call to update the queue
-    const queueName = flags['queue-name']
-    const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/queues/${queueName}`
+    const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/queues/${flags.name}`
     const sempResp = await this.sempConn.patch<MsgVpnQueueUpdateResponse>(endpoint, updateBody)
 
     // Display results

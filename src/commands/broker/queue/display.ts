@@ -10,15 +10,13 @@ export default class BrokerQueueDisplay extends ScBrokerCommand<typeof BrokerQue
 
 Retrieves and displays detailed information about a queue using the SEMP Monitor API, including operational state, statistics, and configuration.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --queue-name=myQueue --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --queue-name=myQueue --show-subscriptions',
     '<%= config.bin %> <%= command.id %> --queue-name=myQueue',
+    '<%= config.bin %> <%= command.id %> --queue-name=myQueue --show-subscriptions',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'queue-name': Flags.string({
-      char: 'q',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the queue to display.',
       required: true,
     }),
@@ -33,7 +31,7 @@ Retrieves and displays detailed information about a queue using the SEMP Monitor
     const {flags} = await this.parse(BrokerQueueDisplay)
 
     // Fetch queue details from Monitor API
-    const queueEndpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queues/${flags['queue-name']}`
+    const queueEndpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queues/${flags.name}`
     const queueResp = await this.sempConn.get<MsgVpnQueueMonitorResponse>(queueEndpoint)
 
     // Prepare return value
@@ -44,7 +42,7 @@ Retrieves and displays detailed information about a queue using the SEMP Monitor
     // Display based on flag
     if (flags['show-subscriptions']) {
       // Fetch and display only subscriptions
-      const subsEndpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queues/${flags['queue-name']}/subscriptions`
+      const subsEndpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queues/${flags.name}/subscriptions`
       const subsResp = await this.sempConn.get<MsgVpnQueueSubscriptionsResponse>(subsEndpoint)
 
       result.subscriptions = subsResp

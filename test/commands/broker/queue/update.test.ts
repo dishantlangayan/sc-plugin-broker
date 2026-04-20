@@ -36,8 +36,8 @@ describe('broker:queue:update', () => {
     it('should call correct SEMP endpoint with queue name', async () => {
       await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
       ])
 
       expect(context.mockConnection.patch!.calledWith('/SEMP/v2/config/msgVpns/default/queues/testQueue')).to.be
@@ -47,8 +47,8 @@ describe('broker:queue:update', () => {
     it('should use PATCH method not POST', async () => {
       await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
-        '--queue-name=myQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--egress-enabled',
       ])
 
@@ -65,8 +65,8 @@ describe('broker:queue:update', () => {
     it('should map all flags correctly to SEMP request body', async () => {
       await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
-        '--queue-name=advancedQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--access-type=non-exclusive',
         '--dead-msg-queue=#DEAD_MSG_QUEUE',
         '--egress-enabled',
@@ -99,8 +99,8 @@ describe('broker:queue:update', () => {
     it('should NOT include queueName in request body', async () => {
       await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--egress-enabled',
       ])
 
@@ -113,8 +113,8 @@ describe('broker:queue:update', () => {
     it('should handle boolean flags with allowNo correctly', async () => {
       await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--no-egress-enabled',
         '--no-ingress-enabled',
       ])
@@ -137,8 +137,8 @@ describe('broker:queue:update', () => {
     it('should send minimal request with only one flag', async () => {
       await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
-        '--queue-name=minimalQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--egress-enabled',
       ])
 
@@ -153,8 +153,8 @@ describe('broker:queue:update', () => {
     it('should allow updating only permission', async () => {
       await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--permission=read-only',
       ])
 
@@ -189,8 +189,8 @@ describe('broker:queue:update', () => {
 
       await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--egress-enabled',
       ])
 
@@ -213,8 +213,8 @@ describe('broker:queue:update', () => {
 
       const result = await BrokerQueueUpdate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--max-msg-spool-usage=2048',
       ])
 

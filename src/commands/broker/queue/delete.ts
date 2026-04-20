@@ -8,33 +8,29 @@ export default class BrokerQueueDelete extends ScBrokerCommand<typeof BrokerQueu
   static override args = {}
 static override description = `Delete a Queue from a Solace Event Broker.
 
-Deletes the specified queue from the Message VPN. This is a destructive operation that removes the queue and all its messages. Any messages persisted on the queue will also be deleted.
-
-The deletion is synchronized to HA mates and replication sites via config-sync.
+This is a destructive operation that removes the queue and deletes any messages persisted on the queue.
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
 static override examples = [
-    '<%= config.bin %> <%= command.id %> --queue-name=myQueue --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-name=myQueue',
+    '<%= config.bin %> <%= command.id %> --name=myQueue',
     '<%= config.bin %> <%= command.id %> --queue-name=myQueue --no-prompt',
-    '<%= config.bin %> <%= command.id %> --broker-id=prod --queue-name=tempQueue --msg-vpn-name=production --no-prompt',
   ]
 static override flags = {
     ...ScBrokerCommand.baseFlags,
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the queue to delete.',
+      required: true,
+    }),
     'no-prompt': Flags.boolean({
       default: false,
       description: 'Skip confirmation prompt and proceed with deletion.',
-    }),
-    'queue-name': Flags.string({
-      char: 'q',
-      description: 'The name of the queue to delete.',
-      required: true,
     }),
   }
 
   public async run(): Promise<MsgVpnQueueDeleteResponse> {
     const {flags} = await this.parse(BrokerQueueDelete)
-    const queueName = flags['queue-name']
+    const queueName = flags.name
 
     // Confirmation prompt (unless --no-prompt flag is set)
     if (!flags['no-prompt']) {

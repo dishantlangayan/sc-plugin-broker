@@ -10,14 +10,15 @@ export default class BrokerQueueList extends ScBrokerCommand<typeof BrokerQueueL
 static override description = `List queues from a Solace Event Broker.
 
 Retrieves and displays queues from the specified Message VPN using the SEMP Monitor API.
-Supports filtering by name (with wildcards), custom attribute selection, and pagination.`
+Supports filtering by name (with wildcards), custom attribute selection, and pagination.
+Refer to the SEMP Monitor API docs for available attributes.`
 static override examples = [
     '<%= config.bin %> <%= command.id %>',
     '<%= config.bin %> <%= command.id %> --count=20',
-    '<%= config.bin %> <%= command.id %> --queue-name="order*"',
+    '<%= config.bin %> <%= command.id %> --name="order*"',
     '<%= config.bin %> <%= command.id %> --select=queueName,owner,maxMsgSpoolUsage',
     '<%= config.bin %> <%= command.id %> --all',
-    '<%= config.bin %> <%= command.id %> --queue-name="*test*" --count=5 --all',
+    '<%= config.bin %> <%= command.id %> --name="*test*" --count=5 --all',
   ]
 static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -33,8 +34,8 @@ static override flags = {
       max: 100,
       min: 1,
     }),
-    'queue-name': Flags.string({
-      char: 'q',
+    name: Flags.string({
+      char: 'n',
       description: 'Filter queues by name. Supports * wildcard.',
     }),
     select: Flags.string({
@@ -92,7 +93,7 @@ static override flags = {
    * Fetch queues with pagination and stream to table
    */
   private async fetchAndDisplayQueues(
-    flags: {all: boolean; count: number; 'queue-name'?: string},
+    flags: {all: boolean; count: number; name?: string},
     selectedAttrs: string[],
     streamTable: import('table').WritableStream,
   ): Promise<MsgVpnQueueMonitor[]> {
@@ -105,8 +106,8 @@ static override flags = {
       params.set('count', flags.count.toString())
 
       // Add where clause for queue name filtering if provided
-      if (flags['queue-name']) {
-        params.set('where', `queueName==${flags['queue-name']}`)
+      if (flags.name) {
+        params.set('where', `queueName==${flags.name}`)
       }
 
       // Add select parameter for performance optimization

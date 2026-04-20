@@ -34,9 +34,9 @@ describe('broker:queue:subscriptions:delete', () => {
     it('should call correct SEMP endpoint with --no-prompt', async () => {
       await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=orders/>',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=orders/>',
         '--no-prompt',
       ])
 
@@ -48,9 +48,9 @@ describe('broker:queue:subscriptions:delete', () => {
     it('should URL encode subscription topic in endpoint', async () => {
       await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=events/user/*',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=events/user/*',
         '--no-prompt',
       ])
 
@@ -64,9 +64,9 @@ describe('broker:queue:subscriptions:delete', () => {
     it('should handle special characters in subscription topic', async () => {
       await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=data/+/sensor',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=data/+/sensor',
         '--no-prompt',
       ])
 
@@ -90,9 +90,9 @@ describe('broker:queue:subscriptions:delete', () => {
     it('should display success message on 200 response', async () => {
       await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=orders/>',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=orders/>',
         '--no-prompt',
       ])
 
@@ -113,9 +113,9 @@ describe('broker:queue:subscriptions:delete', () => {
 
       const result = await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=orders/>',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=orders/>',
         '--no-prompt',
       ])
 
@@ -137,9 +137,9 @@ describe('broker:queue:subscriptions:delete', () => {
     it('should skip confirmation when --no-prompt is set', async () => {
       await BrokerQueueSubscriptionsDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=orders/>',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=orders/>',
         '--no-prompt',
       ])
 
@@ -148,12 +148,12 @@ describe('broker:queue:subscriptions:delete', () => {
   })
 
   describe('Flag Validation', () => {
-    it('should error when queue-name is missing', async () => {
+    it('should error when queue name is missing', async () => {
       try {
         await BrokerQueueSubscriptionsDelete.run([
           '--broker-name=test-broker',
-          '--subscription-topic=orders/>',
           '--msg-vpn-name=default',
+          '--subscription-topic=orders/>',
           '--no-prompt',
         ])
         expect.fail('Should have thrown error')
@@ -161,7 +161,7 @@ describe('broker:queue:subscriptions:delete', () => {
         expect(error).to.be.instanceOf(Error)
         const err = error as Error
         expect(err.message).to.match(/Missing required flag/)
-        expect(err.message).to.match(/queue-name/)
+        expect(err.message).to.match(/name/)
       }
     })
 
@@ -169,8 +169,8 @@ describe('broker:queue:subscriptions:delete', () => {
       try {
         await BrokerQueueSubscriptionsDelete.run([
           '--broker-name=test-broker',
-          '--queue-name=testQueue',
           '--msg-vpn-name=default',
+          '--name=testQueue',
           '--no-prompt',
         ])
         expect.fail('Should have thrown error')

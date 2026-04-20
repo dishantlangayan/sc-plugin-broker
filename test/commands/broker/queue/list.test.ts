@@ -137,7 +137,7 @@ describe('broker:queue:list', () => {
       context.sandbox.stub(BrokerQueueList.prototype, 'log')
     })
 
-    it('should add where parameter when queue-name flag is provided', async () => {
+    it('should add where parameter when name flag is provided', async () => {
       const mockResponse: MsgVpnQueuesMonitorResponse = {
         data: [],
         meta: {
@@ -150,7 +150,7 @@ describe('broker:queue:list', () => {
       await BrokerQueueList.run([
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
-        '--queue-name=order*',
+        '--name=order*',
       ])
 
       const getCall = context.mockConnection.get!.getCall(0)
@@ -173,7 +173,7 @@ describe('broker:queue:list', () => {
       await BrokerQueueList.run([
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
-        '--queue-name=exactQueue',
+        '--name=exactQueue',
       ])
 
       const getCall = context.mockConnection.get!.getCall(0)
@@ -182,7 +182,7 @@ describe('broker:queue:list', () => {
       expect(url).to.include('exactQueue')
     })
 
-    it('should not add where parameter when queue-name flag is not provided', async () => {
+    it('should not add where parameter when name flag is not provided', async () => {
       const mockResponse: MsgVpnQueuesMonitorResponse = {
         data: [],
         meta: {

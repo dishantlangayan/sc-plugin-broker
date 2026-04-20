@@ -38,7 +38,7 @@ describe('broker:queue:create', () => {
     it('should default permission to "consume"', async () => {
       await BrokerQueueCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
       ])
 
@@ -49,7 +49,7 @@ describe('broker:queue:create', () => {
     it('should allow overriding permission default', async () => {
       await BrokerQueueCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
         '--permission=no-access',
       ])
@@ -67,7 +67,7 @@ describe('broker:queue:create', () => {
     it('should call correct SEMP endpoint', async () => {
       await BrokerQueueCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
       ])
 
@@ -77,7 +77,7 @@ describe('broker:queue:create', () => {
     it('should map all flags correctly to SEMP request body', async () => {
       await BrokerQueueCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=advancedQueue',
+        '--name=advancedQueue',
         '--msg-vpn-name=default',
         '--access-type=non-exclusive',
         '--dead-msg-queue=#DEAD_MSG_QUEUE',
@@ -112,7 +112,7 @@ describe('broker:queue:create', () => {
     it('should send minimal request with only required flags', async () => {
       await BrokerQueueCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=minimalQueue',
+        '--name=minimalQueue',
         '--msg-vpn-name=default',
       ])
 
@@ -148,7 +148,7 @@ describe('broker:queue:create', () => {
 
       await BrokerQueueCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
       ])
 
@@ -172,7 +172,7 @@ describe('broker:queue:create', () => {
 
       const result = await BrokerQueueCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
       ])
 
@@ -195,7 +195,7 @@ describe('broker:queue:create', () => {
     })
 
     it('should use msgVpnName from BrokerAuth when msg-vpn-name flag not provided', async () => {
-      await BrokerQueueCreate.run(['--broker-name=cloud-broker', '--queue-name=testQueue'])
+      await BrokerQueueCreate.run(['--broker-name=cloud-broker', '--name=testQueue'])
 
       expect(context.mockConnection.post!.calledWith('/SEMP/v2/config/msgVpns/cloud-vpn/queues')).to.be.true
     })
@@ -203,7 +203,7 @@ describe('broker:queue:create', () => {
     it('should allow flag override for cloud brokers', async () => {
       await BrokerQueueCreate.run([
         '--broker-name=cloud-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=override-vpn',
       ])
 
@@ -229,7 +229,7 @@ describe('broker:queue:create', () => {
       context.mockBrokerAuthManager.getDefaultBroker.resolves(defaultBroker)
       context.mockBrokerAuthManager.getBroker.resolves(defaultBroker)
 
-      await BrokerQueueCreate.run(['--queue-name=testQueue', '--msg-vpn-name=default'])
+      await BrokerQueueCreate.run(['--name=testQueue', '--msg-vpn-name=default'])
 
       expect(context.mockBrokerAuthManager.getDefaultBroker.called).to.be.true
       expect(context.mockBrokerAuthManager.createConnection.calledWith('default-broker')).to.be.true
@@ -249,7 +249,7 @@ describe('broker:queue:create', () => {
       context.mockBrokerAuthManager.getDefaultBroker.resolves(defaultCloudBroker)
       context.mockBrokerAuthManager.getBroker.resolves(defaultCloudBroker)
 
-      await BrokerQueueCreate.run(['--queue-name=testQueue'])
+      await BrokerQueueCreate.run(['--name=testQueue'])
 
       expect(context.mockBrokerAuthManager.getDefaultBroker.called).to.be.true
       expect(context.mockConnection.post!.calledWith('/SEMP/v2/config/msgVpns/default-cloud-vpn/queues')).to.be.true
@@ -272,7 +272,7 @@ describe('broker:queue:create', () => {
 
     it('should error when msg-vpn-name not provided for non-cloud broker', async () => {
       try {
-        await BrokerQueueCreate.run(['--broker-name=basic-broker', '--queue-name=testQueue'])
+        await BrokerQueueCreate.run(['--broker-name=basic-broker', '--name=testQueue'])
         expect.fail('Should have thrown an error')
       } catch (error: unknown) {
         expect((error as Error).message).to.match(/msg-vpn-name.*required.*not using.*solace cloud/i)

@@ -42,9 +42,9 @@ describe('broker:queue:subscriptions:create', () => {
     it('should call correct SEMP endpoint', async () => {
       await BrokerQueueSubscriptionsCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=orders/>',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=orders/>',
       ])
 
       expect(
@@ -55,9 +55,9 @@ describe('broker:queue:subscriptions:create', () => {
     it('should map subscription-topic flag to request body', async () => {
       await BrokerQueueSubscriptionsCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=events/user/*',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=events/user/*',
       ])
 
       const postCall = context.mockConnection.post!.getCall(0)
@@ -71,9 +71,9 @@ describe('broker:queue:subscriptions:create', () => {
     it('should handle wildcard characters in subscription topic', async () => {
       await BrokerQueueSubscriptionsCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=data/sensor/+/temperature',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=data/sensor/+/temperature',
       ])
 
       const postCall = context.mockConnection.post!.getCall(0)
@@ -97,9 +97,9 @@ describe('broker:queue:subscriptions:create', () => {
     it('should display subscription details on success', async () => {
       await BrokerQueueSubscriptionsCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=orders/>',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=orders/>',
       ])
 
       const logStub = BrokerQueueSubscriptionsCreate.prototype.log as SinonStub
@@ -122,9 +122,9 @@ describe('broker:queue:subscriptions:create', () => {
 
       const result = await BrokerQueueSubscriptionsCreate.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--subscription-topic=orders/>',
         '--msg-vpn-name=default',
+        '--name=testQueue',
+        '--subscription-topic=orders/>',
       ])
 
       expect(result.data).to.exist
@@ -135,19 +135,19 @@ describe('broker:queue:subscriptions:create', () => {
   })
 
   describe('Flag Validation', () => {
-    it('should error when queue-name is missing', async () => {
+    it('should error when queue name is missing', async () => {
       try {
         await BrokerQueueSubscriptionsCreate.run([
           '--broker-name=test-broker',
-          '--subscription-topic=orders/>',
           '--msg-vpn-name=default',
+          '--subscription-topic=orders/>',
         ])
         expect.fail('Should have thrown error')
       } catch (error: unknown) {
         expect(error).to.be.instanceOf(Error)
         const err = error as Error
         expect(err.message).to.match(/Missing required flag/)
-        expect(err.message).to.match(/queue-name/)
+        expect(err.message).to.match(/name/)
       }
     })
 
@@ -155,8 +155,8 @@ describe('broker:queue:subscriptions:create', () => {
       try {
         await BrokerQueueSubscriptionsCreate.run([
           '--broker-name=test-broker',
-          '--queue-name=testQueue',
           '--msg-vpn-name=default',
+          '--name=testQueue',
         ])
         expect.fail('Should have thrown error')
       } catch (error: unknown) {

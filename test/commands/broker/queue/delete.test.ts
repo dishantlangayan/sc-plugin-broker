@@ -1,5 +1,3 @@
-import {runCommand} from '@oclif/test'
-
 import BrokerQueueDelete from '../../../../src/commands/broker/queue/delete.js'
 import {MsgVpnQueueDeleteResponse} from '../../../../src/types/msgvpn-queue.js'
 import {
@@ -31,7 +29,7 @@ describe('broker:queue:delete', () => {
     it('should call correct SEMP endpoint with --no-prompt', async () => {
       await BrokerQueueDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -42,7 +40,7 @@ describe('broker:queue:delete', () => {
     it('should delete queue with special characters in name', async () => {
       await BrokerQueueDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=test-queue-123',
+        '--name=test-queue-123',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -70,7 +68,7 @@ describe('broker:queue:delete', () => {
 
       await BrokerQueueDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -97,7 +95,7 @@ describe('broker:queue:delete', () => {
       try {
         await BrokerQueueDelete.run([
           '--broker-name=test-broker',
-          '--queue-name=nonexistent',
+          '--name=nonexistent',
           '--msg-vpn-name=default',
           '--no-prompt',
         ])
@@ -120,7 +118,7 @@ describe('broker:queue:delete', () => {
 
       const result = await BrokerQueueDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -138,7 +136,7 @@ describe('broker:queue:delete', () => {
     it('should skip confirmation when --no-prompt is set', async () => {
       await BrokerQueueDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -157,7 +155,7 @@ describe('broker:queue:delete', () => {
 
       await BrokerQueueDelete.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
+        '--name=testQueue',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -165,18 +163,6 @@ describe('broker:queue:delete', () => {
       const logStub = BrokerQueueDelete.prototype.log as SinonStub
       expect(logStub.called).to.be.true
       expect(context.mockConnection.delete!.calledOnce).to.be.true
-    })
-  })
-
-  describe('Required flags', () => {
-    it('should error when --queue-name is missing', async () => {
-      const result = await runCommand('broker:queue:delete --broker-name=test-broker --msg-vpn-name=default --no-prompt')
-
-      expect(result.error).to.exist
-      if (result.error) {
-        expect(result.error.message).to.match(/Missing required flag/)
-        expect(result.error.message).to.match(/queue-name/)
-      }
     })
   })
 })

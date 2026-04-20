@@ -6,14 +6,10 @@ import {MsgVpnQueueCreateRequest, MsgVpnQueueCreateResponse} from '../../../type
 
 export default class BrokerQueueCreate extends ScBrokerCommand<typeof BrokerQueueCreate> {
   static override args = {}
-  static override description = `Create a Queue on a Solace Event Broker.
-
-Any attribute missing from the request will be set to its default value. The creation of instances of this object are synchronized to HA mates and replication sites via config-sync.`
+  static override description = `Create a Queue on a Solace Event Broker.`
 static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --queue-name=myQueue --msg-vpn-name=default --access-type=non-exclusive',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-name=myQueue --msg-vpn-name=default --max-msg-spool-usage=1024 --egress-enabled --ingress-enabled',
-    '<%= config.bin %> <%= command.id %> --queue-name=myQueue',
+    '<%= config.bin %> <%= command.id %> --name=myQueue',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --access-type=non-exclusive --max-msg-spool-usage=1024 --egress-enabled --ingress-enabled',
   ]
 static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -46,6 +42,11 @@ static override flags = {
       description: 'The maximum time in seconds a message can stay in the queue when respect-ttl-enabled is true.',
       min: 0,
     }),
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the queue to create.',
+      required: true,
+    }),
     owner: Flags.string({
       char: 'o',
       description: 'The client username that owns the queue and has permission equivalent to delete.',
@@ -55,11 +56,6 @@ static override flags = {
       default: 'consume',
       description: 'The permission level for all consumers of the queue, excluding the owner.',
       options: ['consume', 'delete', 'modify-topic', 'no-access', 'read-only'],
-    }),
-    'queue-name': Flags.string({
-      char: 'q',
-      description: 'The name of the queue to create.',
-      required: true,
     }),
     'respect-ttl-enabled': Flags.boolean({
       allowNo: true,
@@ -94,13 +90,13 @@ static override flags = {
     'max-msg-spool-usage'?: number
     'max-redelivery-count'?: number
     'max-ttl'?: number
+    name: string
     owner?: string
     permission?: string
-    'queue-name': string
     'respect-ttl-enabled'?: boolean
   }): MsgVpnQueueCreateRequest {
     return {
-      queueName: flags['queue-name'],
+      queueName: flags.name,
       ...(flags['access-type'] && {accessType: flags['access-type'] as 'exclusive' | 'non-exclusive'}),
       ...(flags['dead-msg-queue'] && {deadMsgQueue: flags['dead-msg-queue']}),
       ...(flags['egress-enabled'] !== undefined && {egressEnabled: flags['egress-enabled']}),

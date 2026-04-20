@@ -6,29 +6,25 @@ import {MsgVpnQueueSubscriptionDeleteResponse} from '../../../../types/msgvpn-qu
 
 export default class BrokerQueueSubscriptionsDelete extends ScBrokerCommand<typeof BrokerQueueSubscriptionsDelete> {
   static override args = {}
-  static override description = `Delete a subscription from a Queue in a Solace Event Broker.
+  static override description = `Delete a topic subscription from a Queue in a Solace Event Broker.
 
-Removes a topic subscription from the specified queue. This is a destructive operation that removes the subscription.
-
-The deletion is synchronized to HA mates and replication sites via config-sync.
+This is a destructive operation that removes the subscription. 
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --queue-name=myQueue --subscription-topic=orders/> --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-name=myQueue --subscription-topic=events/user/*',
-    '<%= config.bin %> <%= command.id %> --queue-name=myQueue --subscription-topic=orders/> --no-prompt',
-    '<%= config.bin %> <%= command.id %> --broker-id=prod --queue-name=notifications --subscription-topic=alerts/critical --msg-vpn-name=production --no-prompt',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --subscription-topic=orders/>',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --subscription-topic=orders/> --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the queue to remove the subscription from.',
+      required: true,
+    }),
     'no-prompt': Flags.boolean({
       default: false,
       description: 'Skip confirmation prompt and proceed with deletion.',
-    }),
-    'queue-name': Flags.string({
-      char: 'q',
-      description: 'The name of the queue to remove the subscription from.',
-      required: true,
     }),
     'subscription-topic': Flags.string({
       char: 't',
@@ -39,7 +35,7 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
 
   public async run(): Promise<MsgVpnQueueSubscriptionDeleteResponse> {
     const {flags} = await this.parse(BrokerQueueSubscriptionsDelete)
-    const queueName = flags['queue-name']
+    const queueName = flags.name
     const subscriptionTopic = flags['subscription-topic']
 
     // Confirmation prompt (unless --no-prompt flag is set)

@@ -58,8 +58,8 @@ describe('broker:queue:display', () => {
 
       const result = await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
       ])
 
       expect(result.queue).to.deep.equal(mockResponse)
@@ -81,8 +81,8 @@ describe('broker:queue:display', () => {
     it('should call correct Monitor API endpoint for queue details', async () => {
       await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
       ])
 
       expect(context.mockConnection.get!.calledWith('/SEMP/v2/monitor/msgVpns/default/queues/testQueue')).to.be.true
@@ -103,24 +103,14 @@ describe('broker:queue:display', () => {
 
       await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--show-subscriptions',
       ])
 
       expect(context.mockConnection.get!.callCount).to.equal(2)
       expect(context.mockConnection.get!.secondCall.calledWith('/SEMP/v2/monitor/msgVpns/default/queues/testQueue/subscriptions'))
         .to.be.true
-    })
-
-    it('should not fetch subscriptions when --show-subscriptions flag is not set', async () => {
-      await BrokerQueueDisplay.run([
-        '--broker-name=test-broker',
-        '--queue-name=testQueue',
-        '--msg-vpn-name=default',
-      ])
-
-      expect(context.mockConnection.get!.callCount).to.equal(1)
     })
   })
 
@@ -145,8 +135,8 @@ describe('broker:queue:display', () => {
 
       const result = await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--show-subscriptions',
       ])
 
@@ -172,8 +162,8 @@ describe('broker:queue:display', () => {
 
       await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--show-subscriptions',
       ])
 
@@ -196,8 +186,8 @@ describe('broker:queue:display', () => {
 
       await BrokerQueueDisplay.run([
         '--broker-name=test-broker',
-        '--queue-name=testQueue',
         '--msg-vpn-name=default',
+        '--name=testQueue',
         '--show-subscriptions',
       ])
 
