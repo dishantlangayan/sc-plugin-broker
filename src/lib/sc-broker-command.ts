@@ -26,12 +26,11 @@ export abstract class ScBrokerCommand<T extends typeof Command> extends ScComman
   static override baseFlags = {
     ...ScCommand.baseFlags,
     'broker-id': Flags.string({
-      char: 'b',
       description: 'Stored broker identifier. If not provided, uses the default broker.',
       exclusive: ['broker-name'],
     }),
     'broker-name': Flags.string({
-      char: 'n',
+      char: 'b',
       description: 'Stored broker name. If not provided, uses the default broker.',
       exclusive: ['broker-id'],
     }),
