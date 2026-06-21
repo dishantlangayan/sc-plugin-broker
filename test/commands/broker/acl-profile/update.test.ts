@@ -41,8 +41,8 @@ describe('broker:acl-profile:update', () => {
     it('should call correct SEMP endpoint with ACL profile name in URL path', async () => {
       await BrokerAclProfileUpdate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
         '--client-connect-default-action=allow',
       ])
 
@@ -54,8 +54,8 @@ describe('broker:acl-profile:update', () => {
     it('should only include provided flags in request body', async () => {
       await BrokerAclProfileUpdate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
         '--client-connect-default-action=allow',
       ])
 
@@ -70,8 +70,8 @@ describe('broker:acl-profile:update', () => {
     it('should map multiple flags correctly', async () => {
       await BrokerAclProfileUpdate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
         '--client-connect-default-action=allow',
         '--publish-topic-default-action=allow',
         '--subscribe-topic-default-action=disallow',
@@ -102,8 +102,8 @@ describe('broker:acl-profile:update', () => {
     it('should display updated ACL profile data', async () => {
       await BrokerAclProfileUpdate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
         '--client-connect-default-action=allow',
       ])
 

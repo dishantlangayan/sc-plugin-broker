@@ -8,23 +8,21 @@ export default class BrokerAclProfileUpdate extends ScBrokerCommand<typeof Broke
   static override args = {}
   static override description = `Update an ACL Profile on a Solace Event Broker.
 
-Any attribute missing from the request will be left unchanged. The update of instances of this object are synchronized to HA mates and replication sites via config-sync.`
+Any attribute missing from the request will be left unchanged.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --client-connect-default-action=allow',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --publish-topic-default-action=allow',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --subscribe-topic-default-action=allow --subscribe-share-name-default-action=disallow',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --client-connect-default-action=allow',
     '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --publish-topic-default-action=disallow',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
-      char: 'a',
-      description: 'The name of the ACL Profile to update.',
-      required: true,
-    }),
     'client-connect-default-action': Flags.string({
       description: 'The default action to take when a client using the ACL Profile connects.',
       options: ['allow', 'disallow'],
+    }),
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the ACL Profile to update.',
+      required: true,
     }),
     'publish-topic-default-action': Flags.string({
       description: 'The default action to take when a client using the ACL Profile publishes to a topic.',
@@ -47,7 +45,7 @@ Any attribute missing from the request will be left unchanged. The update of ins
     const updateBody: MsgVpnAclProfileUpdateRequest = this.buildAclProfileUpdateRequest(flags)
 
     // Make SEMP Config API call to update the ACL profile
-    const aclProfileName = flags['acl-profile-name']
+    const aclProfileName = flags.name
     const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/aclProfiles/${aclProfileName}`
     const sempResp = await this.sempConn.patch<MsgVpnAclProfileUpdateResponse>(endpoint, updateBody)
 

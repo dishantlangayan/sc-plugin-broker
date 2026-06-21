@@ -35,8 +35,8 @@ describe('broker:acl-profile:delete', () => {
     it('should call correct SEMP endpoint with --no-prompt', async () => {
       await BrokerAclProfileDelete.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
         '--no-prompt',
       ])
 
@@ -69,8 +69,8 @@ describe('broker:acl-profile:delete', () => {
 
       await BrokerAclProfileDelete.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
         '--no-prompt',
       ])
 

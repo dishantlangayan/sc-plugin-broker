@@ -41,8 +41,8 @@ describe('broker:acl-profile:create', () => {
     it('should call correct SEMP endpoint', async () => {
       await BrokerAclProfileCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
       ])
 
       expect(context.mockConnection.post!.calledWith('/SEMP/v2/config/msgVpns/default/aclProfiles')).to.be.true
@@ -51,8 +51,8 @@ describe('broker:acl-profile:create', () => {
     it('should map all flags correctly to SEMP request body', async () => {
       await BrokerAclProfileCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=advancedProfile',
         '--msg-vpn-name=default',
+        '--name=advancedProfile',
         '--client-connect-default-action=allow',
         '--publish-topic-default-action=allow',
         '--subscribe-topic-default-action=allow',
@@ -74,8 +74,8 @@ describe('broker:acl-profile:create', () => {
     it('should create minimal ACL profile with only required flag', async () => {
       await BrokerAclProfileCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=minimalProfile',
         '--msg-vpn-name=default',
+        '--name=minimalProfile',
       ])
 
       const postCall = context.mockConnection.post!.getCall(0)
@@ -101,8 +101,8 @@ describe('broker:acl-profile:create', () => {
     it('should display ACL profile data', async () => {
       await BrokerAclProfileCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
       ])
 
       const logStub = BrokerAclProfileCreate.prototype.log as SinonStub

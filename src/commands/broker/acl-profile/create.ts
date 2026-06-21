@@ -8,23 +8,25 @@ export default class BrokerAclProfileCreate extends ScBrokerCommand<typeof Broke
   static override args = {}
   static override description = `Create an ACL Profile on a Solace Event Broker.
 
-Any attribute missing from the request will be set to its default value. The creation of instances of this object are synchronized to HA mates and replication sites via config-sync.`
+  Access control list (ACL) profiles control which clients can connect to a message Message VPN and which topics connected clients are allowed to publish and subscribe to.
+  
+  Each of these access controls require a defined default action (allow or disallow connection, allow or disallow publishing to topics, allow or disallow subscribing to topics, and allow or disallow subscribing to share names).
+  
+  Default action is disallow for each.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --client-connect-default-action=allow',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --publish-topic-default-action=allow --subscribe-topic-default-action=allow',
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile',
+    '<%= config.bin %> <%= command.id %> --name=myProfile',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --client-connect-default-action=allow --publish-topic-default-action=disallow --subscribe-topic-default-action=allow',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
-      char: 'a',
-      description: 'The name of the ACL Profile to create.',
-      required: true,
-    }),
     'client-connect-default-action': Flags.string({
       description: 'The default action to take when a client using the ACL Profile connects.',
       options: ['allow', 'disallow'],
+    }),
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the ACL Profile to create.',
+      required: true,
     }),
     'publish-topic-default-action': Flags.string({
       description: 'The default action to take when a client using the ACL Profile publishes to a topic.',
@@ -60,14 +62,14 @@ Any attribute missing from the request will be set to its default value. The cre
    * Builds the ACL profile creation request body from command flags
    */
   private buildAclProfileRequest(flags: {
-    'acl-profile-name': string
     'client-connect-default-action'?: string
+    name: string
     'publish-topic-default-action'?: string
     'subscribe-share-name-default-action'?: string
     'subscribe-topic-default-action'?: string
   }): MsgVpnAclProfileCreateRequest {
     return {
-      aclProfileName: flags['acl-profile-name'],
+      aclProfileName: flags.name,
       ...(flags['client-connect-default-action'] && {
         clientConnectDefaultAction: flags['client-connect-default-action'] as 'allow' | 'disallow',
       }),

@@ -14,16 +14,12 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
   static override examples = [
     '<%= config.bin %> <%= command.id %>',
     '<%= config.bin %> <%= command.id %> --count=20',
-    '<%= config.bin %> <%= command.id %> --acl-profile-name="client*"',
+    '<%= config.bin %> <%= command.id %> --name="client*"',
     '<%= config.bin %> <%= command.id %> --select=aclProfileName,clientConnectDefaultAction,publishTopicDefaultAction',
     '<%= config.bin %> <%= command.id %> --all',
-    '<%= config.bin %> <%= command.id %> --acl-profile-name="*custom*" --count=5 --all',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
-      description: 'Filter ACL profiles by name. Supports * wildcard.',
-    }),
     all: Flags.boolean({
       char: 'a',
       default: false,
@@ -36,13 +32,17 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       max: 100,
       min: 1,
     }),
+    name: Flags.string({
+      char: 'n',
+      description: 'Filter ACL profiles by name. Supports * wildcard.',
+    }),
     select: Flags.string({
       char: 's',
       description: 'Comma-separated list of attributes to display (max 10).',
       multiple: false,
     }),
   }
-// Default attributes to display
+  // Default attributes to display
   private readonly DEFAULT_ATTRIBUTES = [
     'aclProfileName',
     'clientConnectDefaultAction',
@@ -60,10 +60,7 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
     // Create stream table
     const columnCount = selectedAttrs.length
     const streamTable = createStreamTable(columnCount, {
-      1: {width: 20, wrapWord: true},
-      2: {width: 15, wrapWord: true},
-      3: {width: 15, wrapWord: true},
-      4: {width: 15, wrapWord: true},
+      0: {width: 20, wrapWord: true},
     })
 
     // Write header row
@@ -87,7 +84,7 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
    * Fetch ACL profiles with pagination and stream to table
    */
   private async fetchAndDisplayAclProfiles(
-    flags: {'acl-profile-name'?: string; all: boolean; count: number;},
+    flags: {all: boolean; count: number; name?: string;},
     selectedAttrs: string[],
     streamTable: import('table').WritableStream,
   ): Promise<MsgVpnAclProfileMonitor[]> {
@@ -100,8 +97,8 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       params.set('count', flags.count.toString())
 
       // Add where clause for ACL profile name filtering if provided
-      if (flags['acl-profile-name']) {
-        params.set('where', `aclProfileName==${flags['acl-profile-name']}`)
+      if (flags.name) {
+        params.set('where', `aclProfileName==${flags.name}`)
       }
 
       // Add select parameter for performance optimization

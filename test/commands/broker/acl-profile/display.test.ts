@@ -45,8 +45,8 @@ describe('broker:acl-profile:display', () => {
     it('should call correct SEMP endpoint with ACL profile name in URL', async () => {
       await BrokerAclProfileDisplay.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
       ])
 
       expect(
@@ -69,8 +69,8 @@ describe('broker:acl-profile:display', () => {
     it('should display ACL profile details', async () => {
       await BrokerAclProfileDisplay.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
         '--msg-vpn-name=default',
+        '--name=testProfile',
       ])
 
       const logStub = BrokerAclProfileDisplay.prototype.log as SinonStub

@@ -91,7 +91,7 @@ describe('broker:acl-profile:list', () => {
       await BrokerAclProfileList.run([
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
-        '--acl-profile-name=client*',
+        '--name=client*',
       ])
 
       const getCall = context.mockConnection.get!.getCall(0)
@@ -100,7 +100,7 @@ describe('broker:acl-profile:list', () => {
       expect(url).to.match(/where=aclProfileName.*client/)
     })
 
-    it('should not add where parameter when acl-profile-name flag is not provided', async () => {
+    it('should not add where parameter when name flag is not provided', async () => {
       await BrokerAclProfileList.run(['--broker-name=test-broker', '--msg-vpn-name=default'])
 
       const getCall = context.mockConnection.get!.getCall(0)

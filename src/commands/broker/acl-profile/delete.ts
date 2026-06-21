@@ -8,21 +8,17 @@ export default class BrokerAclProfileDelete extends ScBrokerCommand<typeof Broke
   static override args = {}
   static override description = `Delete an ACL Profile from a Solace Event Broker.
 
-Deletes the specified ACL Profile from the Message VPN. This is a destructive operation that removes the ACL Profile. Any clients or client usernames using this profile should be updated to use a different profile before deletion.
-
-The deletion is synchronized to HA mates and replication sites via config-sync.
+This is a destructive operation that removes the ACL Profile. Any clients or client usernames using this profile should be updated to use a different profile before deletion.
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile',
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --no-prompt',
-    '<%= config.bin %> <%= command.id %> --broker-id=prod --acl-profile-name=tempProfile --msg-vpn-name=production --no-prompt',
+    '<%= config.bin %> <%= command.id %> --name=myProfile',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
-      char: 'a',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the ACL Profile to delete.',
       required: true,
     }),
@@ -34,7 +30,7 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
 
   public async run(): Promise<MsgVpnAclProfileDeleteResponse> {
     const {flags} = await this.parse(BrokerAclProfileDelete)
-    const aclProfileName = flags['acl-profile-name']
+    const aclProfileName = flags.name
 
     // Confirmation prompt (unless --no-prompt flag is set)
     if (!flags['no-prompt']) {
