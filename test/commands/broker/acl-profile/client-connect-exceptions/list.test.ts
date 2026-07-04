@@ -44,7 +44,7 @@ describe('broker:acl-profile:client-connect-exceptions:list', () => {
     it('should call correct SEMP endpoint', async () => {
       await BrokerAclProfileClientConnectExceptionsList.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
       ])
 

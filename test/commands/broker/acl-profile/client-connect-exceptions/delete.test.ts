@@ -32,9 +32,9 @@ describe('broker:acl-profile:client-connect-exceptions:delete', () => {
     it('should call correct SEMP endpoint with URL-encoded address', async () => {
       await BrokerAclProfileClientConnectExceptionsDelete.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
-        '--client-connect-exception-address=192.168.1.0/24',
+        '--address=192.168.1.0/24',
         '--no-prompt',
       ])
 

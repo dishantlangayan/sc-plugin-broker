@@ -10,24 +10,23 @@ export default class BrokerAclProfileClientConnectExceptionsDelete extends ScBro
   static override args = {}
   static override description = `Delete a client connect exception from an ACL Profile on a Solace Event Broker.
 
-Removes the specified client connect exception from the ACL Profile. This is a destructive operation. The deletion is synchronized to HA mates and replication sites via config-sync.
+Removes the specified client connect exception from the ACL Profile. This is a destructive operation.
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --client-connect-exception-address=192.168.1.0/24',
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --client-connect-exception-address=10.0.0.0/8 --no-prompt',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --client-connect-exception-address=172.16.0.0/12 --no-prompt',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --address=192.168.1.0/24',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --address=10.0.0.0/8 --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
+    address: Flags.string({
       char: 'a',
-      description: 'The name of the ACL Profile.',
+      description: 'The IP address/netmask of the client connect exception to delete in CIDR form.',
       required: true,
     }),
-    'client-connect-exception-address': Flags.string({
-      char: 'c',
-      description: 'The IP address/netmask of the client connect exception to delete in CIDR form.',
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the ACL Profile.',
       required: true,
     }),
     'no-prompt': Flags.boolean({
@@ -38,8 +37,8 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
 
   public async run(): Promise<MsgVpnAclProfileClientConnectExceptionDeleteResponse> {
     const {flags} = await this.parse(BrokerAclProfileClientConnectExceptionsDelete)
-    const aclProfileName = flags['acl-profile-name']
-    const address = flags['client-connect-exception-address']
+    const aclProfileName = flags.name
+    const {address} = flags
 
     // Confirmation prompt (unless --no-prompt flag is set)
     if (!flags['no-prompt']) {
@@ -72,7 +71,7 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
       )
     } else {
       this.error(
-        `Failed to delete client connect exception '${address}': HTTP ${sempResp.meta.responseCode}`,
+        `\nFailed to delete client connect exception '${address}': HTTP ${sempResp.meta.responseCode}`,
       )
     }
 

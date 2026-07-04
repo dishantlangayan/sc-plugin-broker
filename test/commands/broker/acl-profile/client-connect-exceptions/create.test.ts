@@ -40,9 +40,9 @@ describe('broker:acl-profile:client-connect-exceptions:create', () => {
     it('should call correct SEMP endpoint', async () => {
       await BrokerAclProfileClientConnectExceptionsCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
-        '--client-connect-exception-address=192.168.1.0/24',
+        '--address=192.168.1.0/24',
       ])
 
       expect(
@@ -55,9 +55,9 @@ describe('broker:acl-profile:client-connect-exceptions:create', () => {
     it('should map flags to SEMP request body', async () => {
       await BrokerAclProfileClientConnectExceptionsCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
-        '--client-connect-exception-address=10.0.0.0/8',
+        '--address=10.0.0.0/8',
       ])
 
       const postCall = context.mockConnection.post!.getCall(0)
