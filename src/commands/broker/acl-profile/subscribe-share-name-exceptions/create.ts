@@ -13,27 +13,27 @@ export default class BrokerAclProfileSubscribeShareNameExceptionsCreate extends 
   static override args = {}
   static override description = `Create a subscribe share name exception for an ACL Profile on a Solace Event Broker.
 
-Adds an exception to the ACL Profile for clients subscribing to specific shared subscriptions. The exception is expressed as a share name with optional wildcards and must specify the syntax type (smf or mqtt). The creation is synchronized to HA mates and replication sites via config-sync.`
+Adds an exception to the ACL Profile for clients subscribing to specific shared subscriptions. The exception is expressed as a share name with optional wildcards and must specify the syntax type (smf or mqtt).`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --subscribe-share-name-exception="orders/*" --syntax=smf',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --subscribe-share-name-exception="devices/+" --syntax=mqtt',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="orders/*" --syntax=smf',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="devices/+" --syntax=mqtt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
-      char: 'a',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the ACL Profile.',
-      required: true,
-    }),
-    'subscribe-share-name-exception': Flags.string({
-      char: 's',
-      description: 'The share name for the exception. May include wildcards.',
       required: true,
     }),
     syntax: Flags.string({
       char: 'x',
       description: 'The syntax of the share name.',
       options: ['smf', 'mqtt'],
+      required: true,
+    }),
+    topic: Flags.string({
+      char: 't',
+      description: 'The share name for the exception. May include wildcards.',
       required: true,
     }),
   }
@@ -43,12 +43,12 @@ Adds an exception to the ACL Profile for clients subscribing to specific shared 
 
     // Build request body
     const requestBody: MsgVpnAclProfileSubscribeShareNameExceptionCreateRequest = {
-      subscribeShareNameException: flags['subscribe-share-name-exception'],
+      subscribeShareNameException: flags.topic,
       subscribeShareNameExceptionSyntax: flags.syntax as 'mqtt' | 'smf',
     }
 
     // Make SEMP Config API call to create the exception
-    const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/aclProfiles/${flags['acl-profile-name']}/subscribeShareNameExceptions`
+    const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/aclProfiles/${flags.name}/subscribeShareNameExceptions`
     const sempResp = await this.sempConn.post<MsgVpnAclProfileSubscribeShareNameExceptionCreateResponse>(
       endpoint,
       requestBody,

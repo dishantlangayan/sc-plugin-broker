@@ -10,18 +10,17 @@ export default class BrokerAclProfileSubscribeShareNameExceptionsDelete extends 
   static override args = {}
   static override description = `Delete a subscribe share name exception from an ACL Profile on a Solace Event Broker.
 
-Removes the specified subscribe share name exception from the ACL Profile. This is a destructive operation. The deletion is synchronized to HA mates and replication sites via config-sync.
+Removes the specified subscribe share name exception from the ACL Profile. This is a destructive operation.
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --subscribe-share-name-exception="orders/*" --syntax=smf',
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --subscribe-share-name-exception="devices/+" --syntax=mqtt --no-prompt',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --subscribe-share-name-exception="test/share" --syntax=smf --no-prompt',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="orders/*" --syntax=smf',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="devices/+" --syntax=mqtt --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
-      char: 'a',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the ACL Profile.',
       required: true,
     }),
@@ -29,23 +28,23 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
       default: false,
       description: 'Skip confirmation prompt and proceed with deletion.',
     }),
-    'subscribe-share-name-exception': Flags.string({
-      char: 's',
-      description: 'The share name of the exception to delete.',
-      required: true,
-    }),
     syntax: Flags.string({
       char: 'x',
       description: 'The syntax of the share name.',
       options: ['smf', 'mqtt'],
       required: true,
     }),
+    topic: Flags.string({
+      char: 't',
+      description: 'The share name of the exception to delete.',
+      required: true,
+    }),
   }
 
   public async run(): Promise<MsgVpnAclProfileSubscribeShareNameExceptionDeleteResponse> {
     const {flags} = await this.parse(BrokerAclProfileSubscribeShareNameExceptionsDelete)
-    const aclProfileName = flags['acl-profile-name']
-    const shareName = flags['subscribe-share-name-exception']
+    const aclProfileName = flags.name
+    const shareName = flags.topic
     const {syntax} = flags
 
     // Confirmation prompt (unless --no-prompt flag is set)

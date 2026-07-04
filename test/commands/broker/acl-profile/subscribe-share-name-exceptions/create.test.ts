@@ -41,9 +41,9 @@ describe('broker:acl-profile:subscribe-share-name-exceptions:create', () => {
     it('should call correct SEMP endpoint', async () => {
       await BrokerAclProfileSubscribeShareNameExceptionsCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
-        '--subscribe-share-name-exception=orders/*',
+        '--topic=orders/*',
         '--syntax=smf',
       ])
 
@@ -57,9 +57,9 @@ describe('broker:acl-profile:subscribe-share-name-exceptions:create', () => {
     it('should map flags to SEMP request body', async () => {
       await BrokerAclProfileSubscribeShareNameExceptionsCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
-        '--subscribe-share-name-exception=devices/+',
+        '--topic=devices/+',
         '--syntax=mqtt',
       ])
 

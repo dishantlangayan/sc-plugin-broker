@@ -32,9 +32,9 @@ describe('broker:acl-profile:subscribe-share-name-exceptions:delete', () => {
     it('should call correct SEMP endpoint with composite key URL-encoded', async () => {
       await BrokerAclProfileSubscribeShareNameExceptionsDelete.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
-        '--subscribe-share-name-exception=orders/*',
+        '--topic=orders/*',
         '--syntax=smf',
         '--no-prompt',
       ])
