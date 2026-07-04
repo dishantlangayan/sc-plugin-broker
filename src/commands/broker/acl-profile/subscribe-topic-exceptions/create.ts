@@ -15,25 +15,25 @@ export default class BrokerAclProfileSubscribeTopicExceptionsCreate extends ScBr
 
 Adds an exception to the ACL Profile for clients subscribing to specific topics. The exception is expressed as a topic with optional wildcards and must specify the syntax type (smf or mqtt). The creation is synchronized to HA mates and replication sites via config-sync.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --subscribe-topic-exception="orders/*/created" --syntax=smf',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --subscribe-topic-exception="devices/+/telemetry" --syntax=mqtt',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="orders/*/created" --syntax=smf',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
-      char: 'a',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the ACL Profile.',
-      required: true,
-    }),
-    'subscribe-topic-exception': Flags.string({
-      char: 's',
-      description: 'The topic for the exception. May include wildcards.',
       required: true,
     }),
     syntax: Flags.string({
       char: 'x',
       description: 'The syntax of the topic.',
       options: ['smf', 'mqtt'],
+      required: true,
+    }),
+    topic: Flags.string({
+      char: 't',
+      description: 'The topic for the exception. May include wildcards.',
       required: true,
     }),
   }
@@ -43,12 +43,12 @@ Adds an exception to the ACL Profile for clients subscribing to specific topics.
 
     // Build request body
     const requestBody: MsgVpnAclProfileSubscribeTopicExceptionCreateRequest = {
-      subscribeTopicException: flags['subscribe-topic-exception'],
+      subscribeTopicException: flags.topic,
       subscribeTopicExceptionSyntax: flags.syntax as 'mqtt' | 'smf',
     }
 
     // Make SEMP Config API call to create the exception
-    const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/aclProfiles/${flags['acl-profile-name']}/subscribeTopicExceptions`
+    const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/aclProfiles/${flags.name}/subscribeTopicExceptions`
     const sempResp = await this.sempConn.post<MsgVpnAclProfileSubscribeTopicExceptionCreateResponse>(
       endpoint,
       requestBody,

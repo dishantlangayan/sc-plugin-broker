@@ -14,14 +14,13 @@ Removes the specified subscribe topic exception from the ACL Profile. This is a 
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --subscribe-topic-exception="orders/*/created" --syntax=smf',
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --subscribe-topic-exception="devices/+/telemetry" --syntax=mqtt --no-prompt',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --subscribe-topic-exception="test/topic" --syntax=smf --no-prompt',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="orders/*/created" --syntax=smf',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
-      char: 'a',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the ACL Profile.',
       required: true,
     }),
@@ -29,23 +28,23 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
       default: false,
       description: 'Skip confirmation prompt and proceed with deletion.',
     }),
-    'subscribe-topic-exception': Flags.string({
-      char: 's',
-      description: 'The topic of the exception to delete.',
-      required: true,
-    }),
     syntax: Flags.string({
       char: 'x',
       description: 'The syntax of the topic.',
       options: ['smf', 'mqtt'],
       required: true,
     }),
+    topic: Flags.string({
+      char: 't',
+      description: 'The topic of the exception to delete.',
+      required: true,
+    }),
   }
 
   public async run(): Promise<MsgVpnAclProfileSubscribeTopicExceptionDeleteResponse> {
     const {flags} = await this.parse(BrokerAclProfileSubscribeTopicExceptionsDelete)
-    const aclProfileName = flags['acl-profile-name']
-    const topic = flags['subscribe-topic-exception']
+    const aclProfileName = flags.name
+    const {topic} = flags
     const {syntax} = flags
 
     // Confirmation prompt (unless --no-prompt flag is set)
