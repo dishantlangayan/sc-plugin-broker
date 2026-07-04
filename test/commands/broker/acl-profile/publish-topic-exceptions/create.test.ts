@@ -41,9 +41,9 @@ describe('broker:acl-profile:publish-topic-exceptions:create', () => {
     it('should call correct SEMP endpoint', async () => {
       await BrokerAclProfilePublishTopicExceptionsCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
-        '--publish-topic-exception=orders/*/created',
+        '--topic=orders/*/created',
         '--syntax=smf',
       ])
 
@@ -57,9 +57,9 @@ describe('broker:acl-profile:publish-topic-exceptions:create', () => {
     it('should map flags to SEMP request body', async () => {
       await BrokerAclProfilePublishTopicExceptionsCreate.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
-        '--publish-topic-exception=devices/+/telemetry',
+        '--topic=devices/+/telemetry',
         '--syntax=mqtt',
       ])
 

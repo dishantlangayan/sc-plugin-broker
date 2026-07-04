@@ -32,9 +32,9 @@ describe('broker:acl-profile:publish-topic-exceptions:delete', () => {
     it('should call correct SEMP endpoint with composite key URL-encoded', async () => {
       await BrokerAclProfilePublishTopicExceptionsDelete.run([
         '--broker-name=test-broker',
-        '--acl-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
-        '--publish-topic-exception=orders/*/created',
+        '--topic=orders/*/created',
         '--syntax=smf',
         '--no-prompt',
       ])

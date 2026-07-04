@@ -10,18 +10,17 @@ export default class BrokerAclProfilePublishTopicExceptionsDelete extends ScBrok
   static override args = {}
   static override description = `Delete a publish topic exception from an ACL Profile on a Solace Event Broker.
 
-Removes the specified publish topic exception from the ACL Profile. This is a destructive operation. The deletion is synchronized to HA mates and replication sites via config-sync.
+Removes the specified publish topic exception from the ACL Profile. This is a destructive operation.
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --publish-topic-exception="orders/*/created" --syntax=smf',
-    '<%= config.bin %> <%= command.id %> --acl-profile-name=myProfile --publish-topic-exception="devices/+/telemetry" --syntax=mqtt --no-prompt',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --publish-topic-exception="test/topic" --syntax=smf --no-prompt',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="orders/*/created" --syntax=smf',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'acl-profile-name': Flags.string({
-      char: 'a',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the ACL Profile.',
       required: true,
     }),
@@ -29,23 +28,23 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
       default: false,
       description: 'Skip confirmation prompt and proceed with deletion.',
     }),
-    'publish-topic-exception': Flags.string({
-      char: 'p',
-      description: 'The topic of the exception to delete.',
-      required: true,
-    }),
     syntax: Flags.string({
-      char: 's',
+      char: 'x',
       description: 'The syntax of the topic.',
       options: ['smf', 'mqtt'],
+      required: true,
+    }),
+    topic: Flags.string({
+      char: 't',
+      description: 'The topic of the exception to delete.',
       required: true,
     }),
   }
 
   public async run(): Promise<MsgVpnAclProfilePublishTopicExceptionDeleteResponse> {
     const {flags} = await this.parse(BrokerAclProfilePublishTopicExceptionsDelete)
-    const aclProfileName = flags['acl-profile-name']
-    const topic = flags['publish-topic-exception']
+    const aclProfileName = flags.name
+    const {topic} = flags
     const {syntax} = flags
 
     // Confirmation prompt (unless --no-prompt flag is set)
@@ -79,7 +78,7 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
       )
     } else {
       this.error(
-        `Failed to delete publish topic exception '${topic}': HTTP ${sempResp.meta.responseCode}`,
+        `\nFailed to delete publish topic exception '${topic}': HTTP ${sempResp.meta.responseCode}`,
       )
     }
 
