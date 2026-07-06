@@ -1034,7 +1034,7 @@ USAGE
 
 FLAGS
   -b, --broker-name=<value>                              Stored broker name. If not provided, uses the default broker.
-  -u, --client-username=<value>                          (required) The name of the Client Username to create.
+  -u, --username=<value>                                 (required) The name of the Client Username to create.
   -v, --msg-vpn-name=<value>                             The name of the Message VPN.
       --acl-profile-name=<value>                         The ACL Profile name for authorization.
       --broker-id=<value>                                Stored broker identifier. If not provided, uses the default
@@ -1061,13 +1061,13 @@ DESCRIPTION
   settings.
 
 EXAMPLES
-  $ sc broker client-username create --client-username=user1 --msg-vpn-name=default
+  $ sc broker client-username create --username=user1
 
-  $ sc broker client-username create --broker-name=dev-broker --client-username=user1 --enabled
+  $ sc broker client-username create --username=user1 --enabled
 
-  $ sc broker client-username create --client-username=user1 --password=secret123 --acl-profile-name=custom-acl --client-profile-name=custom-profile
+  $ sc broker client-username create --username=user1 --password=secret123 --acl-profile-name=custom-acl --client-profile-name=custom-profile
 
-  $ sc broker client-username create --client-username=admin --enabled --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
+  $ sc broker client-username create --username=admin --enabled --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
 ```
 
 _See code: [src/commands/broker/client-username/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/create.ts)_
@@ -1082,11 +1082,11 @@ USAGE
     <value>] [-v <value>] [--no-prompt]
 
 FLAGS
-  -b, --broker-name=<value>      Stored broker name. If not provided, uses the default broker.
-  -u, --client-username=<value>  (required) The name of the Client Username to delete.
-  -v, --msg-vpn-name=<value>     The name of the Message VPN.
-      --broker-id=<value>        Stored broker identifier. If not provided, uses the default broker.
-      --no-prompt                Skip confirmation prompt and proceed with deletion.
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -u, --username=<value>      (required) The name of the Client Username to delete.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+      --no-prompt             Skip confirmation prompt and proceed with deletion.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -1104,13 +1104,9 @@ DESCRIPTION
   By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
 
 EXAMPLES
-  $ sc broker client-username delete --client-username=user1 --msg-vpn-name=default
+  $ sc broker client-username delete --username=user1
 
-  $ sc broker client-username delete --broker-name=dev-broker --client-username=user1
-
-  $ sc broker client-username delete --client-username=user1 --no-prompt
-
-  $ sc broker client-username delete --broker-id=prod --client-username=tempUser --msg-vpn-name=production --no-prompt
+  $ sc broker client-username delete --username=user1 --no-prompt
 ```
 
 _See code: [src/commands/broker/client-username/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/delete.ts)_
@@ -1125,10 +1121,10 @@ USAGE
     <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>      Stored broker name. If not provided, uses the default broker.
-  -u, --client-username=<value>  (required) The name of the Client Username to display.
-  -v, --msg-vpn-name=<value>     The name of the Message VPN.
-      --broker-id=<value>        Stored broker identifier. If not provided, uses the default broker.
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -u, --username=<value>      (required) The name of the Client Username to display.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -1142,11 +1138,7 @@ DESCRIPTION
   configuration settings and associated profiles.
 
 EXAMPLES
-  $ sc broker client-username display --client-username=user1 --msg-vpn-name=default
-
-  $ sc broker client-username display --broker-name=dev-broker --client-username=user1
-
-  $ sc broker client-username display --client-username=admin
+  $ sc broker client-username display --username=user1
 ```
 
 _See code: [src/commands/broker/client-username/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/display.ts)_
@@ -1158,16 +1150,16 @@ List Client Usernames from a Solace Event Broker.
 ```
 USAGE
   $ sc broker client-username list [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b <value>] [-v
-    <value>] [-a] [--client-username <value>] [-c <value>] [-s <value>]
+    <value>] [-a] [-c <value>] [-s <value>] [-u <value>]
 
 FLAGS
-  -a, --all                      Display all Client Usernames (auto-pagination).
-  -b, --broker-name=<value>      Stored broker name. If not provided, uses the default broker.
-  -c, --count=<value>            [default: 10] Number of Client Usernames to display per page.
-  -s, --select=<value>           Comma-separated list of attributes to display (max 10).
-  -v, --msg-vpn-name=<value>     The name of the Message VPN.
-      --broker-id=<value>        Stored broker identifier. If not provided, uses the default broker.
-      --client-username=<value>  Filter Client Usernames by name. Supports * wildcard.
+  -a, --all                   Display all Client Usernames (auto-pagination).
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -c, --count=<value>         [default: 10] Number of Client Usernames to display per page.
+  -s, --select=<value>        Comma-separated list of attributes to display (max 10).
+  -u, --username=<value>      Filter Client Usernames by name. Supports * wildcard.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -1185,13 +1177,13 @@ EXAMPLES
 
   $ sc broker client-username list --count=20
 
-  $ sc broker client-username list --client-username="user*"
+  $ sc broker client-username list --username="user*"
 
   $ sc broker client-username list --select=clientUsername,enabled,aclProfileName
 
   $ sc broker client-username list --all
 
-  $ sc broker client-username list --client-username="admin*" --count=5 --all
+  $ sc broker client-username list --username="admin*" --count=5 --all
 ```
 
 _See code: [src/commands/broker/client-username/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/list.ts)_
@@ -1208,7 +1200,7 @@ USAGE
 
 FLAGS
   -b, --broker-name=<value>                              Stored broker name. If not provided, uses the default broker.
-  -u, --client-username=<value>                          (required) The name of the Client Username to update.
+  -u, --username=<value>                                 (required) The name of the Client Username to update.
   -v, --msg-vpn-name=<value>                             The name of the Message VPN.
       --acl-profile-name=<value>                         The ACL Profile name for authorization.
       --broker-id=<value>                                Stored broker identifier. If not provided, uses the default
@@ -1234,13 +1226,13 @@ DESCRIPTION
   be temporarily disabled to apply the change.
 
 EXAMPLES
-  $ sc broker client-username update --client-username=user1 --enabled
+  $ sc broker client-username update --username=user1 --enabled
 
-  $ sc broker client-username update --broker-name=dev-broker --client-username=user1 --acl-profile-name=new-acl
+  $ sc broker client-username update --username=user1 --acl-profile-name=new-acl
 
-  $ sc broker client-username update --client-username=user1 --password=newPassword123
+  $ sc broker client-username update --username=user1 --password=newPassword123
 
-  $ sc broker client-username update --client-username=admin --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
+  $ sc broker client-username update --username=admin --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
 ```
 
 _See code: [src/commands/broker/client-username/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/update.ts)_
