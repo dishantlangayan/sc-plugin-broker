@@ -1820,11 +1820,11 @@ USAGE
     | -b <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>         Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>                (required) The name of the queue to add the subscription to.
-  -t, --subscription-topic=<value>  (required) The subscription topic to add to the queue.
-  -v, --msg-vpn-name=<value>        The name of the Message VPN.
-      --broker-id=<value>           Stored broker identifier. If not provided, uses the default broker.
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>          (required) The name of the queue to add the subscription to.
+  -t, --topic=<value>         (required) The subscription topic to add to the queue.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -1843,9 +1843,9 @@ DESCRIPTION
   Multiple subscriptions can be added to a single queue.
 
 EXAMPLES
-  $ sc broker queue subscriptions create --name=myQueue --subscription-topic=orders/> 
+  $ sc broker queue subscriptions create --name=myQueue --topic=orders/> 
 
-  $ sc broker queue subscriptions create --name=myQueue --subscription-topic=events/user/*
+  $ sc broker queue subscriptions create --name=myQueue --topic=events/user/*
 ```
 
 _See code: [src/commands/broker/queue/subscriptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue/subscriptions/create.ts)_
@@ -1860,12 +1860,12 @@ USAGE
     | -b <value>] [-v <value>] [--no-prompt]
 
 FLAGS
-  -b, --broker-name=<value>         Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>                (required) The name of the queue to remove the subscription from.
-  -t, --subscription-topic=<value>  (required) The subscription topic to remove from the queue.
-  -v, --msg-vpn-name=<value>        The name of the Message VPN.
-      --broker-id=<value>           Stored broker identifier. If not provided, uses the default broker.
-      --no-prompt                   Skip confirmation prompt and proceed with deletion.
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>          (required) The name of the queue to remove the subscription from.
+  -t, --topic=<value>         (required) The subscription topic to remove from the queue.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+      --no-prompt             Skip confirmation prompt and proceed with deletion.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -1880,9 +1880,9 @@ DESCRIPTION
   By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
 
 EXAMPLES
-  $ sc broker queue subscriptions delete --name=myQueue --subscription-topic=orders/>
+  $ sc broker queue subscriptions delete --name=myQueue --topic=orders/>
 
-  $ sc broker queue subscriptions delete --name=myQueue --subscription-topic=orders/> --no-prompt
+  $ sc broker queue subscriptions delete --name=myQueue --topic=orders/> --no-prompt
 ```
 
 _See code: [src/commands/broker/queue/subscriptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue/subscriptions/delete.ts)_
