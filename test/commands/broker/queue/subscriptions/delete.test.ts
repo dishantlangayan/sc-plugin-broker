@@ -36,7 +36,7 @@ describe('broker:queue:subscriptions:delete', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=orders/>',
+        '--topic=orders/>',
         '--no-prompt',
       ])
 
@@ -50,7 +50,7 @@ describe('broker:queue:subscriptions:delete', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=events/user/*',
+        '--topic=events/user/*',
         '--no-prompt',
       ])
 
@@ -66,7 +66,7 @@ describe('broker:queue:subscriptions:delete', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=data/+/sensor',
+        '--topic=data/+/sensor',
         '--no-prompt',
       ])
 
@@ -92,7 +92,7 @@ describe('broker:queue:subscriptions:delete', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=orders/>',
+        '--topic=orders/>',
         '--no-prompt',
       ])
 
@@ -115,7 +115,7 @@ describe('broker:queue:subscriptions:delete', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=orders/>',
+        '--topic=orders/>',
         '--no-prompt',
       ])
 
@@ -139,7 +139,7 @@ describe('broker:queue:subscriptions:delete', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=orders/>',
+        '--topic=orders/>',
         '--no-prompt',
       ])
 
@@ -153,7 +153,7 @@ describe('broker:queue:subscriptions:delete', () => {
         await BrokerQueueSubscriptionsDelete.run([
           '--broker-name=test-broker',
           '--msg-vpn-name=default',
-          '--subscription-topic=orders/>',
+          '--topic=orders/>',
           '--no-prompt',
         ])
         expect.fail('Should have thrown error')
@@ -165,7 +165,7 @@ describe('broker:queue:subscriptions:delete', () => {
       }
     })
 
-    it('should error when subscription-topic is missing', async () => {
+    it('should error when topic is missing', async () => {
       try {
         await BrokerQueueSubscriptionsDelete.run([
           '--broker-name=test-broker',
@@ -178,7 +178,7 @@ describe('broker:queue:subscriptions:delete', () => {
         expect(error).to.be.instanceOf(Error)
         const err = error as Error
         expect(err.message).to.match(/Missing required flag/)
-        expect(err.message).to.match(/subscription-topic/)
+        expect(err.message).to.match(/topic/)
       }
     })
   })

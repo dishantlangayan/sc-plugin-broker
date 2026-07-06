@@ -44,7 +44,7 @@ describe('broker:queue:subscriptions:create', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=orders/>',
+        '--topic=orders/>',
       ])
 
       expect(
@@ -57,7 +57,7 @@ describe('broker:queue:subscriptions:create', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=events/user/*',
+        '--topic=events/user/*',
       ])
 
       const postCall = context.mockConnection.post!.getCall(0)
@@ -73,7 +73,7 @@ describe('broker:queue:subscriptions:create', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=data/sensor/+/temperature',
+        '--topic=data/sensor/+/temperature',
       ])
 
       const postCall = context.mockConnection.post!.getCall(0)
@@ -99,7 +99,7 @@ describe('broker:queue:subscriptions:create', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=orders/>',
+        '--topic=orders/>',
       ])
 
       const logStub = BrokerQueueSubscriptionsCreate.prototype.log as SinonStub
@@ -124,7 +124,7 @@ describe('broker:queue:subscriptions:create', () => {
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
         '--name=testQueue',
-        '--subscription-topic=orders/>',
+        '--topic=orders/>',
       ])
 
       expect(result.data).to.exist
@@ -140,7 +140,7 @@ describe('broker:queue:subscriptions:create', () => {
         await BrokerQueueSubscriptionsCreate.run([
           '--broker-name=test-broker',
           '--msg-vpn-name=default',
-          '--subscription-topic=orders/>',
+          '--topic=orders/>',
         ])
         expect.fail('Should have thrown error')
       } catch (error: unknown) {
@@ -151,7 +151,7 @@ describe('broker:queue:subscriptions:create', () => {
       }
     })
 
-    it('should error when subscription-topic is missing', async () => {
+    it('should error when topic is missing', async () => {
       try {
         await BrokerQueueSubscriptionsCreate.run([
           '--broker-name=test-broker',
@@ -163,7 +163,7 @@ describe('broker:queue:subscriptions:create', () => {
         expect(error).to.be.instanceOf(Error)
         const err = error as Error
         expect(err.message).to.match(/Missing required flag/)
-        expect(err.message).to.match(/subscription-topic/)
+        expect(err.message).to.match(/topic/)
       }
     })
   })

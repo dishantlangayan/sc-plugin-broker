@@ -12,8 +12,8 @@ This is a destructive operation that removes the subscription.
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --name=myQueue --subscription-topic=orders/>',
-    '<%= config.bin %> <%= command.id %> --name=myQueue --subscription-topic=orders/> --no-prompt',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --topic=orders/>',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --topic=orders/> --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -26,7 +26,7 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
       default: false,
       description: 'Skip confirmation prompt and proceed with deletion.',
     }),
-    'subscription-topic': Flags.string({
+    topic: Flags.string({
       char: 't',
       description: 'The subscription topic to remove from the queue.',
       required: true,
@@ -36,7 +36,7 @@ By default, a confirmation prompt is shown before deletion. Use --no-prompt to s
   public async run(): Promise<MsgVpnQueueSubscriptionDeleteResponse> {
     const {flags} = await this.parse(BrokerQueueSubscriptionsDelete)
     const queueName = flags.name
-    const subscriptionTopic = flags['subscription-topic']
+    const subscriptionTopic = flags.topic
 
     // Confirmation prompt (unless --no-prompt flag is set)
     if (!flags['no-prompt']) {

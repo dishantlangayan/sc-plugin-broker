@@ -19,8 +19,8 @@ Subscriptions use topic pattern matching which can include wildcards:
 
 Multiple subscriptions can be added to a single queue.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --name=myQueue --subscription-topic=orders/> ',
-    '<%= config.bin %> <%= command.id %> --name=myQueue --subscription-topic=events/user/*',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --topic=orders/> ',
+    '<%= config.bin %> <%= command.id %> --name=myQueue --topic=events/user/*',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -29,7 +29,7 @@ Multiple subscriptions can be added to a single queue.`
       description: 'The name of the queue to add the subscription to.',
       required: true,
     }),
-    'subscription-topic': Flags.string({
+    topic: Flags.string({
       char: 't',
       description: 'The subscription topic to add to the queue.',
       required: true,
@@ -41,7 +41,7 @@ Multiple subscriptions can be added to a single queue.`
 
     // Build subscription creation request body
     const subscriptionBody: MsgVpnQueueSubscriptionCreateRequest = {
-      subscriptionTopic: flags['subscription-topic'],
+      subscriptionTopic: flags.topic,
     }
 
     // Make SEMP Config API call to create the subscription
