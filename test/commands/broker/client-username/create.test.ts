@@ -41,7 +41,7 @@ describe('broker:client-username:create', () => {
     it('should call correct SEMP endpoint', async () => {
       await BrokerClientUsernameCreate.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
       ])
 
@@ -51,7 +51,7 @@ describe('broker:client-username:create', () => {
     it('should map all flags correctly to SEMP request body', async () => {
       await BrokerClientUsernameCreate.run([
         '--broker-name=test-broker',
-        '--client-username=advancedUser',
+        '--username=advancedUser',
         '--msg-vpn-name=default',
         '--enabled',
         '--acl-profile-name=custom-acl',
@@ -78,7 +78,7 @@ describe('broker:client-username:create', () => {
     it('should create minimal Client Username with only required flag', async () => {
       await BrokerClientUsernameCreate.run([
         '--broker-name=test-broker',
-        '--client-username=minimalUser',
+        '--username=minimalUser',
         '--msg-vpn-name=default',
       ])
 
@@ -93,7 +93,7 @@ describe('broker:client-username:create', () => {
     it('should handle boolean flags correctly', async () => {
       await BrokerClientUsernameCreate.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
         '--enabled',
       ])
@@ -121,7 +121,7 @@ describe('broker:client-username:create', () => {
     it('should display Client Username data', async () => {
       await BrokerClientUsernameCreate.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
       ])
 

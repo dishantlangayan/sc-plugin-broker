@@ -41,7 +41,7 @@ describe('broker:client-username:update', () => {
     it('should call correct SEMP endpoint with Client Username in URL path', async () => {
       await BrokerClientUsernameUpdate.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
         '--enabled',
       ])
@@ -54,7 +54,7 @@ describe('broker:client-username:update', () => {
     it('should only include provided flags in request body', async () => {
       await BrokerClientUsernameUpdate.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
         '--enabled',
       ])
@@ -70,7 +70,7 @@ describe('broker:client-username:update', () => {
     it('should not include clientUsername in request body', async () => {
       await BrokerClientUsernameUpdate.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
         '--enabled',
       ])
@@ -84,7 +84,7 @@ describe('broker:client-username:update', () => {
     it('should map multiple flags correctly', async () => {
       await BrokerClientUsernameUpdate.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
         '--enabled',
         '--acl-profile-name=new-acl',
@@ -106,7 +106,7 @@ describe('broker:client-username:update', () => {
     it('should handle password updates', async () => {
       await BrokerClientUsernameUpdate.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
         '--password=newPassword123',
       ])
@@ -134,7 +134,7 @@ describe('broker:client-username:update', () => {
     it('should display updated Client Username data', async () => {
       await BrokerClientUsernameUpdate.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
         '--enabled',
       ])

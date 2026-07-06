@@ -46,7 +46,7 @@ describe('broker:client-username:display', () => {
     it('should call correct SEMP endpoint with Client Username in URL', async () => {
       await BrokerClientUsernameDisplay.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
       ])
 
@@ -70,7 +70,7 @@ describe('broker:client-username:display', () => {
     it('should display Client Username details', async () => {
       await BrokerClientUsernameDisplay.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
       ])
 

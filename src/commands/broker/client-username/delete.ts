@@ -14,27 +14,25 @@ The deletion is synchronized to HA mates and replication sites via config-sync.
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --client-username=user1 --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-username=user1',
-    '<%= config.bin %> <%= command.id %> --client-username=user1 --no-prompt',
-    '<%= config.bin %> <%= command.id %> --broker-id=prod --client-username=tempUser --msg-vpn-name=production --no-prompt',
+    '<%= config.bin %> <%= command.id %> --username=user1',
+    '<%= config.bin %> <%= command.id %> --username=user1 --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'client-username': Flags.string({
-      char: 'u',
-      description: 'The name of the Client Username to delete.',
-      required: true,
-    }),
     'no-prompt': Flags.boolean({
       default: false,
       description: 'Skip confirmation prompt and proceed with deletion.',
+    }),
+    username: Flags.string({
+      char: 'u',
+      description: 'The name of the Client Username to delete.',
+      required: true,
     }),
   }
 
   public async run(): Promise<MsgVpnClientUsernameDeleteResponse> {
     const {flags} = await this.parse(BrokerClientUsernameDelete)
-    const clientUsername = flags['client-username']
+    const clientUsername = flags.username
 
     // Confirmation prompt (unless --no-prompt flag is set)
     if (!flags['no-prompt']) {

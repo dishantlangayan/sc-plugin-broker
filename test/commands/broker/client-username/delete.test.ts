@@ -35,7 +35,7 @@ describe('broker:client-username:delete', () => {
     it('should call correct SEMP endpoint with --no-prompt', async () => {
       await BrokerClientUsernameDelete.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -69,7 +69,7 @@ describe('broker:client-username:delete', () => {
 
       await BrokerClientUsernameDelete.run([
         '--broker-name=test-broker',
-        '--client-username=testUser',
+        '--username=testUser',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])

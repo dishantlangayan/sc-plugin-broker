@@ -12,10 +12,10 @@ Any attribute missing from the request will be left unchanged. The update of ins
 
 Note: Modifying aclProfileName or clientProfileName while enabled may be service impacting as the Client Username will be temporarily disabled to apply the change.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --client-username=user1 --enabled',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-username=user1 --acl-profile-name=new-acl',
-    '<%= config.bin %> <%= command.id %> --client-username=user1 --password=newPassword123',
-    '<%= config.bin %> <%= command.id %> --client-username=admin --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled',
+    '<%= config.bin %> <%= command.id %> --username=user1 --enabled',
+    '<%= config.bin %> <%= command.id %> --username=user1 --acl-profile-name=new-acl',
+    '<%= config.bin %> <%= command.id %> --username=user1 --password=newPassword123',
+    '<%= config.bin %> <%= command.id %> --username=admin --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -24,11 +24,6 @@ Note: Modifying aclProfileName or clientProfileName while enabled may be service
     }),
     'client-profile-name': Flags.string({
       description: 'The Client Profile name for connection settings.',
-    }),
-    'client-username': Flags.string({
-      char: 'u',
-      description: 'The name of the Client Username to update.',
-      required: true,
     }),
     'enabled': Flags.boolean({
       description: 'Enable or disable the Client Username.',
@@ -42,6 +37,11 @@ Note: Modifying aclProfileName or clientProfileName while enabled may be service
     'subscription-manager-enabled': Flags.boolean({
       description: 'Enable or disable subscription management capability.',
     }),
+    username: Flags.string({
+      char: 'u',
+      description: 'The name of the Client Username to update.',
+      required: true,
+    }),
   }
 
   public async run(): Promise<MsgVpnClientUsernameUpdateResponse> {
@@ -51,7 +51,7 @@ Note: Modifying aclProfileName or clientProfileName while enabled may be service
     const updateBody: MsgVpnClientUsernameUpdateRequest = this.buildUpdateRequest(flags)
 
     // Make SEMP Config API call
-    const clientUsername = flags['client-username']
+    const clientUsername = flags.username
     const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/clientUsernames/${clientUsername}`
     const sempResp = await this.sempConn.patch<MsgVpnClientUsernameUpdateResponse>(endpoint, updateBody)
 

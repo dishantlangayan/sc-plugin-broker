@@ -14,10 +14,10 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
   static override examples = [
     '<%= config.bin %> <%= command.id %>',
     '<%= config.bin %> <%= command.id %> --count=20',
-    '<%= config.bin %> <%= command.id %> --client-username="user*"',
+    '<%= config.bin %> <%= command.id %> --username="user*"',
     '<%= config.bin %> <%= command.id %> --select=clientUsername,enabled,aclProfileName',
     '<%= config.bin %> <%= command.id %> --all',
-    '<%= config.bin %> <%= command.id %> --client-username="admin*" --count=5 --all',
+    '<%= config.bin %> <%= command.id %> --username="admin*" --count=5 --all',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -25,9 +25,6 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       char: 'a',
       default: false,
       description: 'Display all Client Usernames (auto-pagination).',
-    }),
-    'client-username': Flags.string({
-      description: 'Filter Client Usernames by name. Supports * wildcard.',
     }),
     count: Flags.integer({
       char: 'c',
@@ -40,6 +37,10 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       char: 's',
       description: 'Comma-separated list of attributes to display (max 10).',
       multiple: false,
+    }),
+    username: Flags.string({
+      char: 'u',
+      description: 'Filter Client Usernames by name. Supports * wildcard.',
     }),
   }
 // Default attributes to display
@@ -87,7 +88,7 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
    * Fetch Client Usernames with pagination and stream to table
    */
   private async fetchAndDisplayClientUsernames(
-    flags: {all: boolean; 'client-username'?: string; count: number;},
+    flags: {all: boolean; count: number; username?: string;},
     selectedAttrs: string[],
     streamTable: import('table').WritableStream,
   ): Promise<MsgVpnClientUsernameMonitor[]> {
@@ -100,8 +101,8 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       params.set('count', flags.count.toString())
 
       // Add where clause for filtering if provided
-      if (flags['client-username']) {
-        params.set('where', `clientUsername==${flags['client-username']}`)
+      if (flags.username) {
+        params.set('where', `clientUsername==${flags.username}`)
       }
 
       // Add select parameter for performance optimization

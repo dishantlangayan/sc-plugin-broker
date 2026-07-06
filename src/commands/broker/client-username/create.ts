@@ -12,10 +12,10 @@ Any attribute missing from the request will be set to its default value. The cre
 
 A Client Username represents a client that can connect to the broker with specific authentication and authorization settings.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --client-username=user1 --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-username=user1 --enabled',
-    '<%= config.bin %> <%= command.id %> --client-username=user1 --password=secret123 --acl-profile-name=custom-acl --client-profile-name=custom-profile',
-    '<%= config.bin %> <%= command.id %> --client-username=admin --enabled --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled',
+    '<%= config.bin %> <%= command.id %> --username=user1',
+    '<%= config.bin %> <%= command.id %> --username=user1 --enabled',
+    '<%= config.bin %> <%= command.id %> --username=user1 --password=secret123 --acl-profile-name=custom-acl --client-profile-name=custom-profile',
+    '<%= config.bin %> <%= command.id %> --username=admin --enabled --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -24,11 +24,6 @@ A Client Username represents a client that can connect to the broker with specif
     }),
     'client-profile-name': Flags.string({
       description: 'The Client Profile name for connection settings.',
-    }),
-    'client-username': Flags.string({
-      char: 'u',
-      description: 'The name of the Client Username to create.',
-      required: true,
     }),
     'enabled': Flags.boolean({
       description: 'Enable the Client Username. When disabled, clients cannot connect.',
@@ -41,6 +36,11 @@ A Client Username represents a client that can connect to the broker with specif
     }),
     'subscription-manager-enabled': Flags.boolean({
       description: 'Enable subscription management capability.',
+    }),
+    username: Flags.string({
+      char: 'u',
+      description: 'The name of the Client Username to create.',
+      required: true,
     }),
   }
 
@@ -66,14 +66,14 @@ A Client Username represents a client that can connect to the broker with specif
   private buildCreateRequest(flags: {
     'acl-profile-name'?: string
     'client-profile-name'?: string
-    'client-username': string
     'enabled'?: boolean
     'guaranteed-endpoint-permission-override-enabled'?: boolean
     'password'?: string
     'subscription-manager-enabled'?: boolean
+    'username': string
   }): MsgVpnClientUsernameCreateRequest {
     return {
-      clientUsername: flags['client-username'],
+      clientUsername: flags.username,
       ...(flags['acl-profile-name'] && {aclProfileName: flags['acl-profile-name']}),
       ...(flags['client-profile-name'] && {clientProfileName: flags['client-profile-name']}),
       ...(flags.enabled !== undefined && {enabled: flags.enabled}),

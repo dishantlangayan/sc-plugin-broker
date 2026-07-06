@@ -91,7 +91,7 @@ describe('broker:client-username:list', () => {
       await BrokerClientUsernameList.run([
         '--broker-name=test-broker',
         '--msg-vpn-name=default',
-        '--client-username=user*',
+        '--username=user*',
       ])
 
       const getCall = context.mockConnection.get!.getCall(0)

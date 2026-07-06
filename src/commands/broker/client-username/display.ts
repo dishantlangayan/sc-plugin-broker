@@ -10,13 +10,11 @@ export default class BrokerClientUsernameDisplay extends ScBrokerCommand<typeof 
 
 Retrieves and displays detailed information about a Client Username using the SEMP Monitor API, including configuration settings and associated profiles.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --client-username=user1 --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-username=user1',
-    '<%= config.bin %> <%= command.id %> --client-username=admin',
+    '<%= config.bin %> <%= command.id %> --username=user1',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'client-username': Flags.string({
+    username: Flags.string({
       char: 'u',
       description: 'The name of the Client Username to display.',
       required: true,
@@ -27,7 +25,7 @@ Retrieves and displays detailed information about a Client Username using the SE
     const {flags} = await this.parse(BrokerClientUsernameDisplay)
 
     // Fetch from Monitor API
-    const endpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/clientUsernames/${flags['client-username']}`
+    const endpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/clientUsernames/${flags.username}`
     const clientUsernameResp = await this.sempConn.get<MsgVpnClientUsernameMonitorResponse>(endpoint)
 
     // Display details
