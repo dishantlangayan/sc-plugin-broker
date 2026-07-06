@@ -26,7 +26,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.6.0 linux-x64 node-v22.23.1
+@dishantlangayan/sc-plugin-broker/0.7.0 darwin-arm64 node-v24.1.0
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
@@ -124,16 +124,16 @@ Create a client connect exception for an ACL Profile on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker acl-profile client-connect-exceptions create -a <value> -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value>
+  $ sc broker acl-profile client-connect-exceptions create -a <value> -c <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value>
     | -b <value>] [-v <value>]
 
 FLAGS
-  -a, --address=<value>       (required) The IP address/netmask of the client connect exception in CIDR form (e.g.,
-                              192.168.1.0/24).
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -a, --acl-profile-name=<value>                  (required) The name of the ACL Profile.
+  -b, --broker-name=<value>                       Stored broker name. If not provided, uses the default broker.
+  -c, --client-connect-exception-address=<value>  (required) The IP address/netmask of the client connect exception in
+                                                  CIDR form (e.g., 192.168.1.0/24).
+  -v, --msg-vpn-name=<value>                      The name of the Message VPN.
+      --broker-id=<value>                         Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -144,13 +144,16 @@ DESCRIPTION
   Create a client connect exception for an ACL Profile on a Solace Event Broker.
 
   Adds an exception to the ACL Profile that allows or disallows clients connecting from specific IP addresses. The
-  exception is expressed as an IP address/netmask in CIDR form.
+  exception is expressed as an IP address/netmask in CIDR form. The creation is synchronized to HA mates and replication
+  sites via config-sync.
 
 EXAMPLES
-  $ sc broker acl-profile client-connect-exceptions create --name=myProfile --address=192.168.1.0/24
+  $ sc broker acl-profile client-connect-exceptions create --acl-profile-name=myProfile --client-connect-exception-address=192.168.1.0/24
+
+  $ sc broker acl-profile client-connect-exceptions create --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --client-connect-exception-address=10.0.0.0/8
 ```
 
-_See code: [src/commands/broker/acl-profile/client-connect-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/client-connect-exceptions/create.ts)_
+_See code: [src/commands/broker/acl-profile/client-connect-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/client-connect-exceptions/create.ts)_
 
 ## `sc broker acl-profile client-connect-exceptions delete`
 
@@ -158,16 +161,17 @@ Delete a client connect exception from an ACL Profile on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker acl-profile client-connect-exceptions delete -a <value> -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value>
+  $ sc broker acl-profile client-connect-exceptions delete -a <value> -c <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value>
     | -b <value>] [-v <value>] [--no-prompt]
 
 FLAGS
-  -a, --address=<value>       (required) The IP address/netmask of the client connect exception to delete in CIDR form.
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
-      --no-prompt             Skip confirmation prompt and proceed with deletion.
+  -a, --acl-profile-name=<value>                  (required) The name of the ACL Profile.
+  -b, --broker-name=<value>                       Stored broker name. If not provided, uses the default broker.
+  -c, --client-connect-exception-address=<value>  (required) The IP address/netmask of the client connect exception to
+                                                  delete in CIDR form.
+  -v, --msg-vpn-name=<value>                      The name of the Message VPN.
+      --broker-id=<value>                         Stored broker identifier. If not provided, uses the default broker.
+      --no-prompt                                 Skip confirmation prompt and proceed with deletion.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -177,17 +181,20 @@ GLOBAL FLAGS
 DESCRIPTION
   Delete a client connect exception from an ACL Profile on a Solace Event Broker.
 
-  Removes the specified client connect exception from the ACL Profile. This is a destructive operation.
+  Removes the specified client connect exception from the ACL Profile. This is a destructive operation. The deletion is
+  synchronized to HA mates and replication sites via config-sync.
 
   By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
 
 EXAMPLES
-  $ sc broker acl-profile client-connect-exceptions delete --name=myProfile --address=192.168.1.0/24
+  $ sc broker acl-profile client-connect-exceptions delete --acl-profile-name=myProfile --client-connect-exception-address=192.168.1.0/24
 
-  $ sc broker acl-profile client-connect-exceptions delete --name=myProfile --address=10.0.0.0/8 --no-prompt
+  $ sc broker acl-profile client-connect-exceptions delete --acl-profile-name=myProfile --client-connect-exception-address=10.0.0.0/8 --no-prompt
+
+  $ sc broker acl-profile client-connect-exceptions delete --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --client-connect-exception-address=172.16.0.0/12 --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/client-connect-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/client-connect-exceptions/delete.ts)_
+_See code: [src/commands/broker/acl-profile/client-connect-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/client-connect-exceptions/delete.ts)_
 
 ## `sc broker acl-profile client-connect-exceptions list`
 
@@ -195,14 +202,14 @@ List client connect exceptions for an ACL Profile from a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker acl-profile client-connect-exceptions list -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker acl-profile client-connect-exceptions list -a <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -a, --acl-profile-name=<value>  (required) The name of the ACL Profile.
+  -b, --broker-name=<value>       Stored broker name. If not provided, uses the default broker.
+  -v, --msg-vpn-name=<value>      The name of the Message VPN.
+      --broker-id=<value>         Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -216,10 +223,12 @@ DESCRIPTION
   API.
 
 EXAMPLES
-  $ sc broker acl-profile client-connect-exceptions list --name=myProfile
+  $ sc broker acl-profile client-connect-exceptions list --acl-profile-name=myProfile
+
+  $ sc broker acl-profile client-connect-exceptions list --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default
 ```
 
-_See code: [src/commands/broker/acl-profile/client-connect-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/client-connect-exceptions/list.ts)_
+_See code: [src/commands/broker/acl-profile/client-connect-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/client-connect-exceptions/list.ts)_
 
 ## `sc broker acl-profile create`
 
@@ -273,7 +282,7 @@ EXAMPLES
   $ sc broker acl-profile create --name=myProfile --client-connect-default-action=allow --publish-topic-default-action=disallow --subscribe-topic-default-action=allow
 ```
 
-_See code: [src/commands/broker/acl-profile/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/create.ts)_
+_See code: [src/commands/broker/acl-profile/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/create.ts)_
 
 ## `sc broker acl-profile delete`
 
@@ -310,7 +319,7 @@ EXAMPLES
   $ sc broker acl-profile delete --name=myProfile --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/delete.ts)_
+_See code: [src/commands/broker/acl-profile/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/delete.ts)_
 
 ## `sc broker acl-profile display`
 
@@ -342,7 +351,7 @@ EXAMPLES
   $ sc broker acl-profile display --name=myProfile
 ```
 
-_See code: [src/commands/broker/acl-profile/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/display.ts)_
+_See code: [src/commands/broker/acl-profile/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/display.ts)_
 
 ## `sc broker acl-profile list`
 
@@ -385,7 +394,7 @@ EXAMPLES
   $ sc broker acl-profile list --all
 ```
 
-_See code: [src/commands/broker/acl-profile/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/list.ts)_
+_See code: [src/commands/broker/acl-profile/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/list.ts)_
 
 ## `sc broker acl-profile publish-topic-exceptions create`
 
@@ -393,17 +402,17 @@ Create a publish topic exception for an ACL Profile on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker acl-profile publish-topic-exceptions create -n <value> -x smf|mqtt -t <value> [--json] [--log-level debug|warn|error|info|trace]
+  $ sc broker acl-profile publish-topic-exceptions create -a <value> -p <value> -s smf|mqtt [--json] [--log-level debug|warn|error|info|trace]
     [--broker-id <value> | -b <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -t, --topic=<value>         (required) The topic for the exception. May include wildcards.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-  -x, --syntax=<option>       (required) The syntax of the topic.
-                              <options: smf|mqtt>
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -a, --acl-profile-name=<value>         (required) The name of the ACL Profile.
+  -b, --broker-name=<value>              Stored broker name. If not provided, uses the default broker.
+  -p, --publish-topic-exception=<value>  (required) The topic for the exception. May include wildcards.
+  -s, --syntax=<option>                  (required) The syntax of the topic.
+                                         <options: smf|mqtt>
+  -v, --msg-vpn-name=<value>             The name of the Message VPN.
+      --broker-id=<value>                Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -414,15 +423,16 @@ DESCRIPTION
   Create a publish topic exception for an ACL Profile on a Solace Event Broker.
 
   Adds an exception to the ACL Profile for clients publishing to specific topics. The exception is expressed as a topic
-  with optional wildcards and must specify the syntax type (smf or mqtt).
+  with optional wildcards and must specify the syntax type (smf or mqtt). The creation is synchronized to HA mates and
+  replication sites via config-sync.
 
 EXAMPLES
-  $ sc broker acl-profile publish-topic-exceptions create --name=myProfile --topic="orders/*/created" --syntax=smf
+  $ sc broker acl-profile publish-topic-exceptions create --acl-profile-name=myProfile --publish-topic-exception="orders/*/created" --syntax=smf
 
-  $ sc broker acl-profile publish-topic-exceptions create --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt
+  $ sc broker acl-profile publish-topic-exceptions create --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --publish-topic-exception="devices/+/telemetry" --syntax=mqtt
 ```
 
-_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/publish-topic-exceptions/create.ts)_
+_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/publish-topic-exceptions/create.ts)_
 
 ## `sc broker acl-profile publish-topic-exceptions delete`
 
@@ -430,18 +440,18 @@ Delete a publish topic exception from an ACL Profile on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker acl-profile publish-topic-exceptions delete -n <value> -x smf|mqtt -t <value> [--json] [--log-level debug|warn|error|info|trace]
+  $ sc broker acl-profile publish-topic-exceptions delete -a <value> -p <value> -s smf|mqtt [--json] [--log-level debug|warn|error|info|trace]
     [--broker-id <value> | -b <value>] [-v <value>] [--no-prompt]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -t, --topic=<value>         (required) The topic of the exception to delete.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-  -x, --syntax=<option>       (required) The syntax of the topic.
-                              <options: smf|mqtt>
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
-      --no-prompt             Skip confirmation prompt and proceed with deletion.
+  -a, --acl-profile-name=<value>         (required) The name of the ACL Profile.
+  -b, --broker-name=<value>              Stored broker name. If not provided, uses the default broker.
+  -p, --publish-topic-exception=<value>  (required) The topic of the exception to delete.
+  -s, --syntax=<option>                  (required) The syntax of the topic.
+                                         <options: smf|mqtt>
+  -v, --msg-vpn-name=<value>             The name of the Message VPN.
+      --broker-id=<value>                Stored broker identifier. If not provided, uses the default broker.
+      --no-prompt                        Skip confirmation prompt and proceed with deletion.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -451,17 +461,20 @@ GLOBAL FLAGS
 DESCRIPTION
   Delete a publish topic exception from an ACL Profile on a Solace Event Broker.
 
-  Removes the specified publish topic exception from the ACL Profile. This is a destructive operation.
+  Removes the specified publish topic exception from the ACL Profile. This is a destructive operation. The deletion is
+  synchronized to HA mates and replication sites via config-sync.
 
   By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
 
 EXAMPLES
-  $ sc broker acl-profile publish-topic-exceptions delete --name=myProfile --topic="orders/*/created" --syntax=smf
+  $ sc broker acl-profile publish-topic-exceptions delete --acl-profile-name=myProfile --publish-topic-exception="orders/*/created" --syntax=smf
 
-  $ sc broker acl-profile publish-topic-exceptions delete --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt --no-prompt
+  $ sc broker acl-profile publish-topic-exceptions delete --acl-profile-name=myProfile --publish-topic-exception="devices/+/telemetry" --syntax=mqtt --no-prompt
+
+  $ sc broker acl-profile publish-topic-exceptions delete --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --publish-topic-exception="test/topic" --syntax=smf --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/publish-topic-exceptions/delete.ts)_
+_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/publish-topic-exceptions/delete.ts)_
 
 ## `sc broker acl-profile publish-topic-exceptions list`
 
@@ -469,14 +482,14 @@ List publish topic exceptions for an ACL Profile from a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker acl-profile publish-topic-exceptions list -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker acl-profile publish-topic-exceptions list -a <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -a, --acl-profile-name=<value>  (required) The name of the ACL Profile.
+  -b, --broker-name=<value>       Stored broker name. If not provided, uses the default broker.
+  -v, --msg-vpn-name=<value>      The name of the Message VPN.
+      --broker-id=<value>         Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -490,10 +503,12 @@ DESCRIPTION
   API.
 
 EXAMPLES
-  $ sc broker acl-profile publish-topic-exceptions list --name=myProfile
+  $ sc broker acl-profile publish-topic-exceptions list --acl-profile-name=myProfile
+
+  $ sc broker acl-profile publish-topic-exceptions list --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default
 ```
 
-_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/publish-topic-exceptions/list.ts)_
+_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/publish-topic-exceptions/list.ts)_
 
 ## `sc broker acl-profile subscribe-share-name-exceptions create`
 
@@ -501,17 +516,17 @@ Create a subscribe share name exception for an ACL Profile on a Solace Event Bro
 
 ```
 USAGE
-  $ sc broker acl-profile subscribe-share-name-exceptions create -n <value> -x smf|mqtt -t <value> [--json] [--log-level debug|warn|error|info|trace]
+  $ sc broker acl-profile subscribe-share-name-exceptions create -a <value> -s <value> -x smf|mqtt [--json] [--log-level debug|warn|error|info|trace]
     [--broker-id <value> | -b <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -t, --topic=<value>         (required) The share name for the exception. May include wildcards.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-  -x, --syntax=<option>       (required) The syntax of the share name.
-                              <options: smf|mqtt>
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -a, --acl-profile-name=<value>                (required) The name of the ACL Profile.
+  -b, --broker-name=<value>                     Stored broker name. If not provided, uses the default broker.
+  -s, --subscribe-share-name-exception=<value>  (required) The share name for the exception. May include wildcards.
+  -v, --msg-vpn-name=<value>                    The name of the Message VPN.
+  -x, --syntax=<option>                         (required) The syntax of the share name.
+                                                <options: smf|mqtt>
+      --broker-id=<value>                       Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -522,15 +537,16 @@ DESCRIPTION
   Create a subscribe share name exception for an ACL Profile on a Solace Event Broker.
 
   Adds an exception to the ACL Profile for clients subscribing to specific shared subscriptions. The exception is
-  expressed as a share name with optional wildcards and must specify the syntax type (smf or mqtt).
+  expressed as a share name with optional wildcards and must specify the syntax type (smf or mqtt). The creation is
+  synchronized to HA mates and replication sites via config-sync.
 
 EXAMPLES
-  $ sc broker acl-profile subscribe-share-name-exceptions create --name=myProfile --topic="orders/*" --syntax=smf
+  $ sc broker acl-profile subscribe-share-name-exceptions create --acl-profile-name=myProfile --subscribe-share-name-exception="orders/*" --syntax=smf
 
-  $ sc broker acl-profile subscribe-share-name-exceptions create --name=myProfile --topic="devices/+" --syntax=mqtt
+  $ sc broker acl-profile subscribe-share-name-exceptions create --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --subscribe-share-name-exception="devices/+" --syntax=mqtt
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/create.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/create.ts)_
 
 ## `sc broker acl-profile subscribe-share-name-exceptions delete`
 
@@ -538,18 +554,18 @@ Delete a subscribe share name exception from an ACL Profile on a Solace Event Br
 
 ```
 USAGE
-  $ sc broker acl-profile subscribe-share-name-exceptions delete -n <value> -x smf|mqtt -t <value> [--json] [--log-level debug|warn|error|info|trace]
+  $ sc broker acl-profile subscribe-share-name-exceptions delete -a <value> -s <value> -x smf|mqtt [--json] [--log-level debug|warn|error|info|trace]
     [--broker-id <value> | -b <value>] [-v <value>] [--no-prompt]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -t, --topic=<value>         (required) The share name of the exception to delete.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-  -x, --syntax=<option>       (required) The syntax of the share name.
-                              <options: smf|mqtt>
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
-      --no-prompt             Skip confirmation prompt and proceed with deletion.
+  -a, --acl-profile-name=<value>                (required) The name of the ACL Profile.
+  -b, --broker-name=<value>                     Stored broker name. If not provided, uses the default broker.
+  -s, --subscribe-share-name-exception=<value>  (required) The share name of the exception to delete.
+  -v, --msg-vpn-name=<value>                    The name of the Message VPN.
+  -x, --syntax=<option>                         (required) The syntax of the share name.
+                                                <options: smf|mqtt>
+      --broker-id=<value>                       Stored broker identifier. If not provided, uses the default broker.
+      --no-prompt                               Skip confirmation prompt and proceed with deletion.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -559,17 +575,20 @@ GLOBAL FLAGS
 DESCRIPTION
   Delete a subscribe share name exception from an ACL Profile on a Solace Event Broker.
 
-  Removes the specified subscribe share name exception from the ACL Profile. This is a destructive operation.
+  Removes the specified subscribe share name exception from the ACL Profile. This is a destructive operation. The
+  deletion is synchronized to HA mates and replication sites via config-sync.
 
   By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
 
 EXAMPLES
-  $ sc broker acl-profile subscribe-share-name-exceptions delete --name=myProfile --topic="orders/*" --syntax=smf
+  $ sc broker acl-profile subscribe-share-name-exceptions delete --acl-profile-name=myProfile --subscribe-share-name-exception="orders/*" --syntax=smf
 
-  $ sc broker acl-profile subscribe-share-name-exceptions delete --name=myProfile --topic="devices/+" --syntax=mqtt --no-prompt
+  $ sc broker acl-profile subscribe-share-name-exceptions delete --acl-profile-name=myProfile --subscribe-share-name-exception="devices/+" --syntax=mqtt --no-prompt
+
+  $ sc broker acl-profile subscribe-share-name-exceptions delete --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --subscribe-share-name-exception="test/share" --syntax=smf --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/delete.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/delete.ts)_
 
 ## `sc broker acl-profile subscribe-share-name-exceptions list`
 
@@ -577,14 +596,14 @@ List subscribe share name exceptions for an ACL Profile from a Solace Event Brok
 
 ```
 USAGE
-  $ sc broker acl-profile subscribe-share-name-exceptions list -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker acl-profile subscribe-share-name-exceptions list -a <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -a, --acl-profile-name=<value>  (required) The name of the ACL Profile.
+  -b, --broker-name=<value>       Stored broker name. If not provided, uses the default broker.
+  -v, --msg-vpn-name=<value>      The name of the Message VPN.
+      --broker-id=<value>         Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -598,10 +617,12 @@ DESCRIPTION
   Monitor API.
 
 EXAMPLES
-  $ sc broker acl-profile subscribe-share-name-exceptions list --name=myProfile
+  $ sc broker acl-profile subscribe-share-name-exceptions list --acl-profile-name=myProfile
+
+  $ sc broker acl-profile subscribe-share-name-exceptions list --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/list.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/list.ts)_
 
 ## `sc broker acl-profile subscribe-topic-exceptions create`
 
@@ -609,17 +630,17 @@ Create a subscribe topic exception for an ACL Profile on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker acl-profile subscribe-topic-exceptions create -n <value> -x smf|mqtt -t <value> [--json] [--log-level debug|warn|error|info|trace]
+  $ sc broker acl-profile subscribe-topic-exceptions create -a <value> -s <value> -x smf|mqtt [--json] [--log-level debug|warn|error|info|trace]
     [--broker-id <value> | -b <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -t, --topic=<value>         (required) The topic for the exception. May include wildcards.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-  -x, --syntax=<option>       (required) The syntax of the topic.
-                              <options: smf|mqtt>
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -a, --acl-profile-name=<value>           (required) The name of the ACL Profile.
+  -b, --broker-name=<value>                Stored broker name. If not provided, uses the default broker.
+  -s, --subscribe-topic-exception=<value>  (required) The topic for the exception. May include wildcards.
+  -v, --msg-vpn-name=<value>               The name of the Message VPN.
+  -x, --syntax=<option>                    (required) The syntax of the topic.
+                                           <options: smf|mqtt>
+      --broker-id=<value>                  Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -634,12 +655,12 @@ DESCRIPTION
   replication sites via config-sync.
 
 EXAMPLES
-  $ sc broker acl-profile subscribe-topic-exceptions create --name=myProfile --topic="orders/*/created" --syntax=smf
+  $ sc broker acl-profile subscribe-topic-exceptions create --acl-profile-name=myProfile --subscribe-topic-exception="orders/*/created" --syntax=smf
 
-  $ sc broker acl-profile subscribe-topic-exceptions create --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt
+  $ sc broker acl-profile subscribe-topic-exceptions create --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --subscribe-topic-exception="devices/+/telemetry" --syntax=mqtt
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/create.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/create.ts)_
 
 ## `sc broker acl-profile subscribe-topic-exceptions delete`
 
@@ -647,18 +668,18 @@ Delete a subscribe topic exception from an ACL Profile on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker acl-profile subscribe-topic-exceptions delete -n <value> -x smf|mqtt -t <value> [--json] [--log-level debug|warn|error|info|trace]
+  $ sc broker acl-profile subscribe-topic-exceptions delete -a <value> -s <value> -x smf|mqtt [--json] [--log-level debug|warn|error|info|trace]
     [--broker-id <value> | -b <value>] [-v <value>] [--no-prompt]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -t, --topic=<value>         (required) The topic of the exception to delete.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-  -x, --syntax=<option>       (required) The syntax of the topic.
-                              <options: smf|mqtt>
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
-      --no-prompt             Skip confirmation prompt and proceed with deletion.
+  -a, --acl-profile-name=<value>           (required) The name of the ACL Profile.
+  -b, --broker-name=<value>                Stored broker name. If not provided, uses the default broker.
+  -s, --subscribe-topic-exception=<value>  (required) The topic of the exception to delete.
+  -v, --msg-vpn-name=<value>               The name of the Message VPN.
+  -x, --syntax=<option>                    (required) The syntax of the topic.
+                                           <options: smf|mqtt>
+      --broker-id=<value>                  Stored broker identifier. If not provided, uses the default broker.
+      --no-prompt                          Skip confirmation prompt and proceed with deletion.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -674,12 +695,14 @@ DESCRIPTION
   By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
 
 EXAMPLES
-  $ sc broker acl-profile subscribe-topic-exceptions delete --name=myProfile --topic="orders/*/created" --syntax=smf
+  $ sc broker acl-profile subscribe-topic-exceptions delete --acl-profile-name=myProfile --subscribe-topic-exception="orders/*/created" --syntax=smf
 
-  $ sc broker acl-profile subscribe-topic-exceptions delete --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt --no-prompt
+  $ sc broker acl-profile subscribe-topic-exceptions delete --acl-profile-name=myProfile --subscribe-topic-exception="devices/+/telemetry" --syntax=mqtt --no-prompt
+
+  $ sc broker acl-profile subscribe-topic-exceptions delete --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default --subscribe-topic-exception="test/topic" --syntax=smf --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/delete.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/delete.ts)_
 
 ## `sc broker acl-profile subscribe-topic-exceptions list`
 
@@ -687,14 +710,14 @@ List subscribe topic exceptions for an ACL Profile from a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker acl-profile subscribe-topic-exceptions list -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker acl-profile subscribe-topic-exceptions list -a <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
-  -n, --name=<value>          (required) The name of the ACL Profile.
-  -v, --msg-vpn-name=<value>  The name of the Message VPN.
-      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+  -a, --acl-profile-name=<value>  (required) The name of the ACL Profile.
+  -b, --broker-name=<value>       Stored broker name. If not provided, uses the default broker.
+  -v, --msg-vpn-name=<value>      The name of the Message VPN.
+      --broker-id=<value>         Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -708,10 +731,12 @@ DESCRIPTION
   API.
 
 EXAMPLES
-  $ sc broker acl-profile subscribe-topic-exceptions list --name=myProfile
+  $ sc broker acl-profile subscribe-topic-exceptions list --acl-profile-name=myProfile
+
+  $ sc broker acl-profile subscribe-topic-exceptions list --broker-name=dev-broker --acl-profile-name=myProfile --msg-vpn-name=default
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/list.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/list.ts)_
 
 ## `sc broker acl-profile update`
 
@@ -759,7 +784,7 @@ EXAMPLES
   $ sc broker acl-profile update --acl-profile-name=myProfile --publish-topic-default-action=disallow
 ```
 
-_See code: [src/commands/broker/acl-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/acl-profile/update.ts)_
+_See code: [src/commands/broker/acl-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/acl-profile/update.ts)_
 
 ## `sc broker client-profile create`
 
@@ -830,7 +855,7 @@ EXAMPLES
   $ sc broker client-profile create --client-profile-name=myProfile
 ```
 
-_See code: [src/commands/broker/client-profile/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-profile/create.ts)_
+_See code: [src/commands/broker/client-profile/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-profile/create.ts)_
 
 ## `sc broker client-profile delete`
 
@@ -869,7 +894,7 @@ EXAMPLES
   $ sc broker client-profile delete --client-profile-name=myProfile --no-prompt
 ```
 
-_See code: [src/commands/broker/client-profile/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-profile/delete.ts)_
+_See code: [src/commands/broker/client-profile/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-profile/delete.ts)_
 
 ## `sc broker client-profile display`
 
@@ -904,7 +929,7 @@ EXAMPLES
   $ sc broker client-profile display --client-profile-name=myProfile
 ```
 
-_See code: [src/commands/broker/client-profile/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-profile/display.ts)_
+_See code: [src/commands/broker/client-profile/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-profile/display.ts)_
 
 ## `sc broker client-profile list`
 
@@ -949,7 +974,7 @@ EXAMPLES
   $ sc broker client-profile list --client-profile-name="*prod*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/client-profile/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-profile/list.ts)_
+_See code: [src/commands/broker/client-profile/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-profile/list.ts)_
 
 ## `sc broker client-profile update`
 
@@ -1020,7 +1045,7 @@ EXAMPLES
   $ sc broker client-profile update --client-profile-name=myProfile --eliding-delay=100
 ```
 
-_See code: [src/commands/broker/client-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-profile/update.ts)_
+_See code: [src/commands/broker/client-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-profile/update.ts)_
 
 ## `sc broker client-username create`
 
@@ -1070,7 +1095,7 @@ EXAMPLES
   $ sc broker client-username create --client-username=admin --enabled --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
 ```
 
-_See code: [src/commands/broker/client-username/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-username/create.ts)_
+_See code: [src/commands/broker/client-username/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/create.ts)_
 
 ## `sc broker client-username delete`
 
@@ -1113,7 +1138,7 @@ EXAMPLES
   $ sc broker client-username delete --broker-id=prod --client-username=tempUser --msg-vpn-name=production --no-prompt
 ```
 
-_See code: [src/commands/broker/client-username/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-username/delete.ts)_
+_See code: [src/commands/broker/client-username/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/delete.ts)_
 
 ## `sc broker client-username display`
 
@@ -1149,7 +1174,7 @@ EXAMPLES
   $ sc broker client-username display --client-username=admin
 ```
 
-_See code: [src/commands/broker/client-username/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-username/display.ts)_
+_See code: [src/commands/broker/client-username/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/display.ts)_
 
 ## `sc broker client-username list`
 
@@ -1194,7 +1219,7 @@ EXAMPLES
   $ sc broker client-username list --client-username="admin*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/client-username/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-username/list.ts)_
+_See code: [src/commands/broker/client-username/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/list.ts)_
 
 ## `sc broker client-username update`
 
@@ -1243,7 +1268,7 @@ EXAMPLES
   $ sc broker client-username update --client-username=admin --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
 ```
 
-_See code: [src/commands/broker/client-username/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/client-username/update.ts)_
+_See code: [src/commands/broker/client-username/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/client-username/update.ts)_
 
 ## `sc broker login basic`
 
@@ -1282,7 +1307,7 @@ EXAMPLES
   $ sc broker login basic --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default
 ```
 
-_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/login/basic.ts)_
+_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/login/basic.ts)_
 
 ## `sc broker login cloud`
 
@@ -1326,7 +1351,7 @@ EXAMPLES
   $ sc broker login cloud --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/login/cloud.ts)_
+_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/login/cloud.ts)_
 
 ## `sc broker login list`
 
@@ -1351,7 +1376,7 @@ EXAMPLES
   $ sc broker login list
 ```
 
-_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/login/list.ts)_
+_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/login/list.ts)_
 
 ## `sc broker logout`
 
@@ -1387,7 +1412,7 @@ EXAMPLES
   $ sc broker logout --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/logout.ts)_
+_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/logout.ts)_
 
 ## `sc broker queue-template create`
 
@@ -1453,7 +1478,7 @@ EXAMPLES
   $ sc broker queue-template create --queue-template-name=myTemplate --max-bind-count=500 --durability-override=non-durable
 ```
 
-_See code: [src/commands/broker/queue-template/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue-template/create.ts)_
+_See code: [src/commands/broker/queue-template/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue-template/create.ts)_
 
 ## `sc broker queue-template delete`
 
@@ -1496,7 +1521,7 @@ EXAMPLES
   $ sc broker queue-template delete --broker-id=prod --queue-template-name=tempTemplate --msg-vpn-name=production --no-prompt
 ```
 
-_See code: [src/commands/broker/queue-template/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue-template/delete.ts)_
+_See code: [src/commands/broker/queue-template/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue-template/delete.ts)_
 
 ## `sc broker queue-template display`
 
@@ -1532,7 +1557,7 @@ EXAMPLES
   $ sc broker queue-template display --queue-template-name=myTemplate
 ```
 
-_See code: [src/commands/broker/queue-template/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue-template/display.ts)_
+_See code: [src/commands/broker/queue-template/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue-template/display.ts)_
 
 ## `sc broker queue-template list`
 
@@ -1577,7 +1602,7 @@ EXAMPLES
   $ sc broker queue-template list --queue-template-name="*test*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/queue-template/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue-template/list.ts)_
+_See code: [src/commands/broker/queue-template/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue-template/list.ts)_
 
 ## `sc broker queue-template update`
 
@@ -1643,7 +1668,7 @@ EXAMPLES
   $ sc broker queue-template update --queue-template-name=myTemplate --permission=read-only --max-bind-count=200
 ```
 
-_See code: [src/commands/broker/queue-template/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue-template/update.ts)_
+_See code: [src/commands/broker/queue-template/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue-template/update.ts)_
 
 ## `sc broker queue create`
 
@@ -1691,7 +1716,7 @@ EXAMPLES
   $ sc broker queue create --name=myQueue --access-type=non-exclusive --max-msg-spool-usage=1024 --egress-enabled --ingress-enabled
 ```
 
-_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue/create.ts)_
+_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue/create.ts)_
 
 ## `sc broker queue delete`
 
@@ -1727,7 +1752,7 @@ EXAMPLES
   $ sc broker queue delete --queue-name=myQueue --no-prompt
 ```
 
-_See code: [src/commands/broker/queue/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue/delete.ts)_
+_See code: [src/commands/broker/queue/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue/delete.ts)_
 
 ## `sc broker queue display`
 
@@ -1762,7 +1787,7 @@ EXAMPLES
   $ sc broker queue display --queue-name=myQueue --show-subscriptions
 ```
 
-_See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue/display.ts)_
+_See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue/display.ts)_
 
 ## `sc broker queue list`
 
@@ -1808,7 +1833,7 @@ EXAMPLES
   $ sc broker queue list --name="*test*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue/list.ts)_
+_See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue/list.ts)_
 
 ## `sc broker queue subscriptions create`
 
@@ -1848,7 +1873,7 @@ EXAMPLES
   $ sc broker queue subscriptions create --name=myQueue --topic=events/user/*
 ```
 
-_See code: [src/commands/broker/queue/subscriptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue/subscriptions/create.ts)_
+_See code: [src/commands/broker/queue/subscriptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue/subscriptions/create.ts)_
 
 ## `sc broker queue subscriptions delete`
 
@@ -1885,7 +1910,7 @@ EXAMPLES
   $ sc broker queue subscriptions delete --name=myQueue --topic=orders/> --no-prompt
 ```
 
-_See code: [src/commands/broker/queue/subscriptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue/subscriptions/delete.ts)_
+_See code: [src/commands/broker/queue/subscriptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue/subscriptions/delete.ts)_
 
 ## `sc broker queue update`
 
@@ -1936,5 +1961,5 @@ EXAMPLES
   $ sc broker queue update --name=myQueue --no-egress-enabled
 ```
 
-_See code: [src/commands/broker/queue/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.6.0/src/commands/broker/queue/update.ts)_
+_See code: [src/commands/broker/queue/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.7.0/src/commands/broker/queue/update.ts)_
 <!-- commandsstop -->
