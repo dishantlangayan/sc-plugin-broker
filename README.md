@@ -1387,7 +1387,7 @@ Create a Queue Template on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker queue-template create -t <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker queue-template create -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>] [-a exclusive|non-exclusive] [--dead-msg-queue <value>] [--durability-override
     none|non-durable|durable] [--max-bind-count <value>] [--max-delivered-unacked-msgs-per-flow <value>] [--max-msg-size
     <value>] [-s <value>] [--max-redelivery-count <value>] [--max-ttl <value>] [-p
@@ -1399,12 +1399,12 @@ FLAGS
   -b, --broker-name=<value>                          Stored broker name. If not provided, uses the default broker.
   -f, --queue-name-filter=<value>                    A wildcarded pattern to match queue names for applying this
                                                      template. Supports * and > wildcards.
+  -n, --name=<value>                                 (required) The name of the queue template to create.
   -p, --permission=<option>                          The permission level for all consumers of queues created from this
                                                      template, excluding the owner.
                                                      <options: consume|delete|modify-topic|no-access|read-only>
   -s, --max-msg-spool-usage=<value>                  The maximum message spool usage allowed by queues created from this
                                                      template, in megabytes (MB).
-  -t, --queue-template-name=<value>                  (required) The name of the queue template to create.
   -v, --msg-vpn-name=<value>                         The name of the Message VPN.
       --broker-id=<value>                            Stored broker identifier. If not provided, uses the default broker.
       --dead-msg-queue=<value>                       The name of the Dead Message Queue.
@@ -1434,15 +1434,11 @@ DESCRIPTION
   synchronized to HA mates and replication sites via config-sync.
 
 EXAMPLES
-  $ sc broker queue-template create --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default
+  $ sc broker queue-template create --name=myTemplate
 
-  $ sc broker queue-template create --broker-id=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --access-type=non-exclusive
+  $ sc broker queue-template create --name=myTemplate --access-type=non-exclusive --max-msg-spool-usage=1024 --permission=consume
 
-  $ sc broker queue-template create --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --max-msg-spool-usage=1024 --permission=consume
-
-  $ sc broker queue-template create --queue-template-name=myTemplate --queue-name-filter="order.*"
-
-  $ sc broker queue-template create --queue-template-name=myTemplate --max-bind-count=500 --durability-override=non-durable
+  $ sc broker queue-template create --name=myTemplate --queue-name-filter="order.*"
 ```
 
 _See code: [src/commands/broker/queue-template/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.8.0/src/commands/broker/queue-template/create.ts)_
@@ -1453,15 +1449,15 @@ Delete a Queue Template from a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker queue-template delete -t <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker queue-template delete -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>] [--no-prompt]
 
 FLAGS
-  -b, --broker-name=<value>          Stored broker name. If not provided, uses the default broker.
-  -t, --queue-template-name=<value>  (required) The name of the queue template to delete.
-  -v, --msg-vpn-name=<value>         The name of the Message VPN.
-      --broker-id=<value>            Stored broker identifier. If not provided, uses the default broker.
-      --no-prompt                    Skip confirmation prompt and proceed with deletion.
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>          (required) The name of the queue template to delete.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+      --no-prompt             Skip confirmation prompt and proceed with deletion.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -1479,13 +1475,9 @@ DESCRIPTION
   By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
 
 EXAMPLES
-  $ sc broker queue-template delete --queue-template-name=myTemplate --msg-vpn-name=default
+  $ sc broker queue-template delete --name=myTemplate
 
-  $ sc broker queue-template delete --broker-name=dev-broker --queue-template-name=myTemplate
-
-  $ sc broker queue-template delete --queue-template-name=myTemplate --no-prompt
-
-  $ sc broker queue-template delete --broker-id=prod --queue-template-name=tempTemplate --msg-vpn-name=production --no-prompt
+  $ sc broker queue-template delete --name=myTemplate --no-prompt
 ```
 
 _See code: [src/commands/broker/queue-template/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.8.0/src/commands/broker/queue-template/delete.ts)_
@@ -1496,14 +1488,14 @@ Display queue template information from a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker queue-template display -t <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker queue-template display -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>          Stored broker name. If not provided, uses the default broker.
-  -t, --queue-template-name=<value>  (required) The name of the queue template to display.
-  -v, --msg-vpn-name=<value>         The name of the Message VPN.
-      --broker-id=<value>            Stored broker identifier. If not provided, uses the default broker.
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>          (required) The name of the queue template to display.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -1517,11 +1509,7 @@ DESCRIPTION
   and state.
 
 EXAMPLES
-  $ sc broker queue-template display --queue-template-name=myTemplate --msg-vpn-name=default
-
-  $ sc broker queue-template display --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default
-
-  $ sc broker queue-template display --queue-template-name=myTemplate
+  $ sc broker queue-template display --name=myTemplate
 ```
 
 _See code: [src/commands/broker/queue-template/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.8.0/src/commands/broker/queue-template/display.ts)_
@@ -1533,16 +1521,16 @@ List queue templates from a Solace Event Broker.
 ```
 USAGE
   $ sc broker queue-template list [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b <value>] [-v
-    <value>] [-a] [-c <value>] [-t <value>] [-s <value>]
+    <value>] [-a] [-c <value>] [-n <value>] [-s <value>]
 
 FLAGS
-  -a, --all                          Display all queue templates (auto-pagination).
-  -b, --broker-name=<value>          Stored broker name. If not provided, uses the default broker.
-  -c, --count=<value>                [default: 10] Number of queue templates to display per page.
-  -s, --select=<value>               Comma-separated list of attributes to display (max 10).
-  -t, --queue-template-name=<value>  Filter queue templates by name. Supports * wildcard.
-  -v, --msg-vpn-name=<value>         The name of the Message VPN.
-      --broker-id=<value>            Stored broker identifier. If not provided, uses the default broker.
+  -a, --all                   Display all queue templates (auto-pagination).
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -c, --count=<value>         [default: 10] Number of queue templates to display per page.
+  -n, --name=<value>          Filter queue templates by name. Supports * wildcard.
+  -s, --select=<value>        Comma-separated list of attributes to display (max 10).
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -1560,13 +1548,13 @@ EXAMPLES
 
   $ sc broker queue-template list --count=20
 
-  $ sc broker queue-template list --queue-template-name="order*"
+  $ sc broker queue-template list --name="order*"
 
   $ sc broker queue-template list --select=queueTemplateName,permission,maxMsgSpoolUsage
 
   $ sc broker queue-template list --all
 
-  $ sc broker queue-template list --queue-template-name="*test*" --count=5 --all
+  $ sc broker queue-template list --name="*test*" --count=5 --all
 ```
 
 _See code: [src/commands/broker/queue-template/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.8.0/src/commands/broker/queue-template/list.ts)_
@@ -1577,7 +1565,7 @@ Update a Queue Template on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker queue-template update -t <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker queue-template update -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>] [-a exclusive|non-exclusive] [--dead-msg-queue <value>] [--durability-override
     none|non-durable|durable] [--max-bind-count <value>] [--max-delivered-unacked-msgs-per-flow <value>] [--max-msg-size
     <value>] [-s <value>] [--max-redelivery-count <value>] [--max-ttl <value>] [-p
@@ -1589,12 +1577,12 @@ FLAGS
   -b, --broker-name=<value>                          Stored broker name. If not provided, uses the default broker.
   -f, --queue-name-filter=<value>                    A wildcarded pattern to match queue names for applying this
                                                      template. Supports * and > wildcards.
+  -n, --name=<value>                                 (required) The name of the queue template to update.
   -p, --permission=<option>                          The permission level for all consumers of queues created from this
                                                      template, excluding the owner.
                                                      <options: consume|delete|modify-topic|no-access|read-only>
   -s, --max-msg-spool-usage=<value>                  The maximum message spool usage allowed by queues created from this
                                                      template, in megabytes (MB).
-  -t, --queue-template-name=<value>                  (required) The name of the queue template to update.
   -v, --msg-vpn-name=<value>                         The name of the Message VPN.
       --broker-id=<value>                            Stored broker identifier. If not provided, uses the default broker.
       --dead-msg-queue=<value>                       The name of the Dead Message Queue.
@@ -1624,15 +1612,11 @@ DESCRIPTION
   to HA mates and replication sites via config-sync.
 
 EXAMPLES
-  $ sc broker queue-template update --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --permission=consume
+  $ sc broker queue-template update --name=myTemplate --permission=consume
 
-  $ sc broker queue-template update --broker-id=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --max-msg-spool-usage=2048
+  $ sc broker queue-template update --name=myTemplate --max-msg-spool-usage=1024 --max-ttl=3600
 
-  $ sc broker queue-template update --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --max-msg-spool-usage=1024 --max-ttl=3600
-
-  $ sc broker queue-template update --queue-template-name=myTemplate --queue-name-filter="order.*"
-
-  $ sc broker queue-template update --queue-template-name=myTemplate --permission=read-only --max-bind-count=200
+  $ sc broker queue-template update --name=myTemplate --queue-name-filter="order.*"
 ```
 
 _See code: [src/commands/broker/queue-template/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.8.0/src/commands/broker/queue-template/update.ts)_
