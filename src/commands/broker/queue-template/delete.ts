@@ -14,27 +14,25 @@ The deletion is synchronized to HA mates and replication sites via config-sync.
 
 By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --queue-template-name=myTemplate --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-template-name=myTemplate',
-    '<%= config.bin %> <%= command.id %> --queue-template-name=myTemplate --no-prompt',
-    '<%= config.bin %> <%= command.id %> --broker-id=prod --queue-template-name=tempTemplate --msg-vpn-name=production --no-prompt',
+    '<%= config.bin %> <%= command.id %> --name=myTemplate',
+    '<%= config.bin %> <%= command.id %> --name=myTemplate --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the queue template to delete.',
+      required: true,
+    }),
     'no-prompt': Flags.boolean({
       default: false,
       description: 'Skip confirmation prompt and proceed with deletion.',
-    }),
-    'queue-template-name': Flags.string({
-      char: 't',
-      description: 'The name of the queue template to delete.',
-      required: true,
     }),
   }
 
   public async run(): Promise<MsgVpnQueueTemplateDeleteResponse> {
     const {flags} = await this.parse(BrokerQueueTemplateDelete)
-    const queueTemplateName = flags['queue-template-name']
+    const queueTemplateName = flags.name
 
     // Confirmation prompt (unless --no-prompt flag is set)
     if (!flags['no-prompt']) {

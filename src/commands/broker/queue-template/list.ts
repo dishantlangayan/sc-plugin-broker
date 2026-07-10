@@ -14,10 +14,10 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
   static override examples = [
     '<%= config.bin %> <%= command.id %>',
     '<%= config.bin %> <%= command.id %> --count=20',
-    '<%= config.bin %> <%= command.id %> --queue-template-name="order*"',
+    '<%= config.bin %> <%= command.id %> --name="order*"',
     '<%= config.bin %> <%= command.id %> --select=queueTemplateName,permission,maxMsgSpoolUsage',
     '<%= config.bin %> <%= command.id %> --all',
-    '<%= config.bin %> <%= command.id %> --queue-template-name="*test*" --count=5 --all',
+    '<%= config.bin %> <%= command.id %> --name="*test*" --count=5 --all',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -33,8 +33,8 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       max: 100,
       min: 1,
     }),
-    'queue-template-name': Flags.string({
-      char: 't',
+    name: Flags.string({
+      char: 'n',
       description: 'Filter queue templates by name. Supports * wildcard.',
     }),
     select: Flags.string({
@@ -91,7 +91,7 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
    * Fetch queue templates with pagination and stream to table
    */
   private async fetchAndDisplayQueueTemplates(
-    flags: {all: boolean; count: number; 'queue-template-name'?: string},
+    flags: {all: boolean; count: number; name?: string},
     selectedAttrs: string[],
     streamTable: import('table').WritableStream,
   ): Promise<MsgVpnQueueTemplateMonitor[]> {
@@ -104,8 +104,8 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       params.set('count', flags.count.toString())
 
       // Add where clause for queue template name filtering if provided
-      if (flags['queue-template-name']) {
-        params.set('where', `queueTemplateName==${flags['queue-template-name']}`)
+      if (flags.name) {
+        params.set('where', `queueTemplateName==${flags.name}`)
       }
 
       // Add select parameter for performance optimization

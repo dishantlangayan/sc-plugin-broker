@@ -10,11 +10,9 @@ export default class BrokerQueueTemplateUpdate extends ScBrokerCommand<typeof Br
 
 Any attribute missing from the request will be left unchanged. The update of instances of this object are synchronized to HA mates and replication sites via config-sync.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --permission=consume',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --max-msg-spool-usage=2048',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --max-msg-spool-usage=1024 --max-ttl=3600',
-    '<%= config.bin %> <%= command.id %> --queue-template-name=myTemplate --queue-name-filter="order.*"',
-    '<%= config.bin %> <%= command.id %> --queue-template-name=myTemplate --permission=read-only --max-bind-count=200',
+    '<%= config.bin %> <%= command.id %> --name=myTemplate --permission=consume',
+    '<%= config.bin %> <%= command.id %> --name=myTemplate --max-msg-spool-usage=1024 --max-ttl=3600',
+    '<%= config.bin %> <%= command.id %> --name=myTemplate --queue-name-filter="order.*"',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -55,6 +53,11 @@ Any attribute missing from the request will be left unchanged. The update of ins
       description: 'The maximum time in seconds a message can stay in queues created from this template when respect-ttl-enabled is true.',
       min: 0,
     }),
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the queue template to update.',
+      required: true,
+    }),
     permission: Flags.string({
       char: 'p',
       description: 'The permission level for all consumers of queues created from this template, excluding the owner.',
@@ -63,11 +66,6 @@ Any attribute missing from the request will be left unchanged. The update of ins
     'queue-name-filter': Flags.string({
       char: 'f',
       description: 'A wildcarded pattern to match queue names for applying this template. Supports * and > wildcards.',
-    }),
-    'queue-template-name': Flags.string({
-      char: 't',
-      description: 'The name of the queue template to update.',
-      required: true,
     }),
   }
 
@@ -78,7 +76,7 @@ Any attribute missing from the request will be left unchanged. The update of ins
     const updateBody: MsgVpnQueueTemplateUpdateRequest = this.buildUpdateRequest(flags)
 
     // Make SEMP Config API call to update the queue template
-    const queueTemplateName = flags['queue-template-name']
+    const queueTemplateName = flags.name
     const endpoint = `/SEMP/v2/config/msgVpns/${this.msgVpnName}/queueTemplates/${queueTemplateName}`
     const sempResp = await this.sempConn.patch<MsgVpnQueueTemplateUpdateResponse>(endpoint, updateBody)
 
@@ -103,8 +101,8 @@ Any attribute missing from the request will be left unchanged. The update of ins
     'max-msg-spool-usage'?: number
     'max-redelivery-count'?: number
     'max-ttl'?: number
+    name?: string
     permission?: string
-    'queue-name-filter'?: string
   }): MsgVpnQueueTemplateUpdateRequest {
     return {
       ...(flags['access-type'] && {accessType: flags['access-type'] as 'exclusive' | 'non-exclusive'}),
@@ -123,7 +121,7 @@ Any attribute missing from the request will be left unchanged. The update of ins
       ...(flags.permission && {
         permission: flags.permission as 'consume' | 'delete' | 'modify-topic' | 'no-access' | 'read-only',
       }),
-      ...(flags['queue-name-filter'] !== undefined && {queueNameFilter: flags['queue-name-filter']}),
+      ...(flags.name !== undefined && {queueNameFilter: flags.name}),
     }
   }
 }

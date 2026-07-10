@@ -10,14 +10,12 @@ export default class BrokerQueueTemplateDisplay extends ScBrokerCommand<typeof B
 
 Retrieves and displays detailed information about a queue template using the SEMP Monitor API, including configuration and state.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --queue-template-name=myTemplate --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --queue-template-name=myTemplate',
+    '<%= config.bin %> <%= command.id %> --name=myTemplate',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'queue-template-name': Flags.string({
-      char: 't',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the queue template to display.',
       required: true,
     }),
@@ -27,7 +25,7 @@ Retrieves and displays detailed information about a queue template using the SEM
     const {flags} = await this.parse(BrokerQueueTemplateDisplay)
 
     // Fetch queue template details from Monitor API
-    const endpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queueTemplates/${flags['queue-template-name']}`
+    const endpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/queueTemplates/${flags.name}`
     const queueTemplateResp = await this.sempConn.get<MsgVpnQueueTemplateMonitorResponse>(endpoint)
 
     // Display queue template details

@@ -10,11 +10,9 @@ export default class BrokerQueueTemplateCreate extends ScBrokerCommand<typeof Br
 
 Any attribute missing from the request will be set to its default value. The creation of instances of this object are synchronized to HA mates and replication sites via config-sync.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --access-type=non-exclusive',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --queue-template-name=myTemplate --msg-vpn-name=default --max-msg-spool-usage=1024 --permission=consume',
-    '<%= config.bin %> <%= command.id %> --queue-template-name=myTemplate --queue-name-filter="order.*"',
-    '<%= config.bin %> <%= command.id %> --queue-template-name=myTemplate --max-bind-count=500 --durability-override=non-durable',
+    '<%= config.bin %> <%= command.id %> --name=myTemplate',
+    '<%= config.bin %> <%= command.id %> --name=myTemplate --access-type=non-exclusive --max-msg-spool-usage=1024 --permission=consume',
+    '<%= config.bin %> <%= command.id %> --name=myTemplate --queue-name-filter="order.*"',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -55,6 +53,11 @@ Any attribute missing from the request will be set to its default value. The cre
       description: 'The maximum time in seconds a message can stay in queues created from this template when respect-ttl-enabled is true.',
       min: 0,
     }),
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the queue template to create.',
+      required: true,
+    }),
     permission: Flags.string({
       char: 'p',
       description: 'The permission level for all consumers of queues created from this template, excluding the owner.',
@@ -63,11 +66,6 @@ Any attribute missing from the request will be set to its default value. The cre
     'queue-name-filter': Flags.string({
       char: 'f',
       description: 'A wildcarded pattern to match queue names for applying this template. Supports * and > wildcards.',
-    }),
-    'queue-template-name': Flags.string({
-      char: 't',
-      description: 'The name of the queue template to create.',
-      required: true,
     }),
   }
 
@@ -100,12 +98,12 @@ Any attribute missing from the request will be set to its default value. The cre
     'max-msg-spool-usage'?: number
     'max-redelivery-count'?: number
     'max-ttl'?: number
+    name: string
     permission?: string
     'queue-name-filter'?: string
-    'queue-template-name': string
   }): MsgVpnQueueTemplateCreateRequest {
     return {
-      queueTemplateName: flags['queue-template-name'],
+      queueTemplateName: flags.name,
       ...(flags['access-type'] && {accessType: flags['access-type'] as 'exclusive' | 'non-exclusive'}),
       ...(flags['dead-msg-queue'] && {deadMsgQueue: flags['dead-msg-queue']}),
       ...(flags['durability-override'] && {
