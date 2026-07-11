@@ -103,6 +103,7 @@ Any attribute missing from the request will be left unchanged. The update of ins
     'max-ttl'?: number
     name?: string
     permission?: string
+    'queue-name-filter'?: string
   }): MsgVpnQueueTemplateUpdateRequest {
     return {
       ...(flags['access-type'] && {accessType: flags['access-type'] as 'exclusive' | 'non-exclusive'}),
@@ -121,7 +122,7 @@ Any attribute missing from the request will be left unchanged. The update of ins
       ...(flags.permission && {
         permission: flags.permission as 'consume' | 'delete' | 'modify-topic' | 'no-access' | 'read-only',
       }),
-      ...(flags.name !== undefined && {queueNameFilter: flags.name}),
+      ...(flags['queue-name-filter'] !== undefined && {queueNameFilter: flags['queue-name-filter']}),
     }
   }
 }
