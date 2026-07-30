@@ -26,7 +26,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.9.0 linux-x64 node-v24.18.0
+@dishantlangayan/sc-plugin-broker/0.10.0 darwin-arm64 node-v24.1.0
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
@@ -150,7 +150,7 @@ EXAMPLES
   $ sc broker acl-profile client-connect-exceptions create --name=myProfile --address=192.168.1.0/24
 ```
 
-_See code: [src/commands/broker/acl-profile/client-connect-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/client-connect-exceptions/create.ts)_
+_See code: [src/commands/broker/acl-profile/client-connect-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/client-connect-exceptions/create.ts)_
 
 ## `sc broker acl-profile client-connect-exceptions delete`
 
@@ -187,7 +187,7 @@ EXAMPLES
   $ sc broker acl-profile client-connect-exceptions delete --name=myProfile --address=10.0.0.0/8 --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/client-connect-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/client-connect-exceptions/delete.ts)_
+_See code: [src/commands/broker/acl-profile/client-connect-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/client-connect-exceptions/delete.ts)_
 
 ## `sc broker acl-profile client-connect-exceptions list`
 
@@ -219,7 +219,7 @@ EXAMPLES
   $ sc broker acl-profile client-connect-exceptions list --name=myProfile
 ```
 
-_See code: [src/commands/broker/acl-profile/client-connect-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/client-connect-exceptions/list.ts)_
+_See code: [src/commands/broker/acl-profile/client-connect-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/client-connect-exceptions/list.ts)_
 
 ## `sc broker acl-profile create`
 
@@ -273,7 +273,7 @@ EXAMPLES
   $ sc broker acl-profile create --name=myProfile --client-connect-default-action=allow --publish-topic-default-action=disallow --subscribe-topic-default-action=allow
 ```
 
-_See code: [src/commands/broker/acl-profile/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/create.ts)_
+_See code: [src/commands/broker/acl-profile/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/create.ts)_
 
 ## `sc broker acl-profile delete`
 
@@ -310,7 +310,7 @@ EXAMPLES
   $ sc broker acl-profile delete --name=myProfile --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/delete.ts)_
+_See code: [src/commands/broker/acl-profile/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/delete.ts)_
 
 ## `sc broker acl-profile display`
 
@@ -342,7 +342,7 @@ EXAMPLES
   $ sc broker acl-profile display --name=myProfile
 ```
 
-_See code: [src/commands/broker/acl-profile/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/display.ts)_
+_See code: [src/commands/broker/acl-profile/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/display.ts)_
 
 ## `sc broker acl-profile list`
 
@@ -385,7 +385,7 @@ EXAMPLES
   $ sc broker acl-profile list --all
 ```
 
-_See code: [src/commands/broker/acl-profile/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/list.ts)_
+_See code: [src/commands/broker/acl-profile/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/list.ts)_
 
 ## `sc broker acl-profile publish-topic-exceptions create`
 
@@ -422,7 +422,7 @@ EXAMPLES
   $ sc broker acl-profile publish-topic-exceptions create --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt
 ```
 
-_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/publish-topic-exceptions/create.ts)_
+_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/publish-topic-exceptions/create.ts)_
 
 ## `sc broker acl-profile publish-topic-exceptions delete`
 
@@ -461,7 +461,7 @@ EXAMPLES
   $ sc broker acl-profile publish-topic-exceptions delete --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/publish-topic-exceptions/delete.ts)_
+_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/publish-topic-exceptions/delete.ts)_
 
 ## `sc broker acl-profile publish-topic-exceptions list`
 
@@ -493,7 +493,7 @@ EXAMPLES
   $ sc broker acl-profile publish-topic-exceptions list --name=myProfile
 ```
 
-_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/publish-topic-exceptions/list.ts)_
+_See code: [src/commands/broker/acl-profile/publish-topic-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/publish-topic-exceptions/list.ts)_
 
 ## `sc broker acl-profile subscribe-share-name-exceptions create`
 
@@ -530,7 +530,7 @@ EXAMPLES
   $ sc broker acl-profile subscribe-share-name-exceptions create --name=myProfile --topic="devices/+" --syntax=mqtt
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/create.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/create.ts)_
 
 ## `sc broker acl-profile subscribe-share-name-exceptions delete`
 
@@ -569,7 +569,7 @@ EXAMPLES
   $ sc broker acl-profile subscribe-share-name-exceptions delete --name=myProfile --topic="devices/+" --syntax=mqtt --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/delete.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/delete.ts)_
 
 ## `sc broker acl-profile subscribe-share-name-exceptions list`
 
@@ -601,7 +601,7 @@ EXAMPLES
   $ sc broker acl-profile subscribe-share-name-exceptions list --name=myProfile
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/list.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-share-name-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/subscribe-share-name-exceptions/list.ts)_
 
 ## `sc broker acl-profile subscribe-topic-exceptions create`
 
@@ -639,7 +639,7 @@ EXAMPLES
   $ sc broker acl-profile subscribe-topic-exceptions create --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/create.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/create.ts)_
 
 ## `sc broker acl-profile subscribe-topic-exceptions delete`
 
@@ -679,7 +679,7 @@ EXAMPLES
   $ sc broker acl-profile subscribe-topic-exceptions delete --name=myProfile --topic="devices/+/telemetry" --syntax=mqtt --no-prompt
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/delete.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/delete.ts)_
 
 ## `sc broker acl-profile subscribe-topic-exceptions list`
 
@@ -711,7 +711,7 @@ EXAMPLES
   $ sc broker acl-profile subscribe-topic-exceptions list --name=myProfile
 ```
 
-_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/list.ts)_
+_See code: [src/commands/broker/acl-profile/subscribe-topic-exceptions/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/subscribe-topic-exceptions/list.ts)_
 
 ## `sc broker acl-profile update`
 
@@ -759,7 +759,7 @@ EXAMPLES
   $ sc broker acl-profile update --acl-profile-name=myProfile --publish-topic-default-action=disallow
 ```
 
-_See code: [src/commands/broker/acl-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/acl-profile/update.ts)_
+_See code: [src/commands/broker/acl-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/acl-profile/update.ts)_
 
 ## `sc broker client-profile create`
 
@@ -830,7 +830,7 @@ EXAMPLES
   $ sc broker client-profile create --client-profile-name=myProfile
 ```
 
-_See code: [src/commands/broker/client-profile/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-profile/create.ts)_
+_See code: [src/commands/broker/client-profile/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/create.ts)_
 
 ## `sc broker client-profile delete`
 
@@ -869,7 +869,7 @@ EXAMPLES
   $ sc broker client-profile delete --client-profile-name=myProfile --no-prompt
 ```
 
-_See code: [src/commands/broker/client-profile/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-profile/delete.ts)_
+_See code: [src/commands/broker/client-profile/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/delete.ts)_
 
 ## `sc broker client-profile display`
 
@@ -904,7 +904,7 @@ EXAMPLES
   $ sc broker client-profile display --client-profile-name=myProfile
 ```
 
-_See code: [src/commands/broker/client-profile/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-profile/display.ts)_
+_See code: [src/commands/broker/client-profile/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/display.ts)_
 
 ## `sc broker client-profile list`
 
@@ -949,7 +949,7 @@ EXAMPLES
   $ sc broker client-profile list --client-profile-name="*prod*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/client-profile/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-profile/list.ts)_
+_See code: [src/commands/broker/client-profile/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/list.ts)_
 
 ## `sc broker client-profile update`
 
@@ -1020,7 +1020,7 @@ EXAMPLES
   $ sc broker client-profile update --client-profile-name=myProfile --eliding-delay=100
 ```
 
-_See code: [src/commands/broker/client-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-profile/update.ts)_
+_See code: [src/commands/broker/client-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/update.ts)_
 
 ## `sc broker client-username create`
 
@@ -1070,7 +1070,7 @@ EXAMPLES
   $ sc broker client-username create --username=admin --enabled --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
 ```
 
-_See code: [src/commands/broker/client-username/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-username/create.ts)_
+_See code: [src/commands/broker/client-username/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-username/create.ts)_
 
 ## `sc broker client-username delete`
 
@@ -1109,7 +1109,7 @@ EXAMPLES
   $ sc broker client-username delete --username=user1 --no-prompt
 ```
 
-_See code: [src/commands/broker/client-username/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-username/delete.ts)_
+_See code: [src/commands/broker/client-username/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-username/delete.ts)_
 
 ## `sc broker client-username display`
 
@@ -1141,7 +1141,7 @@ EXAMPLES
   $ sc broker client-username display --username=user1
 ```
 
-_See code: [src/commands/broker/client-username/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-username/display.ts)_
+_See code: [src/commands/broker/client-username/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-username/display.ts)_
 
 ## `sc broker client-username list`
 
@@ -1186,7 +1186,7 @@ EXAMPLES
   $ sc broker client-username list --username="admin*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/client-username/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-username/list.ts)_
+_See code: [src/commands/broker/client-username/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-username/list.ts)_
 
 ## `sc broker client-username update`
 
@@ -1235,7 +1235,7 @@ EXAMPLES
   $ sc broker client-username update --username=admin --subscription-manager-enabled --guaranteed-endpoint-permission-override-enabled
 ```
 
-_See code: [src/commands/broker/client-username/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/client-username/update.ts)_
+_See code: [src/commands/broker/client-username/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-username/update.ts)_
 
 ## `sc broker login basic`
 
@@ -1274,7 +1274,7 @@ EXAMPLES
   $ sc broker login basic --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default
 ```
 
-_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/login/basic.ts)_
+_See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/login/basic.ts)_
 
 ## `sc broker login cloud`
 
@@ -1318,7 +1318,7 @@ EXAMPLES
   $ sc broker login cloud --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/login/cloud.ts)_
+_See code: [src/commands/broker/login/cloud.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/login/cloud.ts)_
 
 ## `sc broker login list`
 
@@ -1343,7 +1343,7 @@ EXAMPLES
   $ sc broker login list
 ```
 
-_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/login/list.ts)_
+_See code: [src/commands/broker/login/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/login/list.ts)_
 
 ## `sc broker logout`
 
@@ -1379,7 +1379,7 @@ EXAMPLES
   $ sc broker logout --broker-name=prod --no-prompt
 ```
 
-_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/logout.ts)_
+_See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/logout.ts)_
 
 ## `sc broker queue-template create`
 
@@ -1441,7 +1441,7 @@ EXAMPLES
   $ sc broker queue-template create --name=myTemplate --queue-name-filter="order.*"
 ```
 
-_See code: [src/commands/broker/queue-template/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue-template/create.ts)_
+_See code: [src/commands/broker/queue-template/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue-template/create.ts)_
 
 ## `sc broker queue-template delete`
 
@@ -1480,7 +1480,7 @@ EXAMPLES
   $ sc broker queue-template delete --name=myTemplate --no-prompt
 ```
 
-_See code: [src/commands/broker/queue-template/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue-template/delete.ts)_
+_See code: [src/commands/broker/queue-template/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue-template/delete.ts)_
 
 ## `sc broker queue-template display`
 
@@ -1512,7 +1512,7 @@ EXAMPLES
   $ sc broker queue-template display --name=myTemplate
 ```
 
-_See code: [src/commands/broker/queue-template/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue-template/display.ts)_
+_See code: [src/commands/broker/queue-template/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue-template/display.ts)_
 
 ## `sc broker queue-template list`
 
@@ -1557,7 +1557,7 @@ EXAMPLES
   $ sc broker queue-template list --name="*test*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/queue-template/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue-template/list.ts)_
+_See code: [src/commands/broker/queue-template/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue-template/list.ts)_
 
 ## `sc broker queue-template update`
 
@@ -1619,7 +1619,7 @@ EXAMPLES
   $ sc broker queue-template update --name=myTemplate --queue-name-filter="order.*"
 ```
 
-_See code: [src/commands/broker/queue-template/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue-template/update.ts)_
+_See code: [src/commands/broker/queue-template/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue-template/update.ts)_
 
 ## `sc broker queue create`
 
@@ -1667,7 +1667,7 @@ EXAMPLES
   $ sc broker queue create --name=myQueue --access-type=non-exclusive --max-msg-spool-usage=1024 --egress-enabled --ingress-enabled
 ```
 
-_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue/create.ts)_
+_See code: [src/commands/broker/queue/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue/create.ts)_
 
 ## `sc broker queue delete`
 
@@ -1703,7 +1703,7 @@ EXAMPLES
   $ sc broker queue delete --queue-name=myQueue --no-prompt
 ```
 
-_See code: [src/commands/broker/queue/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue/delete.ts)_
+_See code: [src/commands/broker/queue/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue/delete.ts)_
 
 ## `sc broker queue display`
 
@@ -1738,7 +1738,7 @@ EXAMPLES
   $ sc broker queue display --queue-name=myQueue --show-subscriptions
 ```
 
-_See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue/display.ts)_
+_See code: [src/commands/broker/queue/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue/display.ts)_
 
 ## `sc broker queue list`
 
@@ -1784,7 +1784,7 @@ EXAMPLES
   $ sc broker queue list --name="*test*" --count=5 --all
 ```
 
-_See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue/list.ts)_
+_See code: [src/commands/broker/queue/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue/list.ts)_
 
 ## `sc broker queue subscriptions create`
 
@@ -1824,7 +1824,7 @@ EXAMPLES
   $ sc broker queue subscriptions create --name=myQueue --topic=events/user/*
 ```
 
-_See code: [src/commands/broker/queue/subscriptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue/subscriptions/create.ts)_
+_See code: [src/commands/broker/queue/subscriptions/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue/subscriptions/create.ts)_
 
 ## `sc broker queue subscriptions delete`
 
@@ -1861,7 +1861,7 @@ EXAMPLES
   $ sc broker queue subscriptions delete --name=myQueue --topic=orders/> --no-prompt
 ```
 
-_See code: [src/commands/broker/queue/subscriptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue/subscriptions/delete.ts)_
+_See code: [src/commands/broker/queue/subscriptions/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue/subscriptions/delete.ts)_
 
 ## `sc broker queue update`
 
@@ -1912,5 +1912,5 @@ EXAMPLES
   $ sc broker queue update --name=myQueue --no-egress-enabled
 ```
 
-_See code: [src/commands/broker/queue/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.9.0/src/commands/broker/queue/update.ts)_
+_See code: [src/commands/broker/queue/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/queue/update.ts)_
 <!-- commandsstop -->
