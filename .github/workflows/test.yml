@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
-        node_version: [22, 20]
+        node_version: [24, 22]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
