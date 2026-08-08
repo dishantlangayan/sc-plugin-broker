@@ -22,12 +22,17 @@ If a broker with the same name already exists, you'll be prompted to overwrite.`
     '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080',
     '<%= config.bin %> <%= command.id %> --broker-name=ci-broker --semp-url=http://192.168.1.100 --semp-port=8080 --no-prompt',
     '<%= config.bin %> <%= command.id %> --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default',
+    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080 --msg-vpn-name=default',
   ]
   static override flags = {
     'broker-name': Flags.string({
       char: 'b',
       description: 'Name/identifier for the broker',
       required: true,
+    }),
+    'msg-vpn-name': Flags.string({
+      char: 'v',
+      description: 'Default Message VPN name for this broker (used when --msg-vpn-name is not supplied to a command)',
     }),
     'no-prompt': Flags.boolean({
       default: false,
@@ -93,19 +98,26 @@ If a broker with the same name already exists, you'll be prompted to overwrite.`
    */
   private createBrokerAuth(
     flags: {
+      'msg-vpn-name'?: string
       'semp-port': number
       'semp-url': string
     },
     brokerName: string,
     accessToken: string,
   ): BrokerAuth {
-    return {
+    const brokerAuth: BrokerAuth = {
       accessToken,
       authType: AuthType.BASIC,
       name: brokerName,
       sempEndpoint: flags['semp-url'],
       sempPort: flags['semp-port'],
     }
+
+    if (flags['msg-vpn-name']) {
+      brokerAuth.msgVpnName = flags['msg-vpn-name']
+    }
+
+    return brokerAuth
   }
 
   /**

@@ -168,9 +168,25 @@ describe('broker-utils', () => {
       expect(context.mockBrokerAuthManager.getBroker.calledWith('cloud-broker')).to.be.true
     })
 
-    it('should call command.error when flag not provided for non-cloud broker', async () => {
+    it('should retrieve stored msgVpnName from a basic broker when flag not provided', async () => {
+      const basicBroker: BrokerAuth = createMockBroker({
+        msgVpnName: 'basic-vpn',
+        name: 'basic-broker',
+        sempEndpoint: 'https://localhost',
+      })
+
+      context.mockBrokerAuthManager.getBroker.resolves(basicBroker)
+
+      const result = await resolveMsgVpnName(mockCommand, 'basic-broker')
+
+      expect(result).to.equal('basic-vpn')
+      expect(context.mockBrokerAuthManager.getBroker.calledWith('basic-broker')).to.be.true
+    })
+
+    it('should call command.error when broker has no stored msgVpnName and flag not provided', async () => {
       const errorStub = mockCommand.error as unknown as SinonStub
       const basicBroker: BrokerAuth = createMockBroker({
+        msgVpnName: undefined,
         name: 'basic-broker',
         sempEndpoint: 'https://localhost',
       })
@@ -183,7 +199,7 @@ describe('broker-utils', () => {
       } catch {
         expect(errorStub.called).to.be.true
         const errorCall = errorStub.getCall(0)
-        expect(errorCall.args[0]).to.match(/msg-vpn-name.*required.*not using.*solace cloud/i)
+        expect(errorCall.args[0]).to.match(/msg-vpn-name.*required.*no default message vpn/i)
       }
     })
 

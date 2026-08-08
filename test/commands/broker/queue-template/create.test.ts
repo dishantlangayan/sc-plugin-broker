@@ -244,7 +244,7 @@ describe('broker:queue-template:create', () => {
         await BrokerQueueTemplateCreate.run(['--broker-name=basic-broker', '--name=testTemplate'])
         expect.fail('Should have thrown an error')
       } catch (error: unknown) {
-        expect((error as Error).message).to.match(/msg-vpn-name.*required.*not using.*solace cloud/i)
+        expect((error as Error).message).to.match(/msg-vpn-name.*required.*no default message vpn/i)
       }
     })
   })

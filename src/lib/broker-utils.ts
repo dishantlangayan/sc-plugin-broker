@@ -164,14 +164,15 @@ export async function resolveMsgVpnName(
     )
   }
 
-  // Check if this is a Solace Cloud broker with stored msgVpnName
-  if (broker.isSolaceCloud && broker.msgVpnName) {
+  // Fall back to the Message VPN name stored with the broker (set for Solace Cloud
+  // brokers automatically, or for basic brokers via `broker:login:basic --msg-vpn-name`)
+  if (broker.msgVpnName) {
     return broker.msgVpnName
   }
 
-  // Not a cloud broker, and msg-vpn-name was not provided
+  // No stored Message VPN name, and msg-vpn-name was not provided
   command.error(
-    'The --msg-vpn-name flag is required when not using a Solace Cloud Event Broker.',
+    'The --msg-vpn-name flag is required when the broker has no default Message VPN name configured.',
     {exit: 2},
   )
 }

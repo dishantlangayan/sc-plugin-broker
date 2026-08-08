@@ -129,6 +129,55 @@ describe('broker:login:basic', () => {
 
       expect(mockBrokerAuthManager.setDefaultBroker.called).to.be.false
     })
+
+    it('should store msgVpnName when --msg-vpn-name is provided', async () => {
+      const command = new BrokerLoginBasic(
+        ['--broker-name=vpn-broker', '--semp-url=https://localhost', '--semp-port=8080', '--msg-vpn-name=my-vpn'],
+        mockConfig,
+      )
+
+      sandbox.stub(command as unknown as {getBrokerAuthManager: () => unknown}, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
+      sandbox.stub(command as unknown as {promptForUsername: () => unknown}, 'promptForUsername').resolves('admin')
+      sandbox.stub(command as unknown as {promptForPassword: () => unknown}, 'promptForPassword').resolves('secret')
+
+      const result = await command.run()
+
+      const brokerAuth = mockBrokerAuthManager.addBroker.firstCall.args[0] as BrokerAuth
+      expect(brokerAuth.msgVpnName).to.equal('my-vpn')
+      expect(result.msgVpnName).to.equal('my-vpn')
+    })
+
+    it('should store msgVpnName using the -v short flag', async () => {
+      const command = new BrokerLoginBasic(
+        ['--broker-name=vpn-broker', '--semp-url=https://localhost', '--semp-port=8080', '-v', 'short-vpn'],
+        mockConfig,
+      )
+
+      sandbox.stub(command as unknown as {getBrokerAuthManager: () => unknown}, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
+      sandbox.stub(command as unknown as {promptForUsername: () => unknown}, 'promptForUsername').resolves('admin')
+      sandbox.stub(command as unknown as {promptForPassword: () => unknown}, 'promptForPassword').resolves('secret')
+
+      await command.run()
+
+      const brokerAuth = mockBrokerAuthManager.addBroker.firstCall.args[0] as BrokerAuth
+      expect(brokerAuth.msgVpnName).to.equal('short-vpn')
+    })
+
+    it('should not set msgVpnName when --msg-vpn-name is omitted', async () => {
+      const command = new BrokerLoginBasic(
+        ['--broker-name=test-broker', '--semp-url=https://localhost', '--semp-port=8080'],
+        mockConfig,
+      )
+
+      sandbox.stub(command as unknown as {getBrokerAuthManager: () => unknown}, 'getBrokerAuthManager').resolves(mockBrokerAuthManager)
+      sandbox.stub(command as unknown as {promptForUsername: () => unknown}, 'promptForUsername').resolves('admin')
+      sandbox.stub(command as unknown as {promptForPassword: () => unknown}, 'promptForPassword').resolves('secret')
+
+      await command.run()
+
+      const brokerAuth = mockBrokerAuthManager.addBroker.firstCall.args[0] as BrokerAuth
+      expect(brokerAuth.msgVpnName).to.be.undefined
+    })
   })
 
   describe('overwrite scenarios', () => {
