@@ -24,10 +24,11 @@ Displays brokers you have logged into, including their authentication type, SEMP
 
     // Create table array (first row is headers, rest are data rows)
     const brokerArray = [
-      ['Broker Name', 'Auth Type', 'SEMP Endpoint', 'SEMP Port', 'Is Default', 'Solace Cloud'],
+      ['Broker Name', 'Auth Type', 'Message VPN', 'SEMP Endpoint', 'SEMP Port', 'Is Default', 'Solace Cloud'],
       ...allBrokers.map((broker: BrokerAuth) => [
         broker.name,
         String(broker.authType),
+        broker.msgVpnName ?? '',
         broker.sempEndpoint,
         broker.sempPort.toString(),
         broker.isDefault ? 'Yes' : '',

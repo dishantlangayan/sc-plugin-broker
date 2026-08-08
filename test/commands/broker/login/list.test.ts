@@ -41,6 +41,7 @@ describe('broker:login:list', () => {
         authType: AuthType.BASIC,
         isDefault: true,
         isSolaceCloud: true,
+        msgVpnName: 'prod-vpn',
         name: 'production',
         sempEndpoint: 'https://broker.solace.cloud',
         sempPort: 943,
@@ -50,6 +51,7 @@ describe('broker:login:list', () => {
         authType: AuthType.BASIC,
         isDefault: false,
         isSolaceCloud: true,
+        msgVpnName: 'dev-vpn',
         name: 'dev-broker',
         sempEndpoint: 'https://dev.solace.cloud',
         sempPort: 8080,
@@ -84,6 +86,7 @@ describe('broker:login:list', () => {
     // Check table headers
     expect(allOutput).to.contain('Broker Name')
     expect(allOutput).to.contain('Auth Type')
+    expect(allOutput).to.contain('Message VPN')
     expect(allOutput).to.contain('SEMP Endpoint')
     expect(allOutput).to.contain('SEMP Port')
     expect(allOutput).to.contain('Is Default')
@@ -92,6 +95,8 @@ describe('broker:login:list', () => {
     expect(allOutput).to.contain('production')
     expect(allOutput).to.contain('dev-broker')
     expect(allOutput).to.contain('test')
+    expect(allOutput).to.contain('prod-vpn')
+    expect(allOutput).to.contain('dev-vpn')
     expect(allOutput).to.contain('https://broker.solace.cloud')
     expect(allOutput).to.contain('https://dev.solace.cloud')
     expect(allOutput).to.contain('http://localhost')
