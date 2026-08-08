@@ -20,9 +20,9 @@ Credentials are base64-encoded and encrypted before storage.
 If a broker with the same name already exists, you'll be prompted to overwrite.`
   static override examples = [
     '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080',
+    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080 --msg-vpn-name=default',
     '<%= config.bin %> <%= command.id %> --broker-name=ci-broker --semp-url=http://192.168.1.100 --semp-port=8080 --no-prompt',
     '<%= config.bin %> <%= command.id %> --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080 --msg-vpn-name=default',
   ]
   static override flags = {
     'broker-name': Flags.string({
