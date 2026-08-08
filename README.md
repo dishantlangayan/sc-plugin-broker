@@ -1243,15 +1243,17 @@ Authorize the SC CLI to make SEMP API calls to a Solace Event Broker using Basic
 
 ```
 USAGE
-  $ sc broker login basic -b <value> -p <value> -u <value> [--json] [--log-level debug|warn|error|info|trace]
-    [--no-prompt] [-d]
+  $ sc broker login basic -b <value> -p <value> -u <value> [--json] [--log-level debug|warn|error|info|trace] [-v
+    <value>] [--no-prompt] [-d]
 
 FLAGS
-  -b, --broker-name=<value>  (required) Name/identifier for the broker
-  -d, --set-default          Set this broker as the default
-  -p, --semp-port=<value>    (required) SEMP port number (1-65535)
-  -u, --semp-url=<value>     (required) SEMP endpoint URL (must start with http:// or https://)
-      --no-prompt            Read credentials from SC_SEMP_USERNAME and SC_SEMP_PASSWORD environment variables
+  -b, --broker-name=<value>   (required) Name/identifier for the broker
+  -d, --set-default           Set this broker as the default
+  -p, --semp-port=<value>     (required) SEMP port number (1-65535)
+  -u, --semp-url=<value>      (required) SEMP endpoint URL (must start with http:// or https://)
+  -v, --msg-vpn-name=<value>  Default Message VPN name for this broker (used when --msg-vpn-name is not supplied to a
+                              command)
+      --no-prompt             Read credentials from SC_SEMP_USERNAME and SC_SEMP_PASSWORD environment variables
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -1272,6 +1274,8 @@ EXAMPLES
   $ sc broker login basic --broker-name=ci-broker --semp-url=http://192.168.1.100 --semp-port=8080 --no-prompt
 
   $ sc broker login basic --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default
+
+  $ sc broker login basic --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080 --msg-vpn-name=default
 ```
 
 _See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/login/basic.ts)_
