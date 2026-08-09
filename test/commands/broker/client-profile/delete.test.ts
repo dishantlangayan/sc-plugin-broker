@@ -34,7 +34,7 @@ describe('broker:client-profile:delete', () => {
     it('should call correct SEMP Config API DELETE endpoint', async () => {
       await BrokerClientProfileDelete.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -51,7 +51,7 @@ describe('broker:client-profile:delete', () => {
 
       await BrokerClientProfileDelete.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -64,7 +64,7 @@ describe('broker:client-profile:delete', () => {
     it('should skip prompt when --no-prompt provided', async () => {
       await BrokerClientProfileDelete.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])
@@ -79,7 +79,7 @@ describe('broker:client-profile:delete', () => {
 
       const result = await BrokerClientProfileDelete.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--no-prompt',
       ])

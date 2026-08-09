@@ -42,7 +42,7 @@ describe('broker:client-profile:update', () => {
     it('should call correct SEMP Config API PATCH endpoint', async () => {
       await BrokerClientProfileUpdate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--compression-enabled',
       ])
@@ -54,7 +54,7 @@ describe('broker:client-profile:update', () => {
     it('should use PATCH method not POST', async () => {
       await BrokerClientProfileUpdate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--compression-enabled',
       ])
@@ -77,7 +77,7 @@ describe('broker:client-profile:update', () => {
     it('should NOT include clientProfileName in request body', async () => {
       await BrokerClientProfileUpdate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--compression-enabled',
       ])
@@ -91,7 +91,7 @@ describe('broker:client-profile:update', () => {
     it('should handle boolean flags correctly', async () => {
       await BrokerClientProfileUpdate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--no-compression-enabled',
         '--allow-guaranteed-msg-send-enabled',
@@ -118,7 +118,7 @@ describe('broker:client-profile:update', () => {
     it('should only include provided flags (partial update)', async () => {
       await BrokerClientProfileUpdate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--compression-enabled',
         '--eliding-delay=50',
@@ -160,7 +160,7 @@ describe('broker:client-profile:update', () => {
 
       const result = await BrokerClientProfileUpdate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--compression-enabled',
       ])

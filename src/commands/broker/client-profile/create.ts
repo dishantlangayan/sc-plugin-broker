@@ -13,10 +13,9 @@ export default class BrokerClientProfileCreate extends ScBrokerCommand<typeof Br
 
 Any attribute missing from the request will be set to its default value. The creation of instances of this object are synchronized to HA mates and replication sites via config-sync.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --allow-guaranteed-msg-receive-enabled',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --compression-enabled --eliding-enabled',
-    '<%= config.bin %> <%= command.id %> --client-profile-name=myProfile',
+    '<%= config.bin %> <%= command.id %> --name=myProfile',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --allow-guaranteed-msg-receive-enabled --compression-enabled --eliding-enabled',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --no-allow-guaranteed-msg-send-enabled',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -54,8 +53,8 @@ Any attribute missing from the request will be set to its default value. The cre
     'api-queue-management-copy-from-on-create-template-name': Flags.string({
       description: 'The name of a queue template to copy settings from when a new queue is created by a client.',
     }),
-    'client-profile-name': Flags.string({
-      char: 'c',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the client profile to create.',
       required: true,
     }),
@@ -106,14 +105,14 @@ Any attribute missing from the request will be set to its default value. The cre
     'allow-transacted-sessions-enabled'?: boolean
     'api-queue-management-copy-from-on-create-name'?: string
     'api-queue-management-copy-from-on-create-template-name'?: string
-    'client-profile-name': string
     'compression-enabled'?: boolean
     'eliding-delay'?: number
     'eliding-enabled'?: boolean
+    name: string
     'tls-allow-downgrade-to-plain-text-enabled'?: boolean
   }): MsgVpnClientProfileCreateRequest {
     return {
-      clientProfileName: flags['client-profile-name'],
+      clientProfileName: flags.name,
       ...(flags['allow-bridge-connections-enabled'] !== undefined && {
         allowBridgeConnectionsEnabled: flags['allow-bridge-connections-enabled'],
       }),

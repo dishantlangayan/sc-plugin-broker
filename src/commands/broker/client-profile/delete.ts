@@ -10,15 +10,13 @@ export default class BrokerClientProfileDelete extends ScBrokerCommand<typeof Br
 
 Deletes the specified Client Profile from the Message VPN. This action cannot be undone. A confirmation prompt will be displayed unless --no-prompt is specified.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --no-prompt',
-    '<%= config.bin %> <%= command.id %> --client-profile-name=myProfile',
-    '<%= config.bin %> <%= command.id %> --client-profile-name=myProfile --no-prompt',
+    '<%= config.bin %> <%= command.id %> --name=myProfile',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --no-prompt',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'client-profile-name': Flags.string({
-      char: 'c',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the client profile to delete.',
       required: true,
     }),
@@ -30,7 +28,7 @@ Deletes the specified Client Profile from the Message VPN. This action cannot be
 
   public async run(): Promise<MsgVpnClientProfileDeleteResponse> {
     const {flags} = await this.parse(BrokerClientProfileDelete)
-    const clientProfileName = flags['client-profile-name']
+    const clientProfileName = flags.name
 
     // Confirmation prompt (unless --no-prompt)
     if (!flags['no-prompt']) {

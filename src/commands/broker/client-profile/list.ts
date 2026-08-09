@@ -17,10 +17,10 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
   static override examples = [
     '<%= config.bin %> <%= command.id %>',
     '<%= config.bin %> <%= command.id %> --count=20',
-    '<%= config.bin %> <%= command.id %> --client-profile-name="test*"',
+    '<%= config.bin %> <%= command.id %> --name="test*"',
     '<%= config.bin %> <%= command.id %> --select=clientProfileName,compressionEnabled,elidingEnabled',
     '<%= config.bin %> <%= command.id %> --all',
-    '<%= config.bin %> <%= command.id %> --client-profile-name="*prod*" --count=5 --all',
+    '<%= config.bin %> <%= command.id %> --name="*prod*" --count=5 --all',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -29,8 +29,8 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       default: false,
       description: 'Display all client profiles (auto-pagination).',
     }),
-    'client-profile-name': Flags.string({
-      char: 'c',
+    name: Flags.string({
+      char: 'n',
       description: 'Filter client profiles by name. Supports * wildcard.',
     }),
     count: Flags.integer({
@@ -87,7 +87,7 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
    * Fetch client profiles with pagination and stream to table
    */
   private async fetchAndDisplayClientProfiles(
-    flags: {all: boolean; 'client-profile-name'?: string; count: number},
+    flags: {all: boolean; count: number; name?: string},
     selectedAttrs: string[],
     streamTable: import('table').WritableStream,
   ): Promise<MsgVpnClientProfileMonitor[]> {
@@ -100,8 +100,8 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       params.set('count', flags.count.toString())
 
       // Add where clause for client profile name filtering if provided
-      if (flags['client-profile-name']) {
-        params.set('where', `clientProfileName==${flags['client-profile-name']}`)
+      if (flags.name) {
+        params.set('where', `clientProfileName==${flags.name}`)
       }
 
       // Add select parameter for performance optimization

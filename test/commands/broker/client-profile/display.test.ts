@@ -40,7 +40,7 @@ describe('broker:client-profile:display', () => {
     it('should call correct SEMP Monitor API endpoint with profile name in path', async () => {
       await BrokerClientProfileDisplay.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
       ])
 
@@ -50,7 +50,7 @@ describe('broker:client-profile:display', () => {
     it('should display response using printObjectAsKeyValueTable', async () => {
       await BrokerClientProfileDisplay.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
       ])
 
@@ -73,7 +73,7 @@ describe('broker:client-profile:display', () => {
 
       const result = await BrokerClientProfileDisplay.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
       ])
 

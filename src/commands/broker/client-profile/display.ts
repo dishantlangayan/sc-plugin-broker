@@ -10,14 +10,12 @@ export default class BrokerClientProfileDisplay extends ScBrokerCommand<typeof B
 
 Retrieves and displays detailed information about a specific Client Profile using the SEMP Monitor API.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --client-profile-name=myProfile --msg-vpn-name=default',
-    '<%= config.bin %> <%= command.id %> --client-profile-name=myProfile',
+    '<%= config.bin %> <%= command.id %> --name=myProfile',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
-    'client-profile-name': Flags.string({
-      char: 'c',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the client profile to display.',
       required: true,
     }),
@@ -25,7 +23,7 @@ Retrieves and displays detailed information about a specific Client Profile usin
 
   public async run(): Promise<MsgVpnClientProfileMonitorResponse> {
     const {flags} = await this.parse(BrokerClientProfileDisplay)
-    const clientProfileName = flags['client-profile-name']
+    const clientProfileName = flags.name
 
     // Fetch client profile from SEMP Monitor API
     const endpoint = `/SEMP/v2/monitor/msgVpns/${this.msgVpnName}/clientProfiles/${clientProfileName}`

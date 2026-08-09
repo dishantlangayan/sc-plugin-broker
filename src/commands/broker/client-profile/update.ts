@@ -13,10 +13,9 @@ export default class BrokerClientProfileUpdate extends ScBrokerCommand<typeof Br
 
 Updates the configuration of an existing Client Profile. Only provided attributes will be updated (PATCH semantics). The updates are synchronized to HA mates and replication sites via config-sync.`
   static override examples = [
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --compression-enabled',
-    '<%= config.bin %> <%= command.id %> --broker-id=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --no-eliding-enabled',
-    '<%= config.bin %> <%= command.id %> --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --allow-guaranteed-msg-send-enabled --allow-guaranteed-msg-receive-enabled',
-    '<%= config.bin %> <%= command.id %> --client-profile-name=myProfile --eliding-delay=100',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --compression-enabled',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --no-eliding-enabled',
+    '<%= config.bin %> <%= command.id %> --name=myProfile --eliding-delay=100',
   ]
   static override flags = {
     ...ScBrokerCommand.baseFlags,
@@ -54,8 +53,8 @@ Updates the configuration of an existing Client Profile. Only provided attribute
     'api-queue-management-copy-from-on-create-template-name': Flags.string({
       description: 'The name of a queue template to copy settings from when a new queue is created by a client.',
     }),
-    'client-profile-name': Flags.string({
-      char: 'c',
+    name: Flags.string({
+      char: 'n',
       description: 'The name of the client profile to update.',
       required: true,
     }),
@@ -79,7 +78,7 @@ Updates the configuration of an existing Client Profile. Only provided attribute
 
   public async run(): Promise<MsgVpnClientProfileUpdateResponse> {
     const {flags} = await this.parse(BrokerClientProfileUpdate)
-    const clientProfileName = flags['client-profile-name']
+    const clientProfileName = flags.name
 
     // Build client profile update request body
     const updateBody: MsgVpnClientProfileUpdateRequest = this.buildClientProfileUpdateRequest(flags)

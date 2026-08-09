@@ -41,7 +41,7 @@ describe('broker:client-profile:create', () => {
     it('should call correct SEMP endpoint', async () => {
       await BrokerClientProfileCreate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
       ])
 
@@ -51,7 +51,7 @@ describe('broker:client-profile:create', () => {
     it('should map required flag to request body', async () => {
       await BrokerClientProfileCreate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
       ])
 
@@ -64,7 +64,7 @@ describe('broker:client-profile:create', () => {
     it('should map all optional flags correctly to SEMP request body', async () => {
       await BrokerClientProfileCreate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=advancedProfile',
+        '--name=advancedProfile',
         '--msg-vpn-name=default',
         '--allow-bridge-connections-enabled',
         '--allow-guaranteed-endpoint-create-durability=durable',
@@ -105,7 +105,7 @@ describe('broker:client-profile:create', () => {
     it('should exclude undefined flags from request body', async () => {
       await BrokerClientProfileCreate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=minimalProfile',
+        '--name=minimalProfile',
         '--msg-vpn-name=default',
       ])
 
@@ -120,7 +120,7 @@ describe('broker:client-profile:create', () => {
     it('should handle boolean flags correctly', async () => {
       await BrokerClientProfileCreate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
         '--no-compression-enabled',
       ])
@@ -158,7 +158,7 @@ describe('broker:client-profile:create', () => {
 
       const result = await BrokerClientProfileCreate.run([
         '--broker-name=test-broker',
-        '--client-profile-name=testProfile',
+        '--name=testProfile',
         '--msg-vpn-name=default',
       ])
 
