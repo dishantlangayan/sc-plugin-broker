@@ -767,7 +767,7 @@ Create a Client Profile on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker client-profile create -c <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker client-profile create -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>] [--allow-bridge-connections-enabled] [--allow-guaranteed-endpoint-create-durability
     all|durable|non-durable] [--allow-guaranteed-endpoint-create-enabled] [--allow-guaranteed-msg-receive-enabled]
     [--allow-guaranteed-msg-send-enabled] [--allow-shared-subscriptions-enabled] [--allow-transacted-sessions-enabled]
@@ -778,7 +778,7 @@ USAGE
 FLAGS
   -b, --broker-name=<value>                                             Stored broker name. If not provided, uses the
                                                                         default broker.
-  -c, --client-profile-name=<value>                                     (required) The name of the client profile to
+  -n, --name=<value>                                                    (required) The name of the client profile to
                                                                         create.
   -v, --msg-vpn-name=<value>                                            The name of the Message VPN.
       --[no-]allow-bridge-connections-enabled                           Enable or disable allowing Bridge clients using
@@ -821,13 +821,11 @@ DESCRIPTION
   synchronized to HA mates and replication sites via config-sync.
 
 EXAMPLES
-  $ sc broker client-profile create --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default
+  $ sc broker client-profile create --name=myProfile
 
-  $ sc broker client-profile create --broker-id=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --allow-guaranteed-msg-receive-enabled
+  $ sc broker client-profile create --name=myProfile --allow-guaranteed-msg-receive-enabled --compression-enabled --eliding-enabled
 
-  $ sc broker client-profile create --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --compression-enabled --eliding-enabled
-
-  $ sc broker client-profile create --client-profile-name=myProfile
+  $ sc broker client-profile create --name=myProfile --no-allow-guaranteed-msg-send-enabled
 ```
 
 _See code: [src/commands/broker/client-profile/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/create.ts)_
@@ -838,15 +836,15 @@ Delete a Client Profile from a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker client-profile delete -c <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker client-profile delete -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>] [--no-prompt]
 
 FLAGS
-  -b, --broker-name=<value>          Stored broker name. If not provided, uses the default broker.
-  -c, --client-profile-name=<value>  (required) The name of the client profile to delete.
-  -v, --msg-vpn-name=<value>         The name of the Message VPN.
-      --broker-id=<value>            Stored broker identifier. If not provided, uses the default broker.
-      --no-prompt                    Skip confirmation prompt.
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>          (required) The name of the client profile to delete.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+      --no-prompt             Skip confirmation prompt.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -860,13 +858,9 @@ DESCRIPTION
   displayed unless --no-prompt is specified.
 
 EXAMPLES
-  $ sc broker client-profile delete --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default
+  $ sc broker client-profile delete --name=myProfile
 
-  $ sc broker client-profile delete --broker-id=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --no-prompt
-
-  $ sc broker client-profile delete --client-profile-name=myProfile
-
-  $ sc broker client-profile delete --client-profile-name=myProfile --no-prompt
+  $ sc broker client-profile delete --name=myProfile --no-prompt
 ```
 
 _See code: [src/commands/broker/client-profile/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/delete.ts)_
@@ -877,14 +871,14 @@ Display a Client Profile from a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker client-profile display -c <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker client-profile display -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>]
 
 FLAGS
-  -b, --broker-name=<value>          Stored broker name. If not provided, uses the default broker.
-  -c, --client-profile-name=<value>  (required) The name of the client profile to display.
-  -v, --msg-vpn-name=<value>         The name of the Message VPN.
-      --broker-id=<value>            Stored broker identifier. If not provided, uses the default broker.
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>          (required) The name of the client profile to display.
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -897,11 +891,7 @@ DESCRIPTION
   Retrieves and displays detailed information about a specific Client Profile using the SEMP Monitor API.
 
 EXAMPLES
-  $ sc broker client-profile display --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default
-
-  $ sc broker client-profile display --broker-id=dev-broker --client-profile-name=myProfile --msg-vpn-name=default
-
-  $ sc broker client-profile display --client-profile-name=myProfile
+  $ sc broker client-profile display --name=myProfile
 ```
 
 _See code: [src/commands/broker/client-profile/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/display.ts)_
@@ -913,16 +903,16 @@ List Client Profiles from a Solace Event Broker.
 ```
 USAGE
   $ sc broker client-profile list [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b <value>] [-v
-    <value>] [-a] [-c <value>] [--count <value>] [-s <value>]
+    <value>] [-a] [-n <value>] [--count <value>] [-s <value>]
 
 FLAGS
-  -a, --all                          Display all client profiles (auto-pagination).
-  -b, --broker-name=<value>          Stored broker name. If not provided, uses the default broker.
-  -c, --client-profile-name=<value>  Filter client profiles by name. Supports * wildcard.
-  -s, --select=<value>               Comma-separated list of attributes to display (max 10).
-  -v, --msg-vpn-name=<value>         The name of the Message VPN.
-      --broker-id=<value>            Stored broker identifier. If not provided, uses the default broker.
-      --count=<value>                [default: 10] Number of client profiles to display per page.
+  -a, --all                   Display all client profiles (auto-pagination).
+  -b, --broker-name=<value>   Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>          Filter client profiles by name. Supports * wildcard.
+  -s, --select=<value>        Comma-separated list of attributes to display (max 10).
+  -v, --msg-vpn-name=<value>  The name of the Message VPN.
+      --broker-id=<value>     Stored broker identifier. If not provided, uses the default broker.
+      --count=<value>         [default: 10] Number of client profiles to display per page.
 
 GLOBAL FLAGS
   --json                Format output as json.
@@ -940,13 +930,13 @@ EXAMPLES
 
   $ sc broker client-profile list --count=20
 
-  $ sc broker client-profile list --client-profile-name="test*"
+  $ sc broker client-profile list --name="test*"
 
   $ sc broker client-profile list --select=clientProfileName,compressionEnabled,elidingEnabled
 
   $ sc broker client-profile list --all
 
-  $ sc broker client-profile list --client-profile-name="*prod*" --count=5 --all
+  $ sc broker client-profile list --name="*prod*" --count=5 --all
 ```
 
 _See code: [src/commands/broker/client-profile/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/list.ts)_
@@ -957,7 +947,7 @@ Update a Client Profile on a Solace Event Broker.
 
 ```
 USAGE
-  $ sc broker client-profile update -c <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+  $ sc broker client-profile update -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
     <value>] [-v <value>] [--allow-bridge-connections-enabled] [--allow-guaranteed-endpoint-create-durability
     all|durable|non-durable] [--allow-guaranteed-endpoint-create-enabled] [--allow-guaranteed-msg-receive-enabled]
     [--allow-guaranteed-msg-send-enabled] [--allow-shared-subscriptions-enabled] [--allow-transacted-sessions-enabled]
@@ -968,7 +958,7 @@ USAGE
 FLAGS
   -b, --broker-name=<value>                                             Stored broker name. If not provided, uses the
                                                                         default broker.
-  -c, --client-profile-name=<value>                                     (required) The name of the client profile to
+  -n, --name=<value>                                                    (required) The name of the client profile to
                                                                         update.
   -v, --msg-vpn-name=<value>                                            The name of the Message VPN.
       --[no-]allow-bridge-connections-enabled                           Enable or disable allowing Bridge clients using
@@ -1011,13 +1001,11 @@ DESCRIPTION
   The updates are synchronized to HA mates and replication sites via config-sync.
 
 EXAMPLES
-  $ sc broker client-profile update --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --compression-enabled
+  $ sc broker client-profile update --name=myProfile --compression-enabled
 
-  $ sc broker client-profile update --broker-id=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --no-eliding-enabled
+  $ sc broker client-profile update --name=myProfile --no-eliding-enabled
 
-  $ sc broker client-profile update --broker-name=dev-broker --client-profile-name=myProfile --msg-vpn-name=default --allow-guaranteed-msg-send-enabled --allow-guaranteed-msg-receive-enabled
-
-  $ sc broker client-profile update --client-profile-name=myProfile --eliding-delay=100
+  $ sc broker client-profile update --name=myProfile --eliding-delay=100
 ```
 
 _See code: [src/commands/broker/client-profile/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/client-profile/update.ts)_
@@ -1271,11 +1259,11 @@ DESCRIPTION
 EXAMPLES
   $ sc broker login basic --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080
 
+  $ sc broker login basic --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080 --msg-vpn-name=default
+
   $ sc broker login basic --broker-name=ci-broker --semp-url=http://192.168.1.100 --semp-port=8080 --no-prompt
 
   $ sc broker login basic --broker-name=default-broker --semp-url=https://broker.example.com --semp-port=943 --set-default
-
-  $ sc broker login basic --broker-name=dev-broker --semp-url=https://localhost --semp-port=8080 --msg-vpn-name=default
 ```
 
 _See code: [src/commands/broker/login/basic.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/login/basic.ts)_
