@@ -29,15 +29,15 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
       default: false,
       description: 'Display all client profiles (auto-pagination).',
     }),
-    name: Flags.string({
-      char: 'n',
-      description: 'Filter client profiles by name. Supports * wildcard.',
-    }),
     count: Flags.integer({
       default: 10,
       description: 'Number of client profiles to display per page.',
       max: 100,
       min: 1,
+    }),
+    name: Flags.string({
+      char: 'n',
+      description: 'Filter client profiles by name. Supports * wildcard.',
     }),
     select: Flags.string({
       char: 's',

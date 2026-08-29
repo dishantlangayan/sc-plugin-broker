@@ -53,11 +53,6 @@ Any attribute missing from the request will be set to its default value. The cre
     'api-queue-management-copy-from-on-create-template-name': Flags.string({
       description: 'The name of a queue template to copy settings from when a new queue is created by a client.',
     }),
-    name: Flags.string({
-      char: 'n',
-      description: 'The name of the client profile to create.',
-      required: true,
-    }),
     'compression-enabled': Flags.boolean({
       allowNo: true,
       description: 'Enable or disable allowing clients to use compression.',
@@ -69,6 +64,11 @@ Any attribute missing from the request will be set to its default value. The cre
     'eliding-enabled': Flags.boolean({
       allowNo: true,
       description: 'Enable or disable message eliding.',
+    }),
+    name: Flags.string({
+      char: 'n',
+      description: 'The name of the client profile to create.',
+      required: true,
     }),
     'tls-allow-downgrade-to-plain-text-enabled': Flags.boolean({
       allowNo: true,
