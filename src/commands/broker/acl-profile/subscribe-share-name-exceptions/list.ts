@@ -33,7 +33,7 @@ Retrieves and displays all subscribe share name exceptions configured for the sp
 
     // Display results as a two-column table
     if (sempResp.data.length === 0) {
-      this.log('No exceptions found.')
+      this.log('\nNo exceptions found.')
     } else {
       const table = [
         ['Subscribe Share Name Exception', 'Syntax'],

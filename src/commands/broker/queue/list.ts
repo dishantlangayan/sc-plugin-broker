@@ -81,7 +81,7 @@ static override flags = {
 
     // Display results
     if (queues.length === 0) {
-      this.log('No queues found.')
+      this.log('\nNo queues found.')
     } else {
       this.log(`\nTotal: ${queues.length} queue(s)`)
     }

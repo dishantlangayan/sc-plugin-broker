@@ -33,7 +33,7 @@ Retrieves and displays all publish topic exceptions configured for the specified
 
     // Display results as a two-column table
     if (sempResp.data.length === 0) {
-      this.log('No exceptions found.')
+      this.log('\nNo exceptions found.')
     } else {
       const table = [
         ['Publish Topic Exception', 'Syntax'],

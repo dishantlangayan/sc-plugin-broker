@@ -33,7 +33,7 @@ Retrieves and displays all subscribe topic exceptions configured for the specifi
 
     // Display results as a two-column table
     if (sempResp.data.length === 0) {
-      this.log('No exceptions found.')
+      this.log('\nNo exceptions found.')
     } else {
       const table = [
         ['Subscribe Topic Exception', 'Syntax'],

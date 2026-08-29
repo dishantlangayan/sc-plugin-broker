@@ -75,7 +75,7 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
 
     // Display results
     if (profiles.length === 0) {
-      this.log('No client profiles found.')
+      this.log('\nNo client profiles found.')
     } else {
       this.log(`\nTotal: ${profiles.length} client profile(s)`)
     }

@@ -32,7 +32,7 @@ Retrieves and displays all client connect exceptions configured for the specifie
 
     // Display results as a simple table
     if (sempResp.data.length === 0) {
-      this.log('No exceptions found.')
+      this.log('\nNo exceptions found.')
     } else {
       const table = [
         ['Client Connect Exception Address'],

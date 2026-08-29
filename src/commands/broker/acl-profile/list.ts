@@ -72,7 +72,7 @@ Supports filtering by name (with wildcards), custom attribute selection, and pag
 
     // Display results
     if (aclProfiles.length === 0) {
-      this.log('No ACL profiles found.')
+      this.log('\nNo ACL profiles found.')
     } else {
       this.log(`\nTotal: ${aclProfiles.length} ACL profile(s)`)
     }
