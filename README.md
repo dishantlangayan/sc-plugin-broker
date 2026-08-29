@@ -26,7 +26,7 @@ $ npm install -g @dishantlangayan/sc-plugin-broker
 $ sc COMMAND
 running command...
 $ sc (--version)
-@dishantlangayan/sc-plugin-broker/0.10.0 linux-x64 node-v24.18.0
+@dishantlangayan/sc-plugin-broker/0.10.0 linux-x64 node-v24.19.0
 $ sc --help [COMMAND]
 USAGE
   $ sc COMMAND
@@ -903,7 +903,7 @@ List Client Profiles from a Solace Event Broker.
 ```
 USAGE
   $ sc broker client-profile list [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b <value>] [-v
-    <value>] [-a] [-n <value>] [--count <value>] [-s <value>]
+    <value>] [-a] [--count <value>] [-n <value>] [-s <value>]
 
 FLAGS
   -a, --all                   Display all client profiles (auto-pagination).
