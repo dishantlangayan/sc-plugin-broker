@@ -105,6 +105,11 @@ See the [LICENSE](LICENSE.txt) file for details.
 * [`sc broker login cloud`](#sc-broker-login-cloud)
 * [`sc broker login list`](#sc-broker-login-list)
 * [`sc broker logout`](#sc-broker-logout)
+* [`sc broker msg-vpn create`](#sc-broker-msg-vpn-create)
+* [`sc broker msg-vpn delete`](#sc-broker-msg-vpn-delete)
+* [`sc broker msg-vpn display`](#sc-broker-msg-vpn-display)
+* [`sc broker msg-vpn list`](#sc-broker-msg-vpn-list)
+* [`sc broker msg-vpn update`](#sc-broker-msg-vpn-update)
 * [`sc broker queue-template create`](#sc-broker-queue-template-create)
 * [`sc broker queue-template delete`](#sc-broker-queue-template-delete)
 * [`sc broker queue-template display`](#sc-broker-queue-template-display)
@@ -1372,6 +1377,229 @@ EXAMPLES
 ```
 
 _See code: [src/commands/broker/logout.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/logout.ts)_
+
+## `sc broker msg-vpn create`
+
+Create a Message VPN on a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker msg-vpn create -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+    <value>] [--authentication-basic-enabled] [--authentication-basic-type internal|ldap|none|radius] [--enabled]
+    [--event-large-msg-threshold <value>] [--max-connection-count <value>] [--max-egress-flow-count <value>]
+    [--max-endpoint-count <value>] [--max-ingress-flow-count <value>] [-s <value>] [--max-subscription-count <value>]
+    [--max-transacted-session-count <value>] [--max-transaction-count <value>]
+
+FLAGS
+  -b, --broker-name=<value>                   Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>                          (required) The name of the Message VPN to create.
+  -s, --max-msg-spool-usage=<value>           The maximum message spool usage by the Message VPN, in megabytes (MB).
+      --[no-]authentication-basic-enabled     Enable or disable basic authentication for clients connecting to the
+                                              Message VPN.
+      --authentication-basic-type=<option>    The type of basic authentication to use for clients connecting to the
+                                              Message VPN.
+                                              <options: internal|ldap|none|radius>
+      --broker-id=<value>                     Stored broker identifier. If not provided, uses the default broker.
+      --[no-]enabled                          Enable (default) or disable the Message VPN.
+      --event-large-msg-threshold=<value>     The threshold, in kilobytes, after which a message is considered to be
+                                              large.
+      --max-connection-count=<value>          The maximum number of client connections to the Message VPN.
+      --max-egress-flow-count=<value>         The maximum number of transmit flows that can be created in the Message
+                                              VPN.
+      --max-endpoint-count=<value>            The maximum number of Queues and Topic Endpoints that can be created in
+                                              the Message VPN.
+      --max-ingress-flow-count=<value>        The maximum number of receive flows that can be created in the Message
+                                              VPN.
+      --max-subscription-count=<value>        The maximum number of local subscriptions that can be added to the Message
+                                              VPN.
+      --max-transacted-session-count=<value>  The maximum number of transacted sessions that can be created in the
+                                              Message VPN.
+      --max-transaction-count=<value>         The maximum number of transactions that can be created in the Message VPN.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Create a Message VPN on a Solace Event Broker.
+
+EXAMPLES
+  $ sc broker msg-vpn create --name=myVpn
+
+  $ sc broker msg-vpn create --name=myVpn --no-enabled --max-connection-count=100 --max-msg-spool-usage=1024
+
+  $ sc broker msg-vpn create --name=myVpn --authentication-basic-type=internal --authentication-basic-enabled
+```
+
+_See code: [src/commands/broker/msg-vpn/create.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/msg-vpn/create.ts)_
+
+## `sc broker msg-vpn delete`
+
+Delete a Message VPN from a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker msg-vpn delete -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+    <value>] [--no-prompt]
+
+FLAGS
+  -b, --broker-name=<value>  Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>         (required) The name of the Message VPN to delete.
+      --broker-id=<value>    Stored broker identifier. If not provided, uses the default broker.
+      --no-prompt            Skip confirmation prompt and proceed with deletion.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Delete a Message VPN from a Solace Event Broker.
+
+  This is a destructive operation that removes the Message VPN and all of its configuration.
+
+  By default, a confirmation prompt is shown before deletion. Use --no-prompt to skip confirmation.
+
+EXAMPLES
+  $ sc broker msg-vpn delete --name=myVpn
+
+  $ sc broker msg-vpn delete --name=myVpn --no-prompt
+```
+
+_See code: [src/commands/broker/msg-vpn/delete.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/msg-vpn/delete.ts)_
+
+## `sc broker msg-vpn display`
+
+Display Message VPN information from a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker msg-vpn display -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+    <value>]
+
+FLAGS
+  -b, --broker-name=<value>  Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>         (required) The name of the Message VPN to display.
+      --broker-id=<value>    Stored broker identifier. If not provided, uses the default broker.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Display Message VPN information from a Solace Event Broker.
+
+  Retrieves and displays detailed information about a Message VPN using the SEMP Monitor API, including operational
+  state, statistics, and configuration.
+
+EXAMPLES
+  $ sc broker msg-vpn display --name=myVpn
+```
+
+_See code: [src/commands/broker/msg-vpn/display.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/msg-vpn/display.ts)_
+
+## `sc broker msg-vpn list`
+
+List Message VPNs from a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker msg-vpn list [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b <value>] [-a] [-c
+    <value>] [-n <value>] [-s <value>]
+
+FLAGS
+  -a, --all                  Display all Message VPNs (auto-pagination).
+  -b, --broker-name=<value>  Stored broker name. If not provided, uses the default broker.
+  -c, --count=<value>        [default: 10] Number of Message VPNs to display per page.
+  -n, --name=<value>         Filter Message VPNs by name. Supports * wildcard.
+  -s, --select=<value>       Comma-separated list of attributes to display (max 10).
+      --broker-id=<value>    Stored broker identifier. If not provided, uses the default broker.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  List Message VPNs from a Solace Event Broker.
+
+  Retrieves and displays Message VPNs using the SEMP Monitor API.
+  Supports filtering by name (with wildcards), custom attribute selection, and pagination.
+  Refer to the SEMP Monitor API docs for available attributes.
+
+EXAMPLES
+  $ sc broker msg-vpn list
+
+  $ sc broker msg-vpn list --count=20
+
+  $ sc broker msg-vpn list --name="prod*"
+
+  $ sc broker msg-vpn list --select=msgVpnName,enabled,connectionCount
+
+  $ sc broker msg-vpn list --all
+```
+
+_See code: [src/commands/broker/msg-vpn/list.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/msg-vpn/list.ts)_
+
+## `sc broker msg-vpn update`
+
+Update a Message VPN on a Solace Event Broker.
+
+```
+USAGE
+  $ sc broker msg-vpn update -n <value> [--json] [--log-level debug|warn|error|info|trace] [--broker-id <value> | -b
+    <value>] [--authentication-basic-enabled] [--authentication-basic-type internal|ldap|none|radius] [--enabled]
+    [--event-large-msg-threshold <value>] [--max-connection-count <value>] [--max-egress-flow-count <value>]
+    [--max-endpoint-count <value>] [--max-ingress-flow-count <value>] [-s <value>] [--max-subscription-count <value>]
+    [--max-transacted-session-count <value>] [--max-transaction-count <value>]
+
+FLAGS
+  -b, --broker-name=<value>                   Stored broker name. If not provided, uses the default broker.
+  -n, --name=<value>                          (required) The name of the Message VPN to update.
+  -s, --max-msg-spool-usage=<value>           The maximum message spool usage by the Message VPN, in megabytes (MB).
+      --[no-]authentication-basic-enabled     Enable or disable basic authentication for clients connecting to the
+                                              Message VPN.
+      --authentication-basic-type=<option>    The type of basic authentication to use for clients connecting to the
+                                              Message VPN.
+                                              <options: internal|ldap|none|radius>
+      --broker-id=<value>                     Stored broker identifier. If not provided, uses the default broker.
+      --[no-]enabled                          Enable or disable the Message VPN.
+      --event-large-msg-threshold=<value>     The threshold, in kilobytes, after which a message is considered to be
+                                              large.
+      --max-connection-count=<value>          The maximum number of client connections to the Message VPN.
+      --max-egress-flow-count=<value>         The maximum number of transmit flows that can be created in the Message
+                                              VPN.
+      --max-endpoint-count=<value>            The maximum number of Queues and Topic Endpoints that can be created in
+                                              the Message VPN.
+      --max-ingress-flow-count=<value>        The maximum number of receive flows that can be created in the Message
+                                              VPN.
+      --max-subscription-count=<value>        The maximum number of local subscriptions that can be added to the Message
+                                              VPN.
+      --max-transacted-session-count=<value>  The maximum number of transacted sessions that can be created in the
+                                              Message VPN.
+      --max-transaction-count=<value>         The maximum number of transactions that can be created in the Message VPN.
+
+GLOBAL FLAGS
+  --json                Format output as json.
+  --log-level=<option>  [default: info] Specify level for logging.
+                        <options: debug|warn|error|info|trace>
+
+DESCRIPTION
+  Update a Message VPN on a Solace Event Broker.
+
+  Any attribute missing from the request will be left unchanged.
+
+EXAMPLES
+  $ sc broker msg-vpn update --name=myVpn --enabled
+
+  $ sc broker msg-vpn update --name=myVpn --max-connection-count=200 --max-msg-spool-usage=2048
+
+  $ sc broker msg-vpn update --name=myVpn --no-enabled
+```
+
+_See code: [src/commands/broker/msg-vpn/update.ts](https://github.com/dishantlangayan/sc-plugin-broker/blob/v0.10.0/src/commands/broker/msg-vpn/update.ts)_
 
 ## `sc broker queue-template create`
 
