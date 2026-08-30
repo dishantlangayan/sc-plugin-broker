@@ -1,4 +1,4 @@
-import {BrokerAuthError, BrokerAuthErrorCode, BrokerAuthManager, ScCommand, ScConnection} from '@dishantlangayan/sc-cli-core'
+import {BrokerAuth, BrokerAuthError, BrokerAuthErrorCode, BrokerAuthManager, ScCommand, ScConnection} from '@dishantlangayan/sc-cli-core'
 import {Command} from '@oclif/core'
 
 /**
@@ -84,6 +84,41 @@ export async function resolveBrokerConnection(
     // Re-throw unexpected errors
     throw error
   }
+}
+
+/**
+ * Resolves the stored BrokerAuth for the selected broker.
+ *
+ * Resolves the default broker when no identifier is provided, then returns the
+ * stored credentials/details for that broker. Useful for inspecting broker
+ * properties (e.g. whether it is a Solace Cloud broker) before performing an
+ * operation.
+ *
+ * @param command - The ScCommand instance (for error handling and BrokerAuthManager access)
+ * @param brokerIdentifier - Broker ID or name (empty string to use the default broker)
+ * @returns The resolved BrokerAuth
+ * @throws Will call command.error() if the broker cannot be found
+ */
+export async function resolveBrokerAuth(
+  command: ScCommand<typeof Command>,
+  brokerIdentifier: string,
+): Promise<BrokerAuth> {
+  const brokerAuthManager: BrokerAuthManager = await (
+    command as unknown as {getBrokerAuthManager(): Promise<BrokerAuthManager>}
+  ).getBrokerAuthManager()
+
+  // Resolve to default broker if brokerIdentifier is empty
+  const resolvedIdentifier = await resolveDefaultBrokerIfNeeded(command, brokerAuthManager, brokerIdentifier)
+
+  const broker = await brokerAuthManager.getBroker(resolvedIdentifier)
+  if (!broker) {
+    command.error(
+      `Broker '${resolvedIdentifier}' not found. Please run 'broker:login:basic' or 'broker:login:cloud' first.`,
+      {exit: 2},
+    )
+  }
+
+  return broker
 }
 
 /**
